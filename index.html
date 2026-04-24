@@ -1,5 +1,5 @@
         <!doctype html>
-        <!-- 18-04-26 -->
+        <!-- Automobile 22-04-26 -->
         <html lang="en">
             <head>
                 <!-- <base target="_self" /> -->
@@ -50,28 +50,64 @@
                     // ── Cart System ──
         let cart = {};  // { productId: { product, qty, selectedQty } }
 
+        // function addToCart(productId) {
+        //     const product = products.find(p => p.id === productId);
+        //     if (!product) return;
+
+        //     const card = document.querySelector(`[data-product-id="${productId}"]`);
+        //     let selectedQty = 1;
+        //     if (card) {
+        //         const activeBtn = card.querySelector('.qty-btn.active');
+        //         if (activeBtn) selectedQty = parseInt(activeBtn.dataset.lt);
+        //     }
+
+        //     const key = `${productId}_${selectedQty}`;
+        //     if (cart[key]) {
+        //         cart[key].qty += 1;
+        //     } else {
+        //         cart[key] = { product, qty: 1, selectedQty };
+        //     }
+
+        //     updateCartUI();
+        //     // localStorage.setItem('sc_cart', JSON.stringify(cart));  // ← YEH ADD KARO
+        //     localStorage.setItem('sc_cart_auto', JSON.stringify(cart));
+
+        //     showAddedFeedback(productId);
+        // }
+
+
+        // custom 22-04-26
+
         function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
 
-            const card = document.querySelector(`[data-product-id="${productId}"]`);
-            let selectedQty = 1;
-            if (card) {
-                const activeBtn = card.querySelector('.qty-btn.active');
-                if (activeBtn) selectedQty = parseInt(activeBtn.dataset.lt);
-            }
+    const card = document.querySelector(`[data-product-id="${productId}"]`);
+    let selectedQty = 1;
+    if (card) {
+        const activeBtn = card.querySelector('.qty-btn.active');
+        if (activeBtn) selectedQty = parseInt(activeBtn.dataset.lt);
+    }
 
-            const key = `${productId}_${selectedQty}`;
-            if (cart[key]) {
-                cart[key].qty += 1;
-            } else {
-                cart[key] = { product, qty: 1, selectedQty };
-            }
+    const key = `${productId}_${selectedQty}`;
 
-            updateCartUI();
-            localStorage.setItem('sc_cart', JSON.stringify(cart));  // ← YEH ADD KARO
-            showAddedFeedback(productId);
+    // Pehle animation chalao
+    showAddedFeedback(productId);
+
+    // Animation ke baad cart update karo (2.2s transition match)
+    setTimeout(() => {
+        if (cart[key]) {
+            cart[key].qty += 1;
+        } else {
+            cart[key] = { product, qty: 1, selectedQty };
         }
+        updateCartUI();
+        localStorage.setItem('sc_cart_auto', JSON.stringify(cart));
+    }, 2200);
+}         
+
+
+
 
         function updateCartUI() {
             const keys = Object.keys(cart);
@@ -158,52 +194,15 @@
             }).join(', ');
             const safeNote = note.replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 50);
 
-            // GPay button
-            // const gpayLink = `tez://upi/pay?pa=9352470085%40boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
-            // const gpayBtn = document.getElementById('cartGpayBtn');
-            // gpayBtn.href = gpayLink;
-            // gpayBtn.onclick = function(e) {
-            //     e.preventDefault();
-            //     window.location.href = gpayLink;
-            //     setTimeout(function() {
-            //         window.location.href = `upi://pay?pa=9352470085%40boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
-            //     }, 1500);
-            // };
-            // gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);"> Pay ₹${safeAmount} via GPay`;
-
-            // // WhatsApp Order button
-            // const waText = encodeURIComponent('Order: ' + safeNote + ' | Total: Rs.' + safeAmount);
-            // const waBtn = document.getElementById('cartWaBtn');
-            // if (waBtn) {
-            //     waBtn.href = `https://wa.me/919352470085?text=${waText}`;
-            // }
-
             // custom 21-04-26
 
        const gpayBtn = document.getElementById('cartGpayBtn');
-// const upiId = 'boism-9352470085@boi';
-
-
-const upiId = 'boism-9352470085@boi';
-  // @ ko %40 se encode kiya  custom 21-04-26
-
-
-
-// const upiUrl = `upi://pay?pa=${upiId}&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
-
+ const upiId = 'boism-9352470085@boi';
 
 const upiUrl = `upi://pay?pa=${upiId}&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
-
-
-
-
 gpayBtn.dataset.upiUrl = upiUrl;
-gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> Pay ₹${safeAmount} via Phone Pe / UPI`;
+gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);"> Pay ₹${safeAmount} via GPay`;
         }
-
-
-
-
 
 
         function changeCartQty(key, delta) {
@@ -212,12 +211,15 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
             if (newQty < 1) return;
             cart[key].qty = newQty;
             updateCartUI();
-            localStorage.setItem('sc_cart', JSON.stringify(cart));  // ← YEH ADD KARO
+            // localStorage.setItem('sc_cart', JSON.stringify(cart));  // ← YEH ADD KARO
+            localStorage.setItem('sc_cart_auto', JSON.stringify(cart));
         }
 
         function clearCart() {
             cart = {};
-            localStorage.removeItem('sc_cart');  // ← YEH ADD KARO
+            // localStorage.removeItem('sc_cart');  // ← YEH ADD KARO
+            localStorage.removeItem('sc_cart_auto');
+
 
             const list = document.getElementById('cartItemsList');
             const footer = document.getElementById('cartFooter');
@@ -235,7 +237,9 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
         function removeFromCart(key) {
             if (!cart[key]) return;
             delete cart[key];
-            localStorage.setItem('sc_cart', JSON.stringify(cart));
+            // localStorage.setItem('sc_cart', JSON.stringify(cart));
+            localStorage.setItem('sc_cart_auto', JSON.stringify(cart));
+
             updateCartUI();
         }
 
@@ -243,16 +247,123 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
             document.getElementById('cartPanel').classList.toggle('hidden');
         }
 
-        function showAddedFeedback(productId) {
-            const btn = document.querySelector(`[data-add-cart="${productId}"]`);
-            if (!btn) return;
-            btn.classList.add('added');
-            btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-            setTimeout(() => {
-                btn.classList.remove('added');
-                btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
-            }, 1500);
-        }
+        // function showAddedFeedback(productId) {
+        //     const btn = document.querySelector(`[data-add-cart="${productId}"]`);
+        //     if (!btn) return;
+        //     btn.classList.add('added');
+        //     btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+        //     setTimeout(() => {
+        //         btn.classList.remove('added');
+        //         btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+        //     }, 1500);
+        // }
+
+
+        // custom new 22-04-26
+//         function showAddedFeedback(productId) {
+//     const btn = document.querySelector(`[data-add-cart="${productId}"]`);
+//     if (!btn) return;
+
+//     // Button feedback
+//     btn.classList.add('added');
+//     btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+//     setTimeout(() => {
+//         btn.classList.remove('added');
+//         btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+//     }, 1500);
+
+//     // Fly animation
+//     const cartBtn = document.querySelector('[onclick="toggleCart()"]');
+//     if (!cartBtn) return;
+
+//     const btnRect = btn.getBoundingClientRect();
+//     const cartRect = cartBtn.getBoundingClientRect();
+
+//     const flyEl = document.createElement('div');
+//     flyEl.className = 'fly-item';
+//     flyEl.innerHTML = '<i class="fas fa-shopping-cart"></i>';
+//     // flyEl.style.left = (btnRect.left + btnRect.width / 2 - 10) + 'px';
+//     // flyEl.style.top  = (btnRect.top  + btnRect.height / 2 - 10) + 'px';
+//     flyEl.style.left = (btnRect.left + btnRect.width / 2 - 30) + 'px';
+//     flyEl.style.top  = (btnRect.top  + btnRect.height / 2 - 30) + 'px';
+//     document.body.appendChild(flyEl);
+
+//     requestAnimationFrame(() => {
+//         requestAnimationFrame(() => {
+//             // flyEl.style.left    = (cartRect.left + cartRect.width / 2 - 10) + 'px';
+//             // flyEl.style.top     = (cartRect.top  + cartRect.height / 2 - 10) + 'px';
+//             flyEl.style.left    = (cartRect.left + cartRect.width / 2 - 30) + 'px';
+//             flyEl.style.top     = (cartRect.top  + cartRect.height / 2 - 30) + 'px';
+//             flyEl.style.opacity = '0';
+//             flyEl.style.transform = 'scale(0.3)';
+//         });
+//     });
+
+//     // setTimeout(() => flyEl.remove(), 900);
+//     setTimeout(() => flyEl.remove(), 2600);
+// }
+
+
+
+
+// custom new 22-04-26
+
+function showAddedFeedback(productId) {
+    const btn = document.querySelector(`[data-add-cart="${productId}"]`);
+    if (!btn) return;
+
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+    setTimeout(() => {
+        btn.classList.remove('added');
+        btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+    }, 1500);
+
+    const cartBtn = document.querySelector('[onclick="toggleCart()"]');
+    if (!cartBtn) return;
+
+    const product = products.find(p => p.id === productId);
+    const btnRect  = btn.getBoundingClientRect();
+    const cartRect = cartBtn.getBoundingClientRect();
+
+    const flyEl = document.createElement('div');
+    flyEl.className = 'fly-item';
+
+    // Product image dikhao, fallback icon
+    if (product && product.image) {
+        flyEl.innerHTML = `<img src="${product.image}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fas fa-shopping-cart\\'></i>'">`;
+    } else {
+        flyEl.innerHTML = '<i class="fas fa-shopping-cart"></i>';
+    }
+
+    // Start position — card ke center se
+    // flyEl.style.left = (btnRect.left + btnRect.width / 2 - 40) + 'px';
+    // flyEl.style.top  = (btnRect.top  + btnRect.height / 2 - 40) + 'px';
+    flyEl.style.left = (btnRect.left + btnRect.width / 2 - 40) + 'px';
+flyEl.style.top  = (btnRect.top  + btnRect.height / 2 - 40) + 'px';
+    flyEl.style.transform = 'scale(1.2)';
+    document.body.appendChild(flyEl);
+
+    // Animate to cart
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            // flyEl.style.left      = (cartRect.left + cartRect.width / 2 - 40) + 'px';
+            // flyEl.style.top       = (cartRect.top  + cartRect.height / 2 - 40) + 'px';
+            flyEl.style.left      = (cartRect.left + cartRect.width / 2 - 40) + 'px';
+            flyEl.style.top       = (cartRect.top  + cartRect.height / 2 - 40) + 'px';
+            flyEl.style.opacity   = '0';
+            flyEl.style.transform = 'scale(0.2) rotate(10deg)';
+        });
+    });
+
+    // setTimeout(() => flyEl.remove(), 1400);
+    setTimeout(() => flyEl.remove(), 2300);
+
+}
+
+
+
+
 
                 </script>
                 <link
@@ -632,10 +743,11 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
                 /* custom 20-04-26 adding the cart option like Magento  */
 
                 /* ── Cart System ── */
-        .cart-icon-btn {
+            .cart-icon-btn {
             position: fixed;
-            bottom: 6rem;
+            top: 4.5rem;        /* ← was: 1rem, ab navbar ke neeche */
             right: 1.5rem;
+            bottom: unset;
             z-index: 60;
             width: 56px;
             height: 56px;
@@ -668,22 +780,27 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
             padding: 0 4px;
         }
 
+       
+        /* custom 21-04-26 */
         .cart-panel {
-            position: fixed;
-            bottom: 10rem;
-            right: 1.5rem;
-            z-index: 70;
-            width: 340px;
-            max-height: 75vh;
-            background: white;
-            border-radius: 1.25rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            transform-origin: bottom right;
-        }
+    position: fixed;
+    top: 4.5rem;      /* ← drops down just below the cart button */
+    bottom: unset;    /* ← remove the old bottom: 10rem */
+    right: 1.5rem;
+    z-index: 70;
+    width: 340px;
+    max-height: 75vh;
+    background: white;
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    transform-origin: top right;   /* ← was: bottom right */
+}
+
+
         .cart-panel.hidden {
             opacity: 0;
             pointer-events: none;
@@ -782,6 +899,60 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
             .cart-panel { width: calc(100vw - 2rem); right: 1rem; }
         }
 
+
+        /* custom new 22-04-26 */
+        /* Fly to cart animation */
+        /* .fly-item {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            z-index: 9999;
+            pointer-events: none;
+            transition: all 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 1;
+        } */
+
+
+
+
+         /* custom new 22-04-26 */
+         .fly-item {
+            position: fixed;
+             width: 130px;
+            height: 130px;
+            background: white;
+            border-radius: 16px;
+            border: 3px solid #f59e0b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f59e0b;
+            font-size: 32px;
+            z-index: 9999;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(245,158,11,0.5);
+            transition: all 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 1;
+            overflow: hidden;
+        }
+        .fly-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 6px;
+        }
+
+
+
+
+
                 </style>
             </head>
             <body class="min-h-screen text-gray-800">
@@ -804,22 +975,33 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
                                         Manufacturers & marketers of automobile cleaning products
                                     </p>
                                 </div>
-                            </div>
+                            </div>  
 
-                            <!-- custom 17-04-26 -->
-                            <div class="flex items-center gap-4">
-            
-                            <!-- Existing Jaipur Info -->
-                            <div class="text-center md:text-right glass-card px-4 py-2 rounded-lg">
-                                <p class="text-gray-700 font-medium">
-                                    <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
-                                    Jaipur • Bulk & Retail
-                                </p>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </header>
+
+                <!-- custom 21-04-26 -->
+<div class="flex items-center gap-2 flex-shrink-0">
+
+    <!-- Jaipur pill — mobile pe chhota, desktop pe normal -->
+    <!-- <div class="glass-card px-3 py-1.5 rounded-lg hidden sm:block"> -->
+       <div class="glass-card px-2 py-1.5 rounded-lg">
+        <p class="text-gray-700 font-medium text-sm whitespace-nowrap">
+            <i class="fas fa-map-marker-alt text-blue-600 mr-1"></i>
+            Jaipur • Bulk & Retail
+        </p>
+    </div>
+
+    <!-- Cart button -->
+    <button class="relative w-11 h-11 rounded-full flex items-center justify-center text-white border-none cursor-pointer flex-shrink-0"
+        style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 15px rgba(245,158,11,0.4);"
+        onclick="toggleCart()" aria-label="View cart">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+    </button>
+
+</div>
+</div>
+</div>
+</header>
 
                 <!-- custom 28-03-26 -->
                     <section class="hero-gradient text-white min-h-[86.5vh] flex items-center relative">
@@ -1229,7 +1411,7 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
                             name: "Dashboard Polish",
                             image: "Dashboard Polish.jpeg",
                             description: "Premium dashboard polish for long-lasting shine",
-                            price: 1,
+                            price: 10,
                             unit: "Lt",
                             hasLtOptions: true,   // ── NEW: show Lt selector & GPay
                         },
@@ -1447,18 +1629,6 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
 
         // custom 18-04-26
 
-        // function buildUpiLink(amount, productName, qty, qtyLabel = '') {
-
-        //     // 🔥 CLEAN LABEL FIX
-        //     const label = qtyLabel ? `${qty}${qtyLabel}` : '';
-
-        //     const note = encodeURIComponent(`${productName} ${label}`);
-        //     const name = encodeURIComponent('Swapnil Chemicals');
-
-        //     return `upi://pay?pa=boism-9352470085@boi&pn=${name}&am=${amount}&cu=INR&tn=${note}`;
-        // }
-
-
         function buildUpiLink(amount, productName, qty, qtyLabel = '') {
             const label = qtyLabel ? `${qty}${qtyLabel}` : '';
             const rawNote = `${productName} ${label}`.replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 50);
@@ -1466,16 +1636,8 @@ gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> P
             // return `upi://pay?pa=boism-9352470085%40boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
 
             // custom 21-04-26
-            // return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
 
-
-            // custom 24-04-26
-// return `upi://pay?pa=boism-9352470085%40boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
-
-
-return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
-
-
+            return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
 
         }
 
@@ -1626,7 +1788,9 @@ return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount
             setTimeout(initScrollAnimations, 100);
 
             // ← YEH NAYA BLOCK ADD KARO
-            const saved = localStorage.getItem('sc_cart');
+            // const saved = localStorage.getItem('sc_cart');
+            const saved = localStorage.getItem('sc_cart_auto');
+
             if (saved) {
                 try {
                     cart = JSON.parse(saved);
@@ -1707,48 +1871,19 @@ return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount
 
 
 
-// custom 24-04-26
-
-// function handleGpayClick(e) {
-//     e.preventDefault();
-//     const btn = document.getElementById('cartGpayBtn');
-//     const upiUrl = btn.dataset.upiUrl;
-//     if (!upiUrl) return;
-    
-//     // Ek hi redirect - direct UPI deep link
-//     window.location.href = upiUrl;
-// }
-
-
-
+// custom 23-04-26 8 pm
 function handleGpayClick(e) {
     e.preventDefault();
     const btn = document.getElementById('cartGpayBtn');
     const upiUrl = btn.dataset.upiUrl;
     if (!upiUrl) return;
-    
-    // Phone Pe specific intent
-    const phonePeUrl = upiUrl.replace('upi://', 'phonepe://');
-    
-    // Pehle Phone Pe try karo
-    window.location.href = phonePeUrl;
-    
-    // Fallback: 1.5 sec baad generic UPI (agar Phone Pe na khule)
-    setTimeout(() => {
-        window.location.href = upiUrl;
-    }, 1500);
+    window.location.href = upiUrl;
 }
 
 
+
+
                 </script>
-
-
-                <!-- custom 20-04-26 adding the cart option like Magento  -->
-                <!-- Floating Cart Button -->
-        <button class="cart-icon-btn" onclick="toggleCart()" aria-label="View cart">
-            <i class="fas fa-shopping-cart text-xl"></i>
-            <span class="cart-badge" id="cartBadge" style="display:none">0</span>
-        </button>
 
         <!-- Cart Panel -->
         <div class="cart-panel hidden" id="cartPanel">
@@ -1778,41 +1913,14 @@ function handleGpayClick(e) {
                     <span class="text-base font-bold text-gray-800">Grand Total</span>
                     <span class="text-base font-bold text-blue-700" id="cartTotal">₹0</span>
                 </div>
-                <!-- <a id="cartGpayBtn"
-                href="#"
-                class="gpay-btn"
-                target="_blank">
-                    <img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);">
-                    Pay via GPay
-                </a> -->
-
-
-
-                <!-- <a id="cartGpayBtn"
-        href="#"
-        class="gpay-btn"
-        target="_blank">
-            <img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);">
-            Pay via GPay
-        </a> -->
-
-
 
             <!-- custom 21-04-26 -->
-<!-- <a id="cartGpayBtn"
-href="#"
-class="gpay-btn"
-onclick="handleGpayClick(event)">
-Pay via GPay
-</a> -->
-
-
-<a id="cartGpayBtn"
-   href="#"
-   class="gpay-btn"
-   onclick="handleGpayClick(event)">
-   Pay via UPI (Phone Pe / GPay)
-</a>
+            <a id="cartGpayBtn"
+            href="#"
+            class="gpay-btn"
+            onclick="handleGpayClick(event)">
+            Pay via GPay
+            </a>
 
 
                 <button onclick="clearCart()"
