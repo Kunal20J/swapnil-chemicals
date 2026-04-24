@@ -198,7 +198,7 @@ const upiUrl = `upi://pay?pa=${upiId}&pn=Swapnil%20Chemicals&am=${safeAmount}&cu
 
 
 gpayBtn.dataset.upiUrl = upiUrl;
-gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);"> Pay ₹${safeAmount} via GPay`;
+gpayBtn.innerHTML = `<i class="fas fa-mobile-alt" style="font-size:16px;"></i> Pay ₹${safeAmount} via Phone Pe / UPI`;
         }
 
 
@@ -1709,19 +1709,35 @@ return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount
 
 // custom 24-04-26
 
+// function handleGpayClick(e) {
+//     e.preventDefault();
+//     const btn = document.getElementById('cartGpayBtn');
+//     const upiUrl = btn.dataset.upiUrl;
+//     if (!upiUrl) return;
+    
+//     // Ek hi redirect - direct UPI deep link
+//     window.location.href = upiUrl;
+// }
+
+
+
 function handleGpayClick(e) {
     e.preventDefault();
     const btn = document.getElementById('cartGpayBtn');
     const upiUrl = btn.dataset.upiUrl;
     if (!upiUrl) return;
     
-    // Ek hi redirect - direct UPI deep link
-    window.location.href = upiUrl;
+    // Phone Pe specific intent
+    const phonePeUrl = upiUrl.replace('upi://', 'phonepe://');
+    
+    // Pehle Phone Pe try karo
+    window.location.href = phonePeUrl;
+    
+    // Fallback: 1.5 sec baad generic UPI (agar Phone Pe na khule)
+    setTimeout(() => {
+        window.location.href = upiUrl;
+    }, 1500);
 }
-
-
-
-
 
 
                 </script>
@@ -1783,11 +1799,19 @@ function handleGpayClick(e) {
 
 
             <!-- custom 21-04-26 -->
-<a id="cartGpayBtn"
+<!-- <a id="cartGpayBtn"
 href="#"
 class="gpay-btn"
 onclick="handleGpayClick(event)">
 Pay via GPay
+</a> -->
+
+
+<a id="cartGpayBtn"
+   href="#"
+   class="gpay-btn"
+   onclick="handleGpayClick(event)">
+   Pay via UPI (Phone Pe / GPay)
 </a>
 
 
