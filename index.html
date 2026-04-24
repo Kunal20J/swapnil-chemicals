@@ -70,127 +70,258 @@
             showAddedFeedback(productId);
         }
 
-        function updateCartUI() {
-            const keys = Object.keys(cart);
-            const totalItems = keys.reduce((sum, k) => sum + cart[k].qty, 0);
-            const badge = document.getElementById('cartBadge');
-            const footer = document.getElementById('cartFooter');
-            const list = document.getElementById('cartItemsList');
+        // function updateCartUI() {
+        //     const keys = Object.keys(cart);
+        //     const totalItems = keys.reduce((sum, k) => sum + cart[k].qty, 0);
+        //     const badge = document.getElementById('cartBadge');
+        //     const footer = document.getElementById('cartFooter');
+        //     const list = document.getElementById('cartItemsList');
 
-            if (badge) {
-                badge.style.display = totalItems > 0 ? 'flex' : 'none';
-                badge.textContent = totalItems;
-            }
+        //     if (badge) {
+        //         badge.style.display = totalItems > 0 ? 'flex' : 'none';
+        //         badge.textContent = totalItems;
+        //     }
 
-            if (keys.length === 0) {
-                if (list) {
-                    list.innerHTML = `<div class="cart-empty-msg">
-                        <i class="fas fa-shopping-cart text-3xl mb-3 block opacity-30"></i>
-                        Your cart is empty
-                    </div>`;
-                }
-                if (footer) footer.style.display = 'none';
+        //     if (keys.length === 0) {
+        //         if (list) {
+        //             list.innerHTML = `<div class="cart-empty-msg">
+        //                 <i class="fas fa-shopping-cart text-3xl mb-3 block opacity-30"></i>
+        //                 Your cart is empty
+        //             </div>`;
+        //         }
+        //         if (footer) footer.style.display = 'none';
 
-                const gpayBtn = document.getElementById('cartGpayBtn');
-                if (gpayBtn) {
-                    gpayBtn.dataset.upiUrl = '';
-                    gpayBtn.setAttribute('aria-disabled', 'true');
-                    gpayBtn.style.pointerEvents = 'none';
-                    gpayBtn.style.opacity = '0.6';
-                    gpayBtn.innerHTML = 'Cart is empty';
-                }
-                return;
-            }
+        //         const gpayBtn = document.getElementById('cartGpayBtn');
+        //         if (gpayBtn) {
+        //             gpayBtn.dataset.upiUrl = '';
+        //             gpayBtn.setAttribute('aria-disabled', 'true');
+        //             gpayBtn.style.pointerEvents = 'none';
+        //             gpayBtn.style.opacity = '0.6';
+        //             gpayBtn.innerHTML = 'Cart is empty';
+        //         }
+        //         return;
+        //     }
 
-            if (footer) footer.style.display = 'block';
+        //     if (footer) footer.style.display = 'block';
 
-            let grandTotal = 0;
-            let itemsHTML = '';
+        //     let grandTotal = 0;
+        //     let itemsHTML = '';
 
-            keys.forEach(key => {
-                const { product, qty, selectedQty } = cart[key];
-                const totalQty = selectedQty * qty;
-                const lineTotal = product.price * totalQty;
-                grandTotal += lineTotal;
+        //     keys.forEach(key => {
+        //         const { product, qty, selectedQty } = cart[key];
+        //         const totalQty = selectedQty * qty;
+        //         const lineTotal = product.price * totalQty;
+        //         grandTotal += lineTotal;
 
-                const qLabel = product.hasLtOptions && !product.qtyOptions
-                    ? ' Lt'
-                    : product.qtyOptions
-                        ? (product.qtyLabel || ' pcs')
-                        : '';
+        //         const qLabel = product.hasLtOptions && !product.qtyOptions
+        //             ? ' Lt'
+        //             : product.qtyOptions
+        //                 ? (product.qtyLabel || ' pcs')
+        //                 : '';
 
-                itemsHTML += `
-                <div class="cart-item-row">
-                    <div style="flex:1; min-width:0;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
-                            <p style="font-weight:500;color:#1e293b;margin:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                ${product.name}
-                            </p>
-                        </div>
-                        <p style="color:#64748b;margin:2px 0 0;font-size:11px;">
-                            ${selectedQty}${qLabel} &times; ${qty} = ${totalQty}${qLabel}
-                        </p>
-                    </div>
-                    <div class="cart-item-qty-ctrl">
-                        <button class="cart-qty-btn" onclick="changeCartQty('${key}', -1)">&#8722;</button>
-                        <span style="font-weight:600;min-width:40px;text-align:center;font-size:12px;color:#1e293b;">
-                            ${totalQty}${qLabel}
-                        </span>
-                        <button class="cart-qty-btn" onclick="changeCartQty('${key}', 1)">&#43;</button>
-                    </div>
-                    <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:70px;">
-                        <p style="font-weight:700;color:#1d4ed8;margin:0;font-size:13px;">
-                            &#8377;${lineTotal}
-                        </p>
-                        <button onclick="removeFromCart('${key}')"
-                            style="width:18px;height:18px;border-radius:50%;border:none;background:#fee2e2;color:#ef4444;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:all 0.2s;"
-                            onmouseover="this.style.background='#ef4444';this.style.color='white'"
-                            onmouseout="this.style.background='#fee2e2';this.style.color='#ef4444'"
-                            title="Remove">&#10005;
-                        </button>
-                    </div>
-                </div>`;
-            });
+        //         itemsHTML += `
+        //         <div class="cart-item-row">
+        //             <div style="flex:1; min-width:0;">
+        //                 <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+        //                     <p style="font-weight:500;color:#1e293b;margin:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+        //                         ${product.name}
+        //                     </p>
+        //                 </div>
+        //                 <p style="color:#64748b;margin:2px 0 0;font-size:11px;">
+        //                     ${selectedQty}${qLabel} &times; ${qty} = ${totalQty}${qLabel}
+        //                 </p>
+        //             </div>
+        //             <div class="cart-item-qty-ctrl">
+        //                 <button class="cart-qty-btn" onclick="changeCartQty('${key}', -1)">&#8722;</button>
+        //                 <span style="font-weight:600;min-width:40px;text-align:center;font-size:12px;color:#1e293b;">
+        //                     ${totalQty}${qLabel}
+        //                 </span>
+        //                 <button class="cart-qty-btn" onclick="changeCartQty('${key}', 1)">&#43;</button>
+        //             </div>
+        //             <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:70px;">
+        //                 <p style="font-weight:700;color:#1d4ed8;margin:0;font-size:13px;">
+        //                     &#8377;${lineTotal}
+        //                 </p>
+        //                 <button onclick="removeFromCart('${key}')"
+        //                     style="width:18px;height:18px;border-radius:50%;border:none;background:#fee2e2;color:#ef4444;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:all 0.2s;"
+        //                     onmouseover="this.style.background='#ef4444';this.style.color='white'"
+        //                     onmouseout="this.style.background='#fee2e2';this.style.color='#ef4444'"
+        //                     title="Remove">&#10005;
+        //                 </button>
+        //             </div>
+        //         </div>`;
+        //     });
 
-            if (list) list.innerHTML = itemsHTML;
+        //     if (list) list.innerHTML = itemsHTML;
 
-            const subtotal = document.getElementById('cartSubtotal');
-            const total = document.getElementById('cartTotal');
-            if (subtotal) subtotal.textContent = `₹${grandTotal.toFixed(2)}`;
-            if (total) total.textContent = `₹${grandTotal.toFixed(2)}`;
+        //     const subtotal = document.getElementById('cartSubtotal');
+        //     const total = document.getElementById('cartTotal');
+        //     if (subtotal) subtotal.textContent = `₹${grandTotal.toFixed(2)}`;
+        //     if (total) total.textContent = `₹${grandTotal.toFixed(2)}`;
 
-            const note = Object.values(cart).map(({ product, qty, selectedQty }) => {
-                const totalQty = selectedQty * qty;
-                const qLabel = product.hasLtOptions && !product.qtyOptions
-                    ? 'Lt'
-                    : product.qtyOptions
-                        ? (product.qtyLabel || 'pcs').trim()
-                        : '';
-                return `${product.name} ${totalQty}${qLabel ? ' ' + qLabel : ''}`;
-            }).join(', ');
+        //     const note = Object.values(cart).map(({ product, qty, selectedQty }) => {
+        //         const totalQty = selectedQty * qty;
+        //         const qLabel = product.hasLtOptions && !product.qtyOptions
+        //             ? 'Lt'
+        //             : product.qtyOptions
+        //                 ? (product.qtyLabel || 'pcs').trim()
+        //                 : '';
+        //         return `${product.name} ${totalQty}${qLabel ? ' ' + qLabel : ''}`;
+        //     }).join(', ');
 
-            const safeNote = note.replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 80) || 'Swapnil Chemicals Order';
+        //     const safeNote = note.replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 80) || 'Swapnil Chemicals Order';
 
-            const gpayBtn = document.getElementById('cartGpayBtn');
-            const upiId = 'boism-9352470085@boi';
+        //     const gpayBtn = document.getElementById('cartGpayBtn');
+        //     const upiId = 'boism-9352470085@boi';
 
-            if (!gpayBtn) return;
+        //     if (!gpayBtn) return;
 
-            if (!Number.isFinite(grandTotal) || grandTotal < 1) {
-                gpayBtn.dataset.upiUrl = '';
-                gpayBtn.setAttribute('aria-disabled', 'true');
-                gpayBtn.style.pointerEvents = 'none';
-                gpayBtn.style.opacity = '0.6';
-                gpayBtn.innerHTML = 'Cart is empty';
-            } else {
-                const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent('Swapnil Chemicals')}&am=${grandTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
-                gpayBtn.dataset.upiUrl = upiUrl;
-                gpayBtn.removeAttribute('aria-disabled');
-                gpayBtn.style.pointerEvents = 'auto';
-                gpayBtn.style.opacity = '1';
-                gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);"> Pay ₹${grandTotal.toFixed(2)} via GPay`;
-            }
+        //     if (!Number.isFinite(grandTotal) || grandTotal < 1) {
+        //         gpayBtn.dataset.upiUrl = '';
+        //         gpayBtn.setAttribute('aria-disabled', 'true');
+        //         gpayBtn.style.pointerEvents = 'none';
+        //         gpayBtn.style.opacity = '0.6';
+        //         gpayBtn.innerHTML = 'Cart is empty';
+        //     } else {
+        //         const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent('Swapnil Chemicals')}&am=${grandTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
+        //         gpayBtn.dataset.upiUrl = upiUrl;
+        //         gpayBtn.removeAttribute('aria-disabled');
+        //         gpayBtn.style.pointerEvents = 'auto';
+        //         gpayBtn.style.opacity = '1';
+        //         gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);"> Pay ₹${grandTotal.toFixed(2)} via GPay`;
+        //     }
+        // }
+
+
+
+
+
+function updateCartUI() {
+    const keys = Object.keys(cart);
+    const totalItems = keys.reduce((sum, k) => sum + cart[k].qty, 0);
+    const badge = document.getElementById('cartBadge');
+    const footer = document.getElementById('cartFooter');
+    const list = document.getElementById('cartItemsList');
+
+    if (badge) {
+        badge.style.display = totalItems > 0 ? 'flex' : 'none';
+        badge.textContent = totalItems;
+    }
+
+    if (keys.length === 0) {
+        if (list) {
+            list.innerHTML = `<div class="cart-empty-msg">
+                <i class="fas fa-shopping-cart text-3xl mb-3 block opacity-30"></i>
+                Your cart is empty
+            </div>`;
         }
+        if (footer) footer.style.display = 'none';
+
+        const payBtn = document.getElementById('cartGpayBtn');
+        if (payBtn) {
+            payBtn.dataset.amount = '';
+            payBtn.dataset.note = '';
+            payBtn.setAttribute('aria-disabled', 'true');
+            payBtn.style.pointerEvents = 'none';
+            payBtn.style.opacity = '0.6';
+            payBtn.innerHTML = 'Cart is empty';
+        }
+        return;
+    }
+
+    if (footer) footer.style.display = 'block';
+
+    let grandTotal = 0;
+    let itemsHTML = '';
+
+    keys.forEach(key => {
+        const { product, qty, selectedQty } = cart[key];
+        const totalQty = selectedQty * qty;
+        const lineTotal = product.price * totalQty;
+        grandTotal += lineTotal;
+
+        const qLabel = product.hasLtOptions && !product.qtyOptions
+            ? ' Lt'
+            : product.qtyOptions
+                ? (product.qtyLabel || ' pcs')
+                : '';
+
+        itemsHTML += `
+        <div class="cart-item-row">
+            <div style="flex:1; min-width:0;">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                    <p style="font-weight:500;color:#1e293b;margin:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        ${product.name}
+                    </p>
+                </div>
+                <p style="color:#64748b;margin:2px 0 0;font-size:11px;">
+                    ${selectedQty}${qLabel} &times; ${qty} = ${totalQty}${qLabel}
+                </p>
+            </div>
+
+            <div class="cart-item-qty-ctrl">
+                <button class="cart-qty-btn" onclick="changeCartQty('${key}', -1)">&#8722;</button>
+                <span style="font-weight:600;min-width:40px;text-align:center;font-size:12px;color:#1e293b;">
+                    ${totalQty}${qLabel}
+                </span>
+                <button class="cart-qty-btn" onclick="changeCartQty('${key}', 1)">&#43;</button>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:70px;">
+                <p style="font-weight:700;color:#1d4ed8;margin:0;font-size:13px;">
+                    &#8377;${lineTotal.toFixed(2)}
+                </p>
+                <button onclick="removeFromCart('${key}')"
+                    style="width:18px;height:18px;border-radius:50%;border:none;background:#fee2e2;color:#ef4444;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:all 0.2s;"
+                    title="Remove">&#10005;
+                </button>
+            </div>
+        </div>`;
+    });
+
+    if (list) list.innerHTML = itemsHTML;
+
+    const subtotal = document.getElementById('cartSubtotal');
+    const total = document.getElementById('cartTotal');
+    if (subtotal) subtotal.textContent = `₹${grandTotal.toFixed(2)}`;
+    if (total) total.textContent = `₹${grandTotal.toFixed(2)}`;
+
+    const note = Object.values(cart).map(({ product, qty, selectedQty }) => {
+        const totalQty = selectedQty * qty;
+        const qLabel = product.hasLtOptions && !product.qtyOptions
+            ? 'Lt'
+            : product.qtyOptions
+                ? (product.qtyLabel || 'pcs').trim()
+                : '';
+        return `${product.name} ${totalQty}${qLabel ? ' ' + qLabel : ''}`;
+    }).join(', ');
+
+    const safeNote = note.replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 80) || 'Swapnil Chemicals Order';
+
+    const payBtn = document.getElementById('cartGpayBtn');
+    if (!payBtn) return;
+
+    if (!Number.isFinite(grandTotal) || grandTotal < 1) {
+        payBtn.dataset.amount = '';
+        payBtn.dataset.note = '';
+        payBtn.setAttribute('aria-disabled', 'true');
+        payBtn.style.pointerEvents = 'none';
+        payBtn.style.opacity = '0.6';
+        payBtn.innerHTML = 'Cart is empty';
+    } else {
+        payBtn.dataset.amount = grandTotal.toFixed(2);
+        payBtn.dataset.note = safeNote;
+        payBtn.removeAttribute('aria-disabled');
+        payBtn.style.pointerEvents = 'auto';
+        payBtn.style.opacity = '1';
+        payBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);"> Pay ₹${grandTotal.toFixed(2)}`;
+    }
+}
+
+
+
+
+
 
         function changeCartQty(key, delta) {
             if (!cart[key]) return;
@@ -286,31 +417,97 @@
             setTimeout(() => flyEl.remove(), 2300);
         }
 
-        function handleGpayClick(e) {
-            e.preventDefault();
+        // function handleGpayClick(e) {
+        //     e.preventDefault();
 
-            const btn = document.getElementById('cartGpayBtn');
-            const upiUrl = btn?.dataset?.upiUrl;
+        //     const btn = document.getElementById('cartGpayBtn');
+        //     const upiUrl = btn?.dataset?.upiUrl;
 
-            if (!upiUrl) {
-                alert('Cart total not ready. Please try again.');
-                return;
-            }
+        //     if (!upiUrl) {
+        //         alert('Cart total not ready. Please try again.');
+        //         return;
+        //     }
 
-            const isAndroid = /Android/i.test(navigator.userAgent);
-            const gpayIntent =
-                upiUrl.replace('upi://pay', 'intent://pay') +
-                '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
+        //     const isAndroid = /Android/i.test(navigator.userAgent);
+        //     const gpayIntent =
+        //         upiUrl.replace('upi://pay', 'intent://pay') +
+        //         '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
 
-            if (isAndroid) {
-                window.location.href = gpayIntent;
-                setTimeout(() => {
-                    window.location.href = upiUrl;
-                }, 1200);
-            } else {
-                window.location.href = upiUrl;
-            }
+        //     if (isAndroid) {
+        //         window.location.href = gpayIntent;
+        //         setTimeout(() => {
+        //             window.location.href = upiUrl;
+        //         }, 1200);
+        //     } else {
+        //         window.location.href = upiUrl;
+        //     }
+        // }
+
+
+
+
+function handleGpayClick(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('cartGpayBtn');
+    const amount = btn?.dataset?.amount;
+    const note = btn?.dataset?.note || 'Swapnil Chemicals Order';
+
+    if (!amount) {
+        alert('Cart total not ready. Please try again.');
+        return;
+    }
+
+    openPaymentModal(amount, note);
+}
+
+function openPaymentModal(amount, note) {
+    const upiId = 'boism-9352470085@boi';
+    const payee = 'Swapnil Chemicals';
+    const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payee)}&am=${encodeURIComponent(amount)}&cu=INR&tn=${encodeURIComponent(note)}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUrl)}`;
+
+    const modal = document.getElementById('paymentModal');
+    const amountEl = document.getElementById('paymentAmount');
+    const upiEl = document.getElementById('paymentUpiId');
+    const noteEl = document.getElementById('paymentNote');
+    const qrEl = document.getElementById('paymentQr');
+    const copyBtn = document.getElementById('copyUpiBtn');
+    const whatsappBtn = document.getElementById('paymentDoneBtn');
+
+    if (!modal || !amountEl || !upiEl || !noteEl || !qrEl || !copyBtn || !whatsappBtn) return;
+
+    amountEl.textContent = `₹${amount}`;
+    upiEl.textContent = upiId;
+    noteEl.textContent = note;
+    qrEl.src = qrUrl;
+    qrEl.alt = `Pay ₹${amount} to ${payee}`;
+
+    copyBtn.onclick = async function () {
+        try {
+            await navigator.clipboard.writeText(upiId);
+            copyBtn.textContent = 'UPI ID Copied';
+            setTimeout(() => copyBtn.textContent = 'Copy UPI ID', 1500);
+        } catch (err) {
+            alert(`UPI ID: ${upiId}`);
         }
+    };
+
+    whatsappBtn.onclick = function () {
+        const msg = `Hi Swapnil Chemicals, I have completed payment of ₹${amount}. Order note: ${note}`;
+        window.open(`https://wa.me/919352470085?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    modal.classList.remove('hidden');
+}
+
+function closePaymentModal() {
+    const modal = document.getElementById('paymentModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+
+
     </script>
 
     <link
