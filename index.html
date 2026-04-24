@@ -181,8 +181,21 @@
             // custom 21-04-26
 
        const gpayBtn = document.getElementById('cartGpayBtn');
-const upiId = 'boism-9352470085@boi';
+// const upiId = 'boism-9352470085@boi';
+
+
+const upiId = 'boism-9352470085%40boi';  // @ ko %40 se encode kiya  custom 21-04-26
+
+
+
+// const upiUrl = `upi://pay?pa=${upiId}&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
+
+
 const upiUrl = `upi://pay?pa=${upiId}&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
+
+
+
+
 gpayBtn.dataset.upiUrl = upiUrl;
 gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:20px;filter:brightness(0) invert(1);"> Pay ₹${safeAmount} via GPay`;
         }
@@ -1452,8 +1465,13 @@ gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.
             // return `upi://pay?pa=boism-9352470085%40boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
 
             // custom 21-04-26
+            // return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
 
-            return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
+
+            // custom 24-04-26
+            return `upi://pay?pa=boism-9352470085%40boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
+
+
 
         }
 
@@ -1665,24 +1683,37 @@ gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.
 
                     // custom 21-04-26 can be deleted code
 
-                    function handleGpayClick(e) {
+//                     function handleGpayClick(e) {
+//     e.preventDefault();
+//     const btn = document.getElementById('cartGpayBtn');
+//     const upiUrl = btn.dataset.upiUrl;
+//     if (!upiUrl) return;
+    
+//     // Try direct UPI deep link
+//     window.location.href = upiUrl;
+    
+//     // Fallback: agar app na khule toh GPay intent
+//     setTimeout(() => {
+//         window.location.href = upiUrl.replace('upi://', 'intent://').replace(
+//             '$', 
+//             '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end'
+//         );
+//     }, 1500);
+// }
+
+
+
+// custom 24-04-26
+
+function handleGpayClick(e) {
     e.preventDefault();
     const btn = document.getElementById('cartGpayBtn');
     const upiUrl = btn.dataset.upiUrl;
     if (!upiUrl) return;
     
-    // Try direct UPI deep link
+    // Ek hi redirect - direct UPI deep link
     window.location.href = upiUrl;
-    
-    // Fallback: agar app na khule toh GPay intent
-    setTimeout(() => {
-        window.location.href = upiUrl.replace('upi://', 'intent://').replace(
-            '$', 
-            '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end'
-        );
-    }, 1500);
 }
-
 
 
 
