@@ -184,7 +184,8 @@
 // const upiId = 'boism-9352470085@boi';
 
 
-const upiId = 'boism-9352470085%40boi';  // @ ko %40 se encode kiya  custom 21-04-26
+const upiId = 'boism-9352470085@boi';
+  // @ ko %40 se encode kiya  custom 21-04-26
 
 
 
@@ -1469,7 +1470,11 @@ gpayBtn.innerHTML = `<img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.
 
 
             // custom 24-04-26
-return `upi://pay?pa=boism-9352470085%40boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
+// return `upi://pay?pa=boism-9352470085%40boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
+
+
+return `upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&am=${safeAmount}&cu=INR&tn=${encodeURIComponent(rawNote)}`;
+
 
 
         }
