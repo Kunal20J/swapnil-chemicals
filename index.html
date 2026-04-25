@@ -32,6 +32,12 @@
         .gpay-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
         .product-image-container { height: 200px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border-radius: 1rem; }
         .product-image { max-height: 100%; max-width: 100%; object-fit: contain; }
+        /* quantity button styles */
+        .qty-selector-btn { border: 1px solid #cbd5e1; border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: pointer; background: white; }
+        .dark .qty-selector-btn { background: #334155; border-color: #475569; color: #f1f5f9; }
+        .qty-selector-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+        .qty-selector-btn:hover { background: #e2e8f0; }
+        .dark .qty-selector-btn:hover { background: #475569; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -86,7 +92,6 @@
                 <span>Total</span>
                 <span id="cartTotalAmount">₹0</span>
             </div>
-            <!-- UPI ID display (corrected) -->
             <div class="bg-gray-100 dark:bg-slate-800 p-2 rounded-lg text-sm text-center mb-3">
                 <span class="font-mono font-bold">UPI ID: boism-9352470085@boi</span>
                 <button id="copyUpiIdBtn" class="ml-2 text-blue-600 text-xs underline">Copy</button>
@@ -111,18 +116,21 @@
     </footer>
 
     <script>
-        // ---------- PRODUCT DATA ----------
+        // ---------- PRODUCT DATA (with liquid flag) ----------
         const products = [
-            { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 200, unit: "Litre" },
-            { id: 2, name: "Tyre Polish", image: "Tyre Polish.jpeg", price: 150, unit: "Litre" },
-            { id: 3, name: "Car Foaming Wash", image: "Car Foaming Wash.jpeg", price: 70, unit: "Litre" },
-            { id: 4, name: "Glass Cleaner", image: "Glass Cleaner.jpeg", price: 70, unit: "Litre" },
-            { id: 5, name: "Interior Cleaner", image: "Interior Cleaner.png", price: 130, unit: "Litre" },
-            { id: 6, name: "Foaming Gun", image: "Foaming Gun.jpeg", price: 2000, unit: "Piece" },
-            { id: 7, name: "Micro Towel (Blue)", image: "Micro Towel.jpg", price: 70, unit: "Piece" },
-            { id: 8, name: "Micro Towel Premium", image: "Micro Towel 2.jpg", price: 110, unit: "Piece" },
-            { id: 9, name: "Micro Towel Deluxe", image: "Micro Towel 3.jpg", price: 130, unit: "Piece" }
+            { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 200, unit: "Litre", liquid: true },
+            { id: 2, name: "Tyre Polish", image: "Tyre Polish.jpeg", price: 150, unit: "Litre", liquid: true },
+            { id: 3, name: "Car Foaming Wash", image: "Car Foaming Wash.jpeg", price: 70, unit: "Litre", liquid: true },
+            { id: 4, name: "Glass Cleaner", image: "Glass Cleaner.jpeg", price: 70, unit: "Litre", liquid: true },
+            { id: 5, name: "Interior Cleaner", image: "Interior Cleaner.png", price: 130, unit: "Litre", liquid: true },
+            { id: 6, name: "Foaming Gun", image: "Foaming Gun.jpeg", price: 2000, unit: "Piece", liquid: false },
+            { id: 7, name: "Micro Towel (Blue)", image: "Micro Towel.jpg", price: 70, unit: "Piece", liquid: false },
+            { id: 8, name: "Micro Towel Premium", image: "Micro Towel 2.jpg", price: 110, unit: "Piece", liquid: false },
+            { id: 9, name: "Micro Towel Deluxe", image: "Micro Towel 3.jpg", price: 130, unit: "Piece", liquid: false }
         ];
+
+        // Fixed litre options
+        const LITRE_OPTIONS = [10, 35, 50];
 
         // ---------- CART STATE ----------
         let cart = [];
@@ -135,7 +143,7 @@
             if(existing) existing.qty += qty;
             else cart.push({ ...product, qty });
             saveCart();
-            showToast(`${product.name} added (${qty})`);
+            showToast(`${product.name} added (${qty} ${product.unit})`);
             openDrawer();
         }
 
@@ -143,8 +151,8 @@
         function updateQty(id, newQty) { if(newQty<1) removeItem(id); else { const item = cart.find(i=>i.id===id); if(item) item.qty = newQty; saveCart(); } }
         function getTotal() { return cart.reduce((s,i)=>s + (i.price * i.qty), 0); }
 
-        // ---------- CORRECT UPI ID (as provided by user) ----------
-        const UPI_VPA = "boism-9352470085@boi";   // <-- FIXED
+        // ---------- UPI Payment ----------
+        const UPI_VPA = "boism-9352470085@boi";
         const PAYEE_NAME = "Swapnil Chemicals";
 
         function getUpiLinkForCart() {
@@ -155,18 +163,13 @@
             return `upi://pay?pa=${UPI_VPA}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${total}&cu=INR&tn=${note}`;
         }
 
-        function copyUpiId() {
-            navigator.clipboard.writeText(UPI_VPA);
-            showToast("UPI ID copied: " + UPI_VPA);
-        }
-
+        function copyUpiId() { navigator.clipboard.writeText(UPI_VPA); showToast("UPI ID copied: " + UPI_VPA); }
         function copyUpiLink() {
             const link = getUpiLinkForCart();
             if(!link) { alert("Cart is empty"); return; }
             navigator.clipboard.writeText(link);
-            showToast("UPI payment link copied! Open GPay & paste.");
+            showToast("UPI payment link copied!");
         }
-
         function showQrModal() {
             const total = getTotal();
             if(total === 0) { alert("Cart empty"); return; }
@@ -186,17 +189,14 @@
                 setTimeout(() => qrContainer.classList.add('hidden'), 15000);
             }
         }
-
         function handleGpayCheckout() {
             const total = getTotal();
-            if(total === 0) { alert("Cart is empty. Add products first."); return; }
+            if(total === 0) { alert("Cart is empty."); return; }
             const upiLink = getUpiLinkForCart();
             if(upiLink) {
                 window.location.href = upiLink;
-                showToast(`Opening GPay for ₹${total}... If it fails, copy UPI ID or scan QR.`);
-            } else {
-                alert("Unable to generate link.");
-            }
+                showToast(`Opening GPay for ₹${total}...`);
+            } else { alert("Unable to generate link."); }
         }
 
         // Render Cart Drawer
@@ -234,7 +234,6 @@
             const total = getTotal();
             totalSpan.innerText = `₹${total}`;
             if(gpayAmountSpan) gpayAmountSpan.innerText = total;
-            // attach events
             document.querySelectorAll('.dec-qty').forEach(btn => {
                 btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty-1); });
             });
@@ -251,50 +250,111 @@
 
         function openDrawer() { document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeDrawer() { document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('active'); document.body.style.overflow = ''; }
-
         function showToast(msg) {
             let t = document.getElementById('toastMsg');
             if(!t) { t = document.createElement('div'); t.id='toastMsg'; t.className='fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full text-sm z-[1100] opacity-0 transition'; document.body.appendChild(t); }
             t.innerText = msg; t.style.opacity = '1'; setTimeout(()=>t.style.opacity='0',2000);
         }
 
-        // Render Products
+        // ---------- Render Products with fixed quantity buttons for liquids ----------
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             if(!grid) return;
-            grid.innerHTML = products.map(p => `
-                <div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
-                    <div class="product-image-container">
-                        <img src="${p.image}" class="product-image h-36 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Image+NA'">
-                    </div>
-                    <h3 class="text-xl font-bold mt-3">${p.name}</h3>
-                    <p class="text-gray-500 text-sm">Premium quality</p>
-                    <div class="flex justify-between items-center mt-3">
-                        <span class="text-2xl font-bold gradient-text">₹${p.price}</span>
-                        <span class="text-xs">/ ${p.unit}</span>
-                    </div>
-                    <div class="mt-3 flex gap-2">
-                        <div class="flex border rounded-full overflow-hidden">
-                            <button class="prod-minus w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">-</button>
-                            <input type="number" id="qty_${p.id}" value="1" min="1" class="w-12 text-center border-0 outline-none">
-                            <button class="prod-plus w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">+</button>
+            grid.innerHTML = products.map(p => {
+                // For liquid products: show 10/35/50 Lt buttons; for non-liquid: +/- numeric input
+                if(p.liquid) {
+                    return `
+                    <div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
+                        <div class="product-image-container">
+                            <img src="${p.image}" class="product-image h-36 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Image+NA'">
                         </div>
-                        <button class="add-cart bg-blue-600 text-white px-4 py-1 rounded-full text-sm flex-1" data-id="${p.id}"><i class="fas fa-cart-plus"></i> Add</button>
+                        <h3 class="text-xl font-bold mt-3">${p.name}</h3>
+                        <p class="text-gray-500 text-sm">Premium quality</p>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-2xl font-bold gradient-text">₹${p.price}</span>
+                            <span class="text-xs">/ ${p.unit}</span>
+                        </div>
+                        <!-- Fixed quantity buttons -->
+                        <div class="mt-3">
+                            <div class="flex justify-between gap-2 mb-2">
+                                ${LITRE_OPTIONS.map(opt => `
+                                    <button class="qty-selector-btn flex-1 liquid-qty-btn" data-id="${p.id}" data-qty="${opt}">${opt} Lt</button>
+                                `).join('')}
+                            </div>
+                            <button class="add-cart-liquid w-full bg-blue-600 hover:bg-blue-700 text-white mt-2 py-2 rounded-full text-sm font-semibold" data-id="${p.id}" data-price="${p.price}">
+                                <i class="fas fa-cart-plus"></i> Add Selected Qty
+                            </button>
+                        </div>
+                        <div class="flex gap-2 mt-3 text-xs">
+                            <a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a>
+                            <a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        </div>
                     </div>
-                    <div class="flex gap-2 mt-3 text-xs">
-                        <a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a>
-                        <a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    `;
+                } else {
+                    // Non-liquid: numeric input
+                    return `
+                    <div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
+                        <div class="product-image-container">
+                            <img src="${p.image}" class="product-image h-36 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Image+NA'">
+                        </div>
+                        <h3 class="text-xl font-bold mt-3">${p.name}</h3>
+                        <p class="text-gray-500 text-sm">Premium quality</p>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-2xl font-bold gradient-text">₹${p.price}</span>
+                            <span class="text-xs">/ ${p.unit}</span>
+                        </div>
+                        <div class="mt-3 flex gap-2">
+                            <div class="flex border rounded-full overflow-hidden">
+                                <button class="prod-minus w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">-</button>
+                                <input type="number" id="qty_${p.id}" value="1" min="1" class="w-12 text-center border-0 outline-none">
+                                <button class="prod-plus w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">+</button>
+                            </div>
+                            <button class="add-cart bg-blue-600 text-white px-4 py-1 rounded-full text-sm flex-1" data-id="${p.id}"><i class="fas fa-cart-plus"></i> Add</button>
+                        </div>
+                        <div class="flex gap-2 mt-3 text-xs">
+                            <a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a>
+                            <a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                    `;
+                }
+            }).join('');
+
+            // Attach event handlers after rendering
+            // For liquid products: track selected quantity (active button) and add
             products.forEach(p => {
-                const minus = document.querySelector(`.prod-minus[data-id="${p.id}"]`);
-                const plus = document.querySelector(`.prod-plus[data-id="${p.id}"]`);
-                const qtyInput = document.getElementById(`qty_${p.id}`);
-                const addBtn = document.querySelector(`.add-cart[data-id="${p.id}"]`);
-                if(minus) minus.onclick = () => { let v = parseInt(qtyInput.value); if(v>1) qtyInput.value = v-1; };
-                if(plus) plus.onclick = () => { let v = parseInt(qtyInput.value); qtyInput.value = v+1; };
-                if(addBtn) addBtn.onclick = () => { let qty = parseInt(qtyInput.value) || 1; addToCart(p, qty); };
+                if(p.liquid) {
+                    const btns = document.querySelectorAll(`.liquid-qty-btn[data-id="${p.id}"]`);
+                    let selectedQty = 10; // default
+                    // highlight default (10)
+                    btns.forEach(btn => {
+                        if(parseInt(btn.dataset.qty) === 10) btn.classList.add('active');
+                        btn.addEventListener('click', function(e) {
+                            btns.forEach(b => b.classList.remove('active'));
+                            this.classList.add('active');
+                            selectedQty = parseInt(this.dataset.qty);
+                        });
+                    });
+                    const addBtn = document.querySelector(`.add-cart-liquid[data-id="${p.id}"]`);
+                    if(addBtn) {
+                        addBtn.addEventListener('click', () => {
+                            // find currently active quantity
+                            let active = document.querySelector(`.liquid-qty-btn[data-id="${p.id}"].active`);
+                            let qty = active ? parseInt(active.dataset.qty) : 10;
+                            addToCart(p, qty);
+                        });
+                    }
+                } else {
+                    // non-liquid
+                    const minus = document.querySelector(`.prod-minus[data-id="${p.id}"]`);
+                    const plus = document.querySelector(`.prod-plus[data-id="${p.id}"]`);
+                    const qtyInput = document.getElementById(`qty_${p.id}`);
+                    const addBtn = document.querySelector(`.add-cart[data-id="${p.id}"]`);
+                    if(minus) minus.onclick = () => { let v = parseInt(qtyInput.value); if(v>1) qtyInput.value = v-1; };
+                    if(plus) plus.onclick = () => { let v = parseInt(qtyInput.value); qtyInput.value = v+1; };
+                    if(addBtn) addBtn.onclick = () => { let qty = parseInt(qtyInput.value) || 1; addToCart(p, qty); };
+                }
             });
         }
 
