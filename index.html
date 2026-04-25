@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Swapnil Chemicals | Cart + Google Pay Fixed</title>
+    <title>Swapnil Chemicals | Cart + UPI Payment (Fixed)</title>
     <link rel="icon" type="image/jpeg" href="SC Logo.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -61,7 +61,7 @@
     <!-- Hero -->
     <section class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 text-white py-20 text-center">
         <h2 class="text-4xl md:text-5xl font-bold">Premium <span class="text-blue-300">Automobile</span> Cleaning</h2>
-        <p class="mt-4 max-w-xl mx-auto">Add products → Pay via QR or UPI link → Google Pay works!</p>
+        <p class="mt-4 max-w-xl mx-auto">Add products → Pay via UPI (Google Pay / PhonePe / Paytm).</p>
         <a href="#products" class="inline-block mt-6 bg-white text-blue-800 px-6 py-2 rounded-full font-semibold">Shop Now</a>
     </section>
 
@@ -86,16 +86,17 @@
                 <span>Total</span>
                 <span id="cartTotalAmount">₹0</span>
             </div>
-            <!-- Editable UPI ID -->
-            <div class="bg-gray-100 dark:bg-slate-800 p-2 rounded-lg text-sm text-center mb-3">
-                <label class="text-xs block">UPI ID (edit if needed):</label>
-                <input type="text" id="upiIdInput" value="boism-9352470085@boi" class="font-mono text-center bg-white dark:bg-slate-700 rounded px-2 py-1 w-full">
+            <!-- Editable UPI ID - CRITICAL: CHANGE THIS TO YOUR CORRECT UPI ID -->
+            <div class="bg-yellow-50 dark:bg-slate-800 p-3 rounded-lg text-sm mb-3 border border-yellow-300">
+                <label class="text-xs font-bold block mb-1">UPI ID (edit if payment fails):</label>
+                <input type="text" id="upiIdInput" value="boism-9352470085@boi" class="font-mono text-center bg-white dark:bg-slate-700 rounded px-2 py-1 w-full border">
+                <p class="text-xs text-gray-500 mt-1">⚠️ If you see "money will be refunded", this UPI ID is invalid. Please enter the correct one (e.g., 9352470085@boi).</p>
                 <button id="copyUpiIdBtn" class="mt-1 text-blue-600 text-xs underline">Copy UPI ID</button>
             </div>
             <!-- Payment buttons -->
             <button id="checkoutGPay" class="gpay-btn w-full py-3 rounded-xl text-white font-bold flex items-center justify-center gap-2">
                 <img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" class="h-5 brightness-0 invert">
-                Pay ₹<span id="gpayAmount">0</span> with GPay
+                Pay ₹<span id="gpayAmount">0</span> with UPI App
             </button>
             <div class="flex justify-between gap-2 mt-3">
                 <button id="copyUpiLink" class="bg-gray-200 dark:bg-slate-700 py-2 px-3 rounded-lg text-sm flex-1">📋 Copy UPI Link</button>
@@ -152,35 +153,30 @@
             const total = getTotal();
             if(total === 0) return null;
             const itemsText = cart.map(i=>`${i.name} x${i.qty}`).join(', ').slice(0, 90);
-            const note = encodeURIComponent(`Order: ${itemsText}`);
+            const note = encodeURIComponent(`Swapnil Order: ${itemsText}`);
             const vpa = getUpiVpa();
             if(!vpa) return null;
-            return `upi://pay?pa=${vpa}&pn=${encodeURIComponent("Swapnil Chemicals")}&am=${total}&cu=INR&tn=${note}`;
+            // Ensure amount is integer without decimals
+            const amount = Math.floor(total);
+            return `upi://pay?pa=${vpa}&pn=${encodeURIComponent("Swapnil Chemicals")}&am=${amount}&cu=INR&tn=${note}`;
         }
 
-        // Multi-intent payment handler
+        // Improved payment handler using window.open (works better)
         function handleGpayCheckout() {
             const total = getTotal();
             if(total === 0) { alert("Cart is empty."); return; }
             const upiLink = getUpiLinkForCart();
             if(!upiLink) { alert("Invalid UPI ID"); return; }
             
-            // Try multiple intents: upi://, googlepay://, tez://
-            const schemes = [upiLink, upiLink.replace("upi://", "googlepay://"), upiLink.replace("upi://", "tez://")];
-            let opened = false;
-            for(let scheme of schemes) {
-                try {
-                    window.location.href = scheme;
-                    opened = true;
-                    break;
-                } catch(e) {}
-            }
-            if(!opened) {
-                // Fallback: copy link and alert
+            // Try to open with window.open (more reliable than location.href)
+            const win = window.open(upiLink, '_blank');
+            if(!win || win.closed) {
+                // Fallback: copy to clipboard
                 navigator.clipboard.writeText(upiLink);
-                alert("Could not open GPay automatically. The payment link has been copied. Please open Google Pay and paste it manually.");
+                alert("Unable to open UPI app automatically. The payment link has been copied. Please open Google Pay and paste it in the search/scan area.");
+            } else {
+                showToast(`Opening UPI app for ₹${total}...`);
             }
-            showToast(`Opening payment for ₹${total}...`);
         }
 
         function copyUpiLink() {
@@ -370,7 +366,6 @@
             document.getElementById('copyUpiLink').onclick = copyUpiLink;
             document.getElementById('showQRcode').onclick = showQrModal;
             document.getElementById('copyUpiIdBtn').onclick = copyUpiId;
-            // When UPI ID changes, re-render QR if open? not needed.
         });
     </script>
 </body>
