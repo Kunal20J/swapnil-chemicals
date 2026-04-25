@@ -17,8 +17,6 @@
     <style>
         body { font-family: 'Inter', sans-serif; background: #f8fafc; }
         .dark body { background: #0f172a; color: #e2e8f0; }
-        .glass-card { background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); }
-        .dark .glass-card { background: rgba(30,41,59,0.9); }
         .product-card { transition: 0.3s; border-radius: 1.5rem; background: white; }
         .dark .product-card { background: #1e293b; }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 20px 30px -12px rgba(0,0,0,0.2); }
@@ -31,13 +29,9 @@
         .gpay-btn { background: linear-gradient(135deg, #34a853, #1a8a3c); }
         .gpay-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
         .product-image-container { height: 200px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border-radius: 1rem; }
-        .product-image { max-height: 100%; max-width: 100%; object-fit: contain; }
-        /* quantity button styles */
-        .qty-selector-btn { border: 1px solid #cbd5e1; border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: pointer; background: white; }
+        .qty-selector-btn { border: 1px solid #cbd5e1; border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 500; cursor: pointer; background: white; }
         .dark .qty-selector-btn { background: #334155; border-color: #475569; color: #f1f5f9; }
         .qty-selector-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
-        .qty-selector-btn:hover { background: #e2e8f0; }
-        .dark .qty-selector-btn:hover { background: #475569; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -67,7 +61,7 @@
     <!-- Hero -->
     <section class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 text-white py-20 text-center">
         <h2 class="text-4xl md:text-5xl font-bold">Premium <span class="text-blue-300">Automobile</span> Cleaning</h2>
-        <p class="mt-4 max-w-xl mx-auto">Add products to cart → Pay using Google Pay (or any UPI app) with the correct UPI ID.</p>
+        <p class="mt-4 max-w-xl mx-auto">Add products → Pay via QR or UPI link → Google Pay works!</p>
         <a href="#products" class="inline-block mt-6 bg-white text-blue-800 px-6 py-2 rounded-full font-semibold">Shop Now</a>
     </section>
 
@@ -92,10 +86,13 @@
                 <span>Total</span>
                 <span id="cartTotalAmount">₹0</span>
             </div>
+            <!-- Editable UPI ID -->
             <div class="bg-gray-100 dark:bg-slate-800 p-2 rounded-lg text-sm text-center mb-3">
-                <span class="font-mono font-bold">UPI ID: boism-9352470085@boi</span>
-                <button id="copyUpiIdBtn" class="ml-2 text-blue-600 text-xs underline">Copy</button>
+                <label class="text-xs block">UPI ID (edit if needed):</label>
+                <input type="text" id="upiIdInput" value="boism-9352470085@boi" class="font-mono text-center bg-white dark:bg-slate-700 rounded px-2 py-1 w-full">
+                <button id="copyUpiIdBtn" class="mt-1 text-blue-600 text-xs underline">Copy UPI ID</button>
             </div>
+            <!-- Payment buttons -->
             <button id="checkoutGPay" class="gpay-btn w-full py-3 rounded-xl text-white font-bold flex items-center justify-center gap-2">
                 <img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" class="h-5 brightness-0 invert">
                 Pay ₹<span id="gpayAmount">0</span> with GPay
@@ -105,18 +102,17 @@
                 <button id="showQRcode" class="bg-gray-200 dark:bg-slate-700 py-2 px-3 rounded-lg text-sm flex-1">📱 Show QR Code</button>
             </div>
             <div id="qrContainer" class="mt-3 hidden flex justify-center"></div>
-            <p class="text-xs text-gray-500 mt-3 text-center">If auto-pay fails, copy UPI ID or scan QR.</p>
+            <p class="text-xs text-gray-500 mt-3 text-center">If auto-pay fails → copy UPI ID & pay manually, or scan QR.</p>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-slate-900 text-white py-8 text-center text-sm mt-10">
         <p>© 2026 Swapnil Chemicals | Jaipur | GST: 08CIJPS1734A1ZE</p>
         <p class="text-slate-400">Call: <a href="tel:9352470085" class="text-blue-300">9352470085</a></p>
     </footer>
 
     <script>
-        // ---------- PRODUCT DATA (with liquid flag) ----------
+        // ---------- PRODUCT DATA (Dashboard Polish price = ₹1 for testing) ----------
         const products = [
             { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 1, unit: "Litre", liquid: true },
             { id: 2, name: "Tyre Polish", image: "Tyre Polish.jpeg", price: 150, unit: "Litre", liquid: true },
@@ -129,13 +125,11 @@
             { id: 9, name: "Micro Towel Deluxe", image: "Micro Towel 3.jpg", price: 130, unit: "Piece", liquid: false }
         ];
 
-        // Fixed litre options
         const LITRE_OPTIONS = [10, 35, 50];
-
-        // ---------- CART STATE ----------
         let cart = [];
+
         function saveCart() { localStorage.setItem('autoCart', JSON.stringify(cart)); updateBadge(); renderCartDrawer(); }
-        function loadCart() { const stored = localStorage.getItem('autoCart'); if(stored) cart = JSON.parse(stored); else cart = []; updateBadge(); renderCartDrawer(); }
+        function loadCart() { const stored = localStorage.getItem('autoCart'); cart = stored ? JSON.parse(stored) : []; updateBadge(); renderCartDrawer(); }
         function updateBadge() { const count = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartBadge').innerText = count; }
 
         function addToCart(product, qty) {
@@ -151,25 +145,57 @@
         function updateQty(id, newQty) { if(newQty<1) removeItem(id); else { const item = cart.find(i=>i.id===id); if(item) item.qty = newQty; saveCart(); } }
         function getTotal() { return cart.reduce((s,i)=>s + (i.price * i.qty), 0); }
 
-        // ---------- UPI Payment ----------
-        const UPI_VPA = "boism-9352470085@boi";
-        const PAYEE_NAME = "Swapnil Chemicals";
+        // Get current UPI ID from input field
+        function getUpiVpa() { return document.getElementById('upiIdInput').value.trim(); }
 
         function getUpiLinkForCart() {
             const total = getTotal();
             if(total === 0) return null;
             const itemsText = cart.map(i=>`${i.name} x${i.qty}`).join(', ').slice(0, 90);
             const note = encodeURIComponent(`Order: ${itemsText}`);
-            return `upi://pay?pa=${UPI_VPA}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${total}&cu=INR&tn=${note}`;
+            const vpa = getUpiVpa();
+            if(!vpa) return null;
+            return `upi://pay?pa=${vpa}&pn=${encodeURIComponent("Swapnil Chemicals")}&am=${total}&cu=INR&tn=${note}`;
         }
 
-        function copyUpiId() { navigator.clipboard.writeText(UPI_VPA); showToast("UPI ID copied: " + UPI_VPA); }
+        // Multi-intent payment handler
+        function handleGpayCheckout() {
+            const total = getTotal();
+            if(total === 0) { alert("Cart is empty."); return; }
+            const upiLink = getUpiLinkForCart();
+            if(!upiLink) { alert("Invalid UPI ID"); return; }
+            
+            // Try multiple intents: upi://, googlepay://, tez://
+            const schemes = [upiLink, upiLink.replace("upi://", "googlepay://"), upiLink.replace("upi://", "tez://")];
+            let opened = false;
+            for(let scheme of schemes) {
+                try {
+                    window.location.href = scheme;
+                    opened = true;
+                    break;
+                } catch(e) {}
+            }
+            if(!opened) {
+                // Fallback: copy link and alert
+                navigator.clipboard.writeText(upiLink);
+                alert("Could not open GPay automatically. The payment link has been copied. Please open Google Pay and paste it manually.");
+            }
+            showToast(`Opening payment for ₹${total}...`);
+        }
+
         function copyUpiLink() {
             const link = getUpiLinkForCart();
-            if(!link) { alert("Cart is empty"); return; }
+            if(!link) { alert("Cart empty or invalid UPI"); return; }
             navigator.clipboard.writeText(link);
-            showToast("UPI payment link copied!");
+            showToast("UPI link copied! Open any UPI app and paste.");
         }
+
+        function copyUpiId() {
+            const vpa = getUpiVpa();
+            navigator.clipboard.writeText(vpa);
+            showToast("UPI ID copied: " + vpa);
+        }
+
         function showQrModal() {
             const total = getTotal();
             if(total === 0) { alert("Cart empty"); return; }
@@ -188,15 +214,6 @@
                 document.getElementById('closeQrBtn')?.addEventListener('click', () => qrContainer.classList.add('hidden'));
                 setTimeout(() => qrContainer.classList.add('hidden'), 15000);
             }
-        }
-        function handleGpayCheckout() {
-            const total = getTotal();
-            if(total === 0) { alert("Cart is empty."); return; }
-            const upiLink = getUpiLinkForCart();
-            if(upiLink) {
-                window.location.href = upiLink;
-                showToast(`Opening GPay for ₹${total}...`);
-            } else { alert("Unable to generate link."); }
         }
 
         // Render Cart Drawer
@@ -234,18 +251,11 @@
             const total = getTotal();
             totalSpan.innerText = `₹${total}`;
             if(gpayAmountSpan) gpayAmountSpan.innerText = total;
-            document.querySelectorAll('.dec-qty').forEach(btn => {
-                btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty-1); });
-            });
-            document.querySelectorAll('.inc-qty').forEach(btn => {
-                btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty+1); });
-            });
-            document.querySelectorAll('.cart-qty').forEach(inp => {
-                inp.addEventListener('change', (e) => { const id = parseInt(inp.dataset.id); let val = parseInt(inp.value); if(isNaN(val)) val=1; updateQty(id, val); });
-            });
-            document.querySelectorAll('.remove-item').forEach(btn => {
-                btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); removeItem(id); });
-            });
+            // reattach events
+            document.querySelectorAll('.dec-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty-1); }));
+            document.querySelectorAll('.inc-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty+1); }));
+            document.querySelectorAll('.cart-qty').forEach(inp => inp.addEventListener('change', (e) => { const id = parseInt(inp.dataset.id); let val = parseInt(inp.value); if(isNaN(val)) val=1; updateQty(id, val); }));
+            document.querySelectorAll('.remove-item').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); removeItem(id); }));
         }
 
         function openDrawer() { document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
@@ -256,12 +266,11 @@
             t.innerText = msg; t.style.opacity = '1'; setTimeout(()=>t.style.opacity='0',2000);
         }
 
-        // ---------- Render Products with fixed quantity buttons for liquids ----------
+        // Render Products with fixed litre buttons
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             if(!grid) return;
             grid.innerHTML = products.map(p => {
-                // For liquid products: show 10/35/50 Lt buttons; for non-liquid: +/- numeric input
                 if(p.liquid) {
                     return `
                     <div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
@@ -269,21 +278,15 @@
                             <img src="${p.image}" class="product-image h-36 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Image+NA'">
                         </div>
                         <h3 class="text-xl font-bold mt-3">${p.name}</h3>
-                        <p class="text-gray-500 text-sm">Premium quality</p>
                         <div class="flex justify-between items-center mt-3">
                             <span class="text-2xl font-bold gradient-text">₹${p.price}</span>
                             <span class="text-xs">/ ${p.unit}</span>
                         </div>
-                        <!-- Fixed quantity buttons -->
                         <div class="mt-3">
                             <div class="flex justify-between gap-2 mb-2">
-                                ${LITRE_OPTIONS.map(opt => `
-                                    <button class="qty-selector-btn flex-1 liquid-qty-btn" data-id="${p.id}" data-qty="${opt}">${opt} Lt</button>
-                                `).join('')}
+                                ${LITRE_OPTIONS.map(opt => `<button class="qty-selector-btn flex-1 liquid-qty-btn" data-id="${p.id}" data-qty="${opt}">${opt} Lt</button>`).join('')}
                             </div>
-                            <button class="add-cart-liquid w-full bg-blue-600 hover:bg-blue-700 text-white mt-2 py-2 rounded-full text-sm font-semibold" data-id="${p.id}" data-price="${p.price}">
-                                <i class="fas fa-cart-plus"></i> Add Selected Qty
-                            </button>
+                            <button class="add-cart-liquid w-full bg-blue-600 hover:bg-blue-700 text-white mt-2 py-2 rounded-full text-sm font-semibold" data-id="${p.id}">Add Selected Qty</button>
                         </div>
                         <div class="flex gap-2 mt-3 text-xs">
                             <a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a>
@@ -292,14 +295,12 @@
                     </div>
                     `;
                 } else {
-                    // Non-liquid: numeric input
                     return `
                     <div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
                         <div class="product-image-container">
                             <img src="${p.image}" class="product-image h-36 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Image+NA'">
                         </div>
                         <h3 class="text-xl font-bold mt-3">${p.name}</h3>
-                        <p class="text-gray-500 text-sm">Premium quality</p>
                         <div class="flex justify-between items-center mt-3">
                             <span class="text-2xl font-bold gradient-text">₹${p.price}</span>
                             <span class="text-xs">/ ${p.unit}</span>
@@ -321,32 +322,22 @@
                 }
             }).join('');
 
-            // Attach event handlers after rendering
-            // For liquid products: track selected quantity (active button) and add
+            // Liquid event handlers
             products.forEach(p => {
                 if(p.liquid) {
                     const btns = document.querySelectorAll(`.liquid-qty-btn[data-id="${p.id}"]`);
-                    let selectedQty = 10; // default
-                    // highlight default (10)
-                    btns.forEach(btn => {
-                        if(parseInt(btn.dataset.qty) === 10) btn.classList.add('active');
-                        btn.addEventListener('click', function(e) {
-                            btns.forEach(b => b.classList.remove('active'));
-                            this.classList.add('active');
-                            selectedQty = parseInt(this.dataset.qty);
-                        });
-                    });
+                    btns.forEach(btn => { if(parseInt(btn.dataset.qty) === 10) btn.classList.add('active'); });
+                    btns.forEach(btn => btn.addEventListener('click', function() {
+                        btns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                    }));
                     const addBtn = document.querySelector(`.add-cart-liquid[data-id="${p.id}"]`);
-                    if(addBtn) {
-                        addBtn.addEventListener('click', () => {
-                            // find currently active quantity
-                            let active = document.querySelector(`.liquid-qty-btn[data-id="${p.id}"].active`);
-                            let qty = active ? parseInt(active.dataset.qty) : 10;
-                            addToCart(p, qty);
-                        });
-                    }
+                    if(addBtn) addBtn.addEventListener('click', () => {
+                        let active = document.querySelector(`.liquid-qty-btn[data-id="${p.id}"].active`);
+                        let qty = active ? parseInt(active.dataset.qty) : 10;
+                        addToCart(p, qty);
+                    });
                 } else {
-                    // non-liquid
                     const minus = document.querySelector(`.prod-minus[data-id="${p.id}"]`);
                     const plus = document.querySelector(`.prod-plus[data-id="${p.id}"]`);
                     const qtyInput = document.getElementById(`qty_${p.id}`);
@@ -358,7 +349,6 @@
             });
         }
 
-        // Dark mode
         function initDarkMode() {
             const toggle = document.getElementById('themeToggle');
             if(localStorage.getItem('theme')==='dark') document.documentElement.classList.add('dark');
@@ -367,10 +357,8 @@
                 localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
                 toggle.innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
             };
-            toggle.innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
         }
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             renderProducts();
             loadCart();
@@ -382,6 +370,7 @@
             document.getElementById('copyUpiLink').onclick = copyUpiLink;
             document.getElementById('showQRcode').onclick = showQrModal;
             document.getElementById('copyUpiIdBtn').onclick = copyUpiId;
+            // When UPI ID changes, re-render QR if open? not needed.
         });
     </script>
 </body>
