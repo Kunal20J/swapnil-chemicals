@@ -86,9 +86,9 @@
                 <span>Total</span>
                 <span id="cartTotalAmount">₹0</span>
             </div>
-            <!-- UPI ID display (manual fallback) -->
+            <!-- UPI ID display (corrected) -->
             <div class="bg-gray-100 dark:bg-slate-800 p-2 rounded-lg text-sm text-center mb-3">
-                <span class="font-mono font-bold">UPI ID: 9352470085@boi</span>
+                <span class="font-mono font-bold">UPI ID: boism-9352470085@boi</span>
                 <button id="copyUpiIdBtn" class="ml-2 text-blue-600 text-xs underline">Copy</button>
             </div>
             <button id="checkoutGPay" class="gpay-btn w-full py-3 rounded-xl text-white font-bold flex items-center justify-center gap-2">
@@ -100,11 +100,11 @@
                 <button id="showQRcode" class="bg-gray-200 dark:bg-slate-700 py-2 px-3 rounded-lg text-sm flex-1">📱 Show QR Code</button>
             </div>
             <div id="qrContainer" class="mt-3 hidden flex justify-center"></div>
-            <p class="text-xs text-gray-500 mt-3 text-center">If auto-pay fails, copy the UPI ID or scan the QR code.</p>
+            <p class="text-xs text-gray-500 mt-3 text-center">If auto-pay fails, copy UPI ID or scan QR.</p>
         </div>
     </div>
 
-    <!-- Contact / Footer -->
+    <!-- Footer -->
     <footer class="bg-slate-900 text-white py-8 text-center text-sm mt-10">
         <p>© 2026 Swapnil Chemicals | Jaipur | GST: 08CIJPS1734A1ZE</p>
         <p class="text-slate-400">Call: <a href="tel:9352470085" class="text-blue-300">9352470085</a></p>
@@ -143,9 +143,8 @@
         function updateQty(id, newQty) { if(newQty<1) removeItem(id); else { const item = cart.find(i=>i.id===id); if(item) item.qty = newQty; saveCart(); } }
         function getTotal() { return cart.reduce((s,i)=>s + (i.price * i.qty), 0); }
 
-        // ---------- FIXED UPI LINK (Robust VPA) ----------
-        // Correct VPA format for Bank of India linked to 9352470085
-        const UPI_VPA = "9352470085@boi";   // <-- CHANGE IF DIFFERENT
+        // ---------- CORRECT UPI ID (as provided by user) ----------
+        const UPI_VPA = "boism-9352470085@boi";   // <-- FIXED
         const PAYEE_NAME = "Swapnil Chemicals";
 
         function getUpiLinkForCart() {
@@ -156,7 +155,6 @@
             return `upi://pay?pa=${UPI_VPA}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${total}&cu=INR&tn=${note}`;
         }
 
-        // Copy UPI ID manually
         function copyUpiId() {
             navigator.clipboard.writeText(UPI_VPA);
             showToast("UPI ID copied: " + UPI_VPA);
@@ -189,13 +187,11 @@
             }
         }
 
-        // Payment handler: opens GPay intent
         function handleGpayCheckout() {
             const total = getTotal();
             if(total === 0) { alert("Cart is empty. Add products first."); return; }
             const upiLink = getUpiLinkForCart();
             if(upiLink) {
-                // Try to open GPay/UPI app
                 window.location.href = upiLink;
                 showToast(`Opening GPay for ₹${total}... If it fails, copy UPI ID or scan QR.`);
             } else {
@@ -253,7 +249,6 @@
             });
         }
 
-        // Drawer controls
         function openDrawer() { document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeDrawer() { document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('active'); document.body.style.overflow = ''; }
 
