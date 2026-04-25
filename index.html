@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Automobile 22-04-26 -->
+<!-- Automobile 22-04-26 - Fixed UPI Payment -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -256,7 +256,11 @@
             setTimeout(() => flyEl.remove(), 2300);
         }
 
-        // ✅ FIXED: Direct UPI redirect + QR fallback modal
+        // ---------- FIXED UPI PAYMENT HANDLER ----------
+        // Correct UPI ID (no hyphens, no extra prefix)
+        const CORRECT_UPI_ID = '9352470085@boi';   // verify with Bank of India
+        const PAYEE_NAME = 'Swapnil Chemicals';
+
         function handleGpayClick(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -266,29 +270,31 @@
             const note = btn?.dataset?.note || 'Swapnil Chemicals Order';
 
             if (!amount || parseFloat(amount) < 1) {
-                alert('Cart mein koi item nahi hai.');
+                alert('Cart is empty. Please add items.');
                 return;
             }
 
-            const upiId = 'boism-9352470085@boi';
-            const payee = 'Swapnil Chemicals';
-            const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payee)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
+            // Store pending payment for manual backup
+            window.pendingPayment = {
+                amount: amount,
+                note: note,
+                upiId: CORRECT_UPI_ID,
+                payee: PAYEE_NAME,
+                upiUrl: `upi://pay?pa=${encodeURIComponent(CORRECT_UPI_ID)}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`
+            };
 
-            // Android pe GPay intent, iOS/others pe upi://
-            const isAndroid = /Android/i.test(navigator.userAgent);
-            if (isAndroid) {
-                const gpayIntent = `intent://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payee)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end`;
-                window.location.href = gpayIntent;
-                // Fallback: agar GPay nahi khula toh generic UPI
-                setTimeout(() => { window.location.href = upiUrl; }, 1500);
-            } else {
-                window.location.href = upiUrl;
-            }
+            // Single redirect to UPI (works on all Android/iOS apps)
+            window.location.href = window.pendingPayment.upiUrl;
 
-            // QR fallback modal show karo (2 seconds baad, agar app nahi khuli)
+            // Optional: if user stays on page (app not installed), offer manual backup after 3 seconds
             setTimeout(() => {
-                showQrModal(amount, note, upiId, payee, upiUrl);
-            }, 2500);
+                if (document.hasFocus() && window.pendingPayment) {
+                    const userWantsHelp = confirm("⚠️ Payment app didn't open automatically.\n\nClick OK to see QR code & UPI ID for manual payment.");
+                    if (userWantsHelp) {
+                        showQrModal(window.pendingPayment.amount, window.pendingPayment.note, window.pendingPayment.upiId, window.pendingPayment.payee, window.pendingPayment.upiUrl);
+                    }
+                }
+            }, 3000);
         }
 
         function showQrModal(amount, note, upiId, payee, upiUrl) {
@@ -326,6 +332,16 @@
         function closePaymentModal() {
             const modal = document.getElementById('paymentModal');
             if (modal) modal.style.display = 'none';
+        }
+
+        // Manual backup button inside cart (shows QR/UPI without waiting)
+        function showManualBackup() {
+            if (!window.pendingPayment) {
+                alert('No pending payment. Please add items to cart and click "Pay via GPay" first.');
+                return;
+            }
+            const { amount, note, upiId, payee, upiUrl } = window.pendingPayment;
+            showQrModal(amount, note, upiId, payee, upiUrl);
         }
     </script>
 
@@ -390,7 +406,7 @@
         .fly-item { position: fixed; width: 130px; height: 130px; background: white; border-radius: 16px; border: 3px solid #f59e0b; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 32px; z-index: 9999; pointer-events: none; box-shadow: 0 8px 30px rgba(245,158,11,0.5); transition: all 2.2s cubic-bezier(0.25,0.46,0.45,0.94); opacity: 1; overflow: hidden; }
         .fly-item img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
 
-        /* ✅ Payment Modal */
+        /* Payment Modal */
         #paymentModal {
             display: none;
             position: fixed;
@@ -643,12 +659,12 @@
                                 </div>
                                 <div>
                                     <h3 class="font-semibold text-xl text-gray-800 mb-2">Google Pay</h3>
-                                    <a href="upi://pay?pa=boism-9352470085@boi&pn=Swapnil%20Chemicals&cu=INR" class="text-blue-600 hover:text-blue-800 transition duration-300 font-medium">Pay to 9352470085</a>
+                                    <a href="upi://pay?pa=9352470085@boi&pn=Swapnil%20Chemicals&cu=INR" class="text-blue-600 hover:text-blue-800 transition duration-300 font-medium">Pay to 9352470085</a>
                                 </div>
                             </div>
                             <div class="mt-6 flex flex-col items-center">
                                 <div class="bg-white p-3 rounded-xl shadow-md border border-gray-100 inline-block">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=boism-9352470085@boi%26pn=Swapnil%20Chemicals%26cu=INR" alt="Scan to Pay" width="75" height="75" class="rounded-lg" />
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=9352470085@boi%26pn=Swapnil%20Chemicals%26cu=INR" alt="Scan to Pay" width="75" height="75" class="rounded-lg" />
                                 </div>
                                 <p class="mt-3 text-sm text-gray-500 font-medium">📷 Scan to pay via any UPI app</p>
                             </div>
@@ -749,34 +765,35 @@
             <a id="cartGpayBtn" href="#" class="gpay-btn" onclick="handleGpayClick(event)">
                 Pay via GPay
             </a>
+            <!-- Manual backup button -->
+            <button onclick="showManualBackup()" style="margin-top:6px; background:none; border:none; color:#3b82f6; font-size:12px; cursor:pointer;">
+                ⚠️ Payment not working? Click here for QR / UPI ID
+            </button>
             <button onclick="clearCart()" style="width:100%;margin-top:8px;padding:8px;border:none;background:none;color:#94a3b8;font-size:12px;cursor:pointer;">
                 Clear cart
             </button>
         </div>
     </div>
 
-    <!-- ✅ Payment Modal (QR fallback - sirf tab dikhega jab UPI app na khule) -->
+    <!-- Payment Modal (Manual Backup) -->
     <div id="paymentModal">
         <div class="payment-modal-box">
             <button class="payment-modal-close" onclick="closePaymentModal()">&#10005;</button>
             <h3 style="font-size:1.1rem;font-weight:700;color:#1e293b;margin:0 0 4px 0;">Complete Payment</h3>
-            <p style="font-size:0.75rem;color:#94a3b8;margin:0 0 8px 0;">App nahi khuli? Neeche se pay karein</p>
+            <p style="font-size:0.75rem;color:#94a3b8;margin:0 0 8px 0;">Scan QR or use UPI ID below</p>
             <p style="font-size:1.8rem;font-weight:800;color:#1d4ed8;margin:0 0 4px 0;" id="paymentAmount">₹0</p>
             <p style="font-size:0.75rem;color:#64748b;margin:0 0 12px 0;word-break:break-all;" id="paymentNote"></p>
 
-            <!-- Direct Pay Button -->
             <button class="pay-direct-btn" id="payUpiDirectBtn">
                 <img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" style="height:18px;filter:brightness(0) invert(1);">
                 Direct Pay karo
             </button>
 
-            <!-- QR Code -->
             <div style="background:#f8fafc;border-radius:1rem;padding:12px;margin-bottom:12px;">
                 <img id="paymentQr" src="" alt="UPI QR" style="width:160px;height:160px;margin:0 auto;display:block;border-radius:8px;" />
                 <p style="font-size:0.72rem;color:#64748b;margin:6px 0 0;text-align:center;">📷 Kisi bhi UPI app se scan karein</p>
             </div>
 
-            <!-- UPI ID -->
             <p style="font-size:0.8rem;color:#374151;font-weight:600;margin:0 0 2px 0;">UPI ID</p>
             <p style="font-family:monospace;font-size:0.85rem;color:#1d4ed8;margin:0 0 8px 0;" id="paymentUpiId"></p>
             <button class="copy-upi-btn" id="copyUpiBtn">Copy UPI ID</button>
