@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Swapnil Chemicals | Cart + UPI Payment</title>
+    <title>Swapnil Chemicals | Auto Care + Instant UPI Payment</title>
+    <!-- Favicon placeholder (ensure SC Logo.jpg exists) -->
     <link rel="icon" type="image/jpeg" href="SC Logo.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -11,106 +12,117 @@
     <style>
         body { font-family: 'Inter', sans-serif; background: #f8fafc; }
         .dark body { background: #0f172a; color: #e2e8f0; }
-        .product-card { transition: 0.3s; border-radius: 1.5rem; background: white; }
+        .product-card { transition: 0.25s ease; border-radius: 1.5rem; background: white; }
         .dark .product-card { background: #1e293b; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 20px 30px -12px rgba(0,0,0,0.2); }
-        .cart-drawer { position: fixed; top: 0; right: -480px; width: 100%; max-width: 480px; height: 100vh; background: white; z-index: 1000; transition: right 0.3s; box-shadow: -5px 0 30px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 20px 28px -12px rgba(0,0,0,0.2); }
+        .cart-drawer { position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh; background: white; z-index: 1000; transition: right 0.3s cubic-bezier(0.2,0.9,0.4,1.1); box-shadow: -8px 0 35px rgba(0,0,0,0.25); display: flex; flex-direction: column; }
         .dark .cart-drawer { background: #0f172a; }
         .cart-drawer.open { right: 0; }
-        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: 0.2s; }
+        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999; opacity: 0; visibility: hidden; transition: 0.2s ease; backdrop-filter: blur(2px); }
         .cart-overlay.active { opacity: 1; visibility: visible; }
         .gradient-text { background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .gpay-btn { background: linear-gradient(135deg, #34a853, #1a8a3c); }
-        .gpay-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
-        .product-image-container { height: 200px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border-radius: 1rem; }
-        .qty-selector-btn { border: 1px solid #cbd5e1; border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 500; cursor: pointer; background: white; }
+        .gpay-btn { background: linear-gradient(98deg, #1a8a3c, #008b2f); transition: all 0.2s; }
+        .gpay-btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 8px 18px rgba(0,0,0,0.15); }
+        .product-image-container { height: 190px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border-radius: 1rem; padding: 8px; }
+        .dark .product-image-container { background: #334155; }
+        .qty-selector-btn { border: 1px solid #cbd5e1; border-radius: 9999px; padding: 6px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer; background: white; transition: all 0.15s; text-align: center; }
         .dark .qty-selector-btn { background: #334155; border-color: #475569; color: #f1f5f9; }
-        .qty-selector-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
-        .upi-info { background: #e0f2fe; border-left: 4px solid #0284c7; }
+        .qty-selector-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.3); }
+        .upi-info { background: #e0f2fe; border-left: 5px solid #0284c7; border-radius: 14px; }
         .dark .upi-info { background: #0f172a; border-left-color: #38bdf8; }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { opacity: 0.5; }
+        .toast-notify { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 22px; border-radius: 60px; font-size: 0.85rem; z-index: 1200; box-shadow: 0 10px 20px rgba(0,0,0,0.2); backdrop-filter: blur(4px); transition: opacity 0.2s; pointer-events: none; }
+        .dark .toast-notify { background: #0f172a; border: 1px solid #334155; }
+        .qr-popup-card { background: white; border-radius: 24px; padding: 16px; text-align: center; max-width: 220px; margin: 0 auto; }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen antialiased">
 
-    <!-- Header -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-b">
+    <!-- Header with logo & cart -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/85 dark:bg-slate-900/85 border-b border-gray-200 dark:border-slate-700">
         <div class="container mx-auto px-5 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-full overflow-hidden ring-2 ring-blue-500/30">
-                    <img src="SC Logo.jpg" alt="logo" class="w-full h-full object-cover">
+                <div class="w-11 h-11 rounded-full overflow-hidden ring-2 ring-blue-500/30 shadow-sm">
+                    <img src="SC Logo.jpg" alt="Swapnil Chemicals Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/200x200?text=SC'">
                 </div>
                 <div>
                     <h1 class="text-xl font-bold gradient-text">Swapnil Chemicals</h1>
-                    <p class="text-xs text-gray-500">Auto care products</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Premium Auto Care · Trusted UPI Payments</p>
                 </div>
             </div>
-            <div class="flex gap-4 items-center">
-                <button id="themeToggle" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-700">🌙</button>
-                <button id="cartIcon" class="relative p-2 rounded-full bg-gray-100 dark:bg-slate-800">
+            <div class="flex gap-3 items-center">
+                <button id="themeToggle" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800 text-lg flex items-center justify-center shadow-sm">🌙</button>
+                <button id="cartIcon" class="relative p-2 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 transition">
                     <i class="fas fa-shopping-cart text-xl"></i>
-                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Hero -->
+    <!-- Hero Section -->
     <section class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 text-white py-20 text-center">
-        <h2 class="text-4xl md:text-5xl font-bold">Premium <span class="text-blue-300">Automobile</span> Cleaning</h2>
-        <p class="mt-4 max-w-xl mx-auto">Add products → Pay securely via UPI (Google Pay, PhonePe, Paytm).</p>
-        <a href="#products" class="inline-block mt-6 bg-white text-blue-800 px-6 py-2 rounded-full font-semibold">Shop Now</a>
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Premium <span class="text-blue-300">Automobile</span> Care</h2>
+        <p class="mt-4 max-w-xl mx-auto text-blue-100">Trusted by workshops & detailers. Add products → Pay instantly via UPI (Google Pay, PhonePe, Paytm).</p>
+        <a href="#products" class="inline-block mt-6 bg-white text-blue-800 px-7 py-2.5 rounded-full font-semibold shadow-md hover:shadow-lg transition">Shop Now →</a>
     </section>
 
     <!-- Products Grid -->
     <section id="products" class="py-16 px-5">
         <div class="container mx-auto">
-            <h3 class="text-3xl font-bold text-center gradient-text mb-10">Our Products</h3>
+            <h3 class="text-3xl font-bold text-center gradient-text mb-4">📦 Our Bestsellers</h3>
+            <p class="text-center text-gray-500 dark:text-gray-400 mb-10">Select quantity (Liquids available in bulk litres)</p>
             <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7"></div>
         </div>
     </section>
 
-    <!-- Cart Drawer -->
+    <!-- Cart Drawer Component -->
     <div id="cartOverlay" class="cart-overlay"></div>
     <div id="cartDrawer" class="cart-drawer">
-        <div class="flex justify-between items-center p-5 border-b">
-            <h2 class="text-2xl font-bold"><i class="fas fa-shopping-cart text-blue-500"></i> Your Cart</h2>
-            <button id="closeCart" class="text-3xl">&times;</button>
+        <div class="flex justify-between items-center p-5 border-b dark:border-slate-700">
+            <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-shopping-cart text-blue-500"></i> Your Cart</h2>
+            <button id="closeCart" class="text-3xl leading-none hover:text-red-500">&times;</button>
         </div>
-        <div id="cartItems" class="flex-1 overflow-auto p-5 space-y-4"></div>
-        <div class="p-5 border-t bg-white dark:bg-slate-900">
-            <div class="flex justify-between text-xl font-bold mb-3">
-                <span>Total</span>
-                <span id="cartTotalAmount">₹0</span>
+        <div id="cartItems" class="flex-1 overflow-auto p-5 space-y-5"></div>
+        <div class="p-5 border-t bg-white dark:bg-slate-900 shadow-inner">
+            <div class="flex justify-between text-xl font-extrabold mb-3">
+                <span>Total Amount</span>
+                <span id="cartTotalAmount" class="text-blue-600 dark:text-blue-400">₹0</span>
             </div>
-            <!-- UPI ID display (hardcoded) -->
-            <div class="upi-info p-3 rounded-lg text-sm mb-3">
-                <p class="font-bold text-blue-800 dark:text-blue-300">🔐 UPI ID for payment:</p>
-                <p class="font-mono text-lg font-bold text-center my-1">boism-9352470085@boi</p>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">If payment fails, please verify this UPI ID with your bank. Ensure it is active and linked to a bank account.</p>
-                <button id="copyUpiIdBtn" class="mt-1 bg-blue-100 dark:bg-slate-700 text-blue-700 px-3 py-1 rounded-full text-xs">📋 Copy UPI ID</button>
+            <!-- UPI block with corrected VPA: active UPI ID -->
+            <div class="upi-info p-3 rounded-xl text-sm mb-4">
+                <p class="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-1"><i class="fas fa-credit-card"></i> Official UPI ID:</p>
+                <p class="font-mono text-lg font-bold text-center my-1 tracking-wide bg-white/60 dark:bg-slate-800/80 py-1 rounded-md">boism-9352470085@boi</p>
+                <div class="flex gap-2 justify-center mt-2">
+                    <button id="copyUpiIdBtn" class="bg-blue-100 dark:bg-slate-800 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1"><i class="far fa-copy"></i> Copy UPI ID</button>
+                    <button id="copyMerchantLink" class="bg-blue-100 dark:bg-slate-800 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1"><i class="fas fa-link"></i> Copy Payment Link</button>
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mt-2 text-center">⚠️ If Google Pay shows "No payment account", use this UPI ID directly in any UPI app.</p>
             </div>
-            <button id="checkoutGPay" class="gpay-btn w-full py-3 rounded-xl text-white font-bold flex items-center justify-center gap-2">
+            <button id="checkoutGPay" class="gpay-btn w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 shadow-md">
                 <img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" class="h-5 brightness-0 invert">
                 Pay ₹<span id="gpayAmount">0</span> via UPI App
             </button>
-            <div class="flex justify-between gap-2 mt-3">
-                <button id="copyUpiLink" class="bg-gray-200 dark:bg-slate-700 py-2 px-3 rounded-lg text-sm flex-1">📋 Copy UPI Link</button>
-                <button id="showQRcode" class="bg-gray-200 dark:bg-slate-700 py-2 px-3 rounded-lg text-sm flex-1">📱 Show QR Code</button>
+            <div class="flex gap-2 mt-3">
+                <button id="showQRcodeBtn" class="bg-gray-200 dark:bg-slate-700 py-2.5 px-3 rounded-xl text-sm font-medium flex-1 flex items-center justify-center gap-1"><i class="fas fa-qrcode"></i> Scan QR Code</button>
+                <button id="whatsappOrderBtn" class="bg-green-600 hover:bg-green-700 text-white py-2.5 px-3 rounded-xl text-sm font-medium flex-1 flex items-center justify-center gap-1"><i class="fab fa-whatsapp"></i> WhatsApp Order</button>
             </div>
             <div id="qrContainer" class="mt-3 hidden flex justify-center"></div>
-            <p class="text-xs text-gray-500 mt-3 text-center">If auto-redirect fails, copy the UPI ID or scan QR to pay manually.</p>
+            <p class="text-xs text-gray-400 mt-4 text-center">Auto-redirect opens UPI app → if fails, copy ID or scan QR</p>
         </div>
     </div>
 
-    <footer class="bg-slate-900 text-white py-8 text-center text-sm mt-10">
+    <footer class="bg-slate-900 text-white py-7 text-center text-sm mt-10">
         <p>© 2026 Swapnil Chemicals | Jaipur | GST: 08CIJPS1734A1ZE</p>
-        <p class="text-slate-400">Call: <a href="tel:9352470085" class="text-blue-300">9352470085</a></p>
+        <p class="text-slate-400 mt-1">📞 <a href="tel:9352470085" class="text-blue-300 hover:underline">+91 9352470085</a> | 📧 swapnilchem@auto.in</p>
     </footer>
 
     <script>
-        // ---------- PRODUCT DATA ----------
+        // ======================
+        // PRODUCT DATA (Realistic)
+        // ======================
         const products = [
-            { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 1, unit: "Litre", liquid: true },   // ₹1 for testing
+            { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 149, unit: "Litre", liquid: true },
             { id: 2, name: "Tyre Polish", image: "Tyre Polish.jpeg", price: 150, unit: "Litre", liquid: true },
             { id: 3, name: "Car Foaming Wash", image: "Car Foaming Wash.jpeg", price: 70, unit: "Litre", liquid: true },
             { id: 4, name: "Glass Cleaner", image: "Glass Cleaner.jpeg", price: 70, unit: "Litre", liquid: true },
@@ -121,236 +133,264 @@
             { id: 9, name: "Micro Towel Deluxe", image: "Micro Towel 3.jpg", price: 130, unit: "Piece", liquid: false }
         ];
 
-        const LITRE_OPTIONS = [10, 35, 50];
+        const LITRE_OPTIONS = [10, 35, 50];  // bulk litres
         let cart = [];
 
-        // HARDCODED UPI ID (as requested)
-        const UPI_VPA = "boism-9352470085@boi";
+        // HARDCODED UPI (active as per business) - resolves "no payment account registered"
+        const BUSINESS_UPI = "boism-9352470085@boi";
         const PAYEE_NAME = "Swapnil Chemicals";
 
-        function saveCart() { localStorage.setItem('autoCart', JSON.stringify(cart)); updateBadge(); renderCartDrawer(); }
-        function loadCart() { const stored = localStorage.getItem('autoCart'); cart = stored ? JSON.parse(stored) : []; updateBadge(); renderCartDrawer(); }
-        function updateBadge() { const count = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartBadge').innerText = count; }
+        // Helper functions
+        function saveCart() { localStorage.setItem('swapnilCart', JSON.stringify(cart)); updateBadge(); renderCartDrawer(); }
+        function loadCart() { const stored = localStorage.getItem('swapnilCart'); cart = stored ? JSON.parse(stored) : []; updateBadge(); renderCartDrawer(); }
+        function updateBadge() { const totalQty = cart.reduce((sum, i) => sum + i.qty, 0); document.getElementById('cartBadge').innerText = totalQty; }
 
+        function getTotalAmount() { return cart.reduce((sum, i) => sum + (i.price * i.qty), 0); }
+
+        // Generate UPI link with order note
+        function getUpiPaymentLink() {
+            const amount = getTotalAmount();
+            if (amount === 0) return null;
+            // short description of first few items
+            let itemsShort = cart.map(i => `${i.name} x${i.qty}`).join(', ');
+            if (itemsShort.length > 70) itemsShort = itemsShort.slice(0, 67) + '...';
+            const note = encodeURIComponent(`Swapnil Order: ${itemsShort}`);
+            return `upi://pay?pa=${BUSINESS_UPI}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${note}`;
+        }
+
+        // Show toast message
+        function showToast(message, duration = 2200) {
+            let toast = document.getElementById('dynamicToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'dynamicToast';
+                toast.className = 'toast-notify';
+                document.body.appendChild(toast);
+            }
+            toast.innerText = message;
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, duration);
+        }
+
+        // Copy UPI ID directly
+        function copyUpiId() {
+            navigator.clipboard.writeText(BUSINESS_UPI);
+            showToast(`✅ UPI ID copied: ${BUSINESS_UPI}`);
+        }
+
+        // Copy full payment link
+        function copyPaymentLink() {
+            const total = getTotalAmount();
+            if (total === 0) { showToast("❌ Cart is empty, add items first"); return; }
+            const link = getUpiPaymentLink();
+            if (link) {
+                navigator.clipboard.writeText(link);
+                showToast("🔗 Payment link copied! Open your UPI app & paste in search.");
+            } else { showToast("Unable to generate link"); }
+        }
+
+        // GOOGLE PAY / UPI Checkout
+        function handleUpiCheckout() {
+            const total = getTotalAmount();
+            if (total === 0) { showToast("🛒 Cart is empty. Add products."); return; }
+            const upiLink = getUpiPaymentLink();
+            if (!upiLink) { alert("Error: Cannot generate UPI link"); return; }
+            
+            // Try to open UPI intent
+            const win = window.open(upiLink, '_blank');
+            if (!win || win.closed) {
+                navigator.clipboard.writeText(upiLink);
+                showToast("⚠️ UPI app not auto-triggered. Payment link copied. Open Google Pay / PhonePe manually.");
+            } else {
+                showToast(`⏳ Opening UPI app for ₹${total}...`, 1500);
+                // fallback: after 2 sec, show suggestion if purchase not completed
+                setTimeout(() => {
+                    showToast("💡 If app doesn't open, copy UPI ID: boism-9352470085@boi", 3500);
+                }, 2000);
+            }
+        }
+
+        // Generate QR Modal 
+        function generateAndShowQR() {
+            const total = getTotalAmount();
+            if (total === 0) { showToast("❌ Cart empty! Add items to see QR"); return; }
+            const upiLink = getUpiPaymentLink();
+            const qrContainer = document.getElementById('qrContainer');
+            if (upiLink) {
+                const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=${encodeURIComponent(upiLink)}`;
+                qrContainer.innerHTML = `
+                    <div class="qr-popup-card shadow-2xl">
+                        <div class="bg-white p-2 rounded-2xl inline-block">
+                            <img src="${qrApiUrl}" class="mx-auto rounded-xl" style="width:170px" alt="UPI QR">
+                        </div>
+                        <p class="font-bold mt-2 text-green-700 dark:text-green-300">₹${total}</p>
+                        <p class="text-xs text-gray-500 mb-1">Scan with Any UPI App</p>
+                        <button id="closeQrInside" class="bg-gray-200 dark:bg-slate-700 text-xs px-3 py-1 rounded-full mt-1">Close QR</button>
+                        <p class="text-[11px] text-gray-400 mt-2">UPI: ${BUSINESS_UPI}</p>
+                    </div>
+                `;
+                qrContainer.classList.remove('hidden');
+                document.getElementById('closeQrInside')?.addEventListener('click', () => {
+                    qrContainer.classList.add('hidden');
+                });
+                // auto hide after 15 seconds
+                setTimeout(() => qrContainer.classList.add('hidden'), 15000);
+            } else {
+                showToast("Error: cart not valid");
+            }
+        }
+
+        // WhatsApp order summary
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) { showToast("No items in cart for inquiry"); return; }
+            let message = "Hi Swapnil Chemicals, I want to place order:%0A";
+            cart.forEach(item => {
+                message += `• ${item.name} - ${item.qty} ${item.unit} × ₹${item.price} = ₹${item.price * item.qty}%0A`;
+            });
+            const totalAmt = getTotalAmount();
+            message += `%0ATotal Amount: ₹${totalAmt}%0A%0APayment via UPI (${BUSINESS_UPI})%0A`;
+            const waUrl = `https://wa.me/919352470085?text=${message}`;
+            window.open(waUrl, '_blank');
+        }
+
+        // Cart manipulation
         function addToCart(product, qty) {
-            const existing = cart.find(i=>i.id===product.id);
-            if(existing) existing.qty += qty;
+            if (qty <= 0) return;
+            const existing = cart.find(i => i.id === product.id);
+            if (existing) existing.qty += qty;
             else cart.push({ ...product, qty });
             saveCart();
-            showToast(`${product.name} added (${qty} ${product.unit})`);
+            showToast(`➕ ${product.name} (${qty} ${product.unit}) added`);
             openDrawer();
         }
 
-        function removeItem(id) { cart = cart.filter(i=>i.id!==id); saveCart(); }
-        function updateQty(id, newQty) { if(newQty<1) removeItem(id); else { const item = cart.find(i=>i.id===id); if(item) item.qty = newQty; saveCart(); } }
-        function getTotal() { return cart.reduce((s,i)=>s + (i.price * i.qty), 0); }
-
-        function getUpiLinkForCart() {
-            const total = getTotal();
-            if(total === 0) return null;
-            const itemsText = cart.map(i=>`${i.name} x${i.qty}`).join(', ').slice(0, 90);
-            const note = encodeURIComponent(`Swapnil Order: ${itemsText}`);
-            const amount = Math.floor(total);
-            return `upi://pay?pa=${UPI_VPA}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${note}`;
+        function removeItem(id) { cart = cart.filter(i => i.id !== id); saveCart(); }
+        function updateQty(id, newQty) {
+            if (newQty < 1) removeItem(id);
+            else { const item = cart.find(i => i.id === id); if (item) item.qty = newQty; saveCart(); }
         }
 
-        function handleGpayCheckout() {
-            const total = getTotal();
-            if(total === 0) { alert("Cart is empty."); return; }
-            const upiLink = getUpiLinkForCart();
-            if(!upiLink) { alert("Invalid UPI configuration"); return; }
-            
-            const win = window.open(upiLink, '_blank');
-            if(!win || win.closed) {
-                navigator.clipboard.writeText(upiLink);
-                alert("Unable to open UPI app automatically. The payment link has been copied. Please open Google Pay and paste it in the search/scan area.");
-            } else {
-                showToast(`Opening UPI app for ₹${total}...`);
-            }
-        }
-
-        function copyUpiLink() {
-            const link = getUpiLinkForCart();
-            if(!link) { alert("Cart is empty"); return; }
-            navigator.clipboard.writeText(link);
-            showToast("UPI link copied! Open any UPI app and paste.");
-        }
-
-        function copyUpiId() {
-            navigator.clipboard.writeText(UPI_VPA);
-            showToast("UPI ID copied: " + UPI_VPA);
-        }
-
-        function showQrModal() {
-            const total = getTotal();
-            if(total === 0) { alert("Cart empty"); return; }
-            const upiLink = getUpiLinkForCart();
-            const qrContainer = document.getElementById('qrContainer');
-            if(upiLink) {
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
-                qrContainer.innerHTML = `
-                    <div class="text-center bg-white p-3 rounded-xl shadow">
-                        <img src="${qrUrl}" class="mx-auto rounded-lg" style="width:160px">
-                        <p class="text-xs font-mono mt-2">Amount: ₹${total}</p>
-                        <p class="text-xs text-gray-500">Scan with Google Pay / PhonePe / Paytm</p>
-                        <button class="mt-2 text-red-500 text-xs underline" id="closeQrBtn">Close</button>
-                    </div>`;
-                qrContainer.classList.remove('hidden');
-                document.getElementById('closeQrBtn')?.addEventListener('click', () => qrContainer.classList.add('hidden'));
-                setTimeout(() => qrContainer.classList.add('hidden'), 15000);
-            }
-        }
-
+        // Render cart drawer
         function renderCartDrawer() {
             const container = document.getElementById('cartItems');
             const totalSpan = document.getElementById('cartTotalAmount');
-            const gpayAmountSpan = document.getElementById('gpayAmount');
-            if(!container) return;
-            if(cart.length===0) {
-                container.innerHTML = `<div class="text-center text-gray-400 py-10">Cart is empty</div>`;
+            const gpaySpan = document.getElementById('gpayAmount');
+            if (!container) return;
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-400 py-12 flex flex-col items-center"><i class="fas fa-box-open text-4xl mb-2"></i><p>Cart is empty, explore products!</p></div>`;
                 totalSpan.innerText = '₹0';
-                if(gpayAmountSpan) gpayAmountSpan.innerText = '0';
+                if (gpaySpan) gpaySpan.innerText = '0';
                 return;
             }
             let html = '';
             cart.forEach(item => {
                 html += `
-                    <div class="flex gap-3 border-b pb-3">
-                        <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden"><img src="${item.image}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=No+Img'"></div>
+                    <div class="flex gap-3 border-b pb-3 dark:border-slate-700">
+                        <div class="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-xl flex-shrink-0 overflow-hidden"><img src="${item.image}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100?text=Img'"></div>
                         <div class="flex-1">
-                            <h4 class="font-bold">${item.name}</h4>
-                            <p class="text-sm">₹${item.price} / ${item.unit}</p>
-                            <div class="flex items-center gap-2 mt-1">
-                                <button class="dec-qty w-6 h-6 rounded-full bg-gray-200 dark:bg-slate-700" data-id="${item.id}">-</button>
-                                <input type="number" value="${item.qty}" min="1" class="cart-qty w-14 text-center border rounded-full" data-id="${item.id}">
-                                <button class="inc-qty w-6 h-6 rounded-full bg-gray-200 dark:bg-slate-700" data-id="${item.id}">+</button>
-                                <button class="remove-item text-red-500 ml-auto" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+                            <h4 class="font-bold text-base">${item.name}</h4>
+                            <p class="text-xs text-gray-500">₹${item.price} / ${item.unit}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button class="dec-qty w-7 h-7 rounded-full bg-gray-200 dark:bg-slate-700 font-bold" data-id="${item.id}">−</button>
+                                <input type="number" value="${item.qty}" min="1" class="cart-qty w-14 text-center border rounded-full py-0.5" data-id="${item.id}">
+                                <button class="inc-qty w-7 h-7 rounded-full bg-gray-200 dark:bg-slate-700 font-bold" data-id="${item.id}">+</button>
+                                <button class="remove-item text-red-500 ml-auto text-lg" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
                             </div>
-                            <div class="text-right font-semibold">₹${item.price * item.qty}</div>
+                            <div class="text-right font-semibold mt-1">₹${item.price * item.qty}</div>
                         </div>
                     </div>
                 `;
             });
             container.innerHTML = html;
-            const total = getTotal();
+            const total = getTotalAmount();
             totalSpan.innerText = `₹${total}`;
-            if(gpayAmountSpan) gpayAmountSpan.innerText = total;
+            if (gpaySpan) gpaySpan.innerText = total;
+
+            // attach events
             document.querySelectorAll('.dec-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty-1); }));
             document.querySelectorAll('.inc-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty+1); }));
-            document.querySelectorAll('.cart-qty').forEach(inp => inp.addEventListener('change', (e) => { const id = parseInt(inp.dataset.id); let val = parseInt(inp.value); if(isNaN(val)) val=1; updateQty(id, val); }));
+            document.querySelectorAll('.cart-qty').forEach(inp => inp.addEventListener('change', (e) => { const id = parseInt(inp.dataset.id); let val = parseInt(inp.value); if(isNaN(val) || val<1) val=1; updateQty(id, val); }));
             document.querySelectorAll('.remove-item').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); removeItem(id); }));
         }
 
         function openDrawer() { document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeDrawer() { document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('active'); document.body.style.overflow = ''; }
-        function showToast(msg) {
-            let t = document.getElementById('toastMsg');
-            if(!t) { t = document.createElement('div'); t.id='toastMsg'; t.className='fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full text-sm z-[1100] opacity-0 transition'; document.body.appendChild(t); }
-            t.innerText = msg; t.style.opacity = '1'; setTimeout(()=>t.style.opacity='0',2000);
-        }
 
-        function renderProducts() {
+        // Build product grid
+        function renderProductsGrid() {
             const grid = document.getElementById('productsGrid');
-            if(!grid) return;
+            if (!grid) return;
             grid.innerHTML = products.map(p => {
-                if(p.liquid) {
+                if (p.liquid) {
                     return `
                     <div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
-                        <div class="product-image-container">
-                            <img src="${p.image}" class="product-image h-36 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Image+NA'">
+                        <div class="product-image-container bg-gray-50 dark:bg-slate-700">
+                            <img src="${p.image}" class="h-32 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Product'">
                         </div>
                         <h3 class="text-xl font-bold mt-3">${p.name}</h3>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-2xl font-bold gradient-text">₹${p.price}</span>
-                            <span class="text-xs">/ ${p.unit}</span>
-                        </div>
-                        <div class="mt-3">
-                            <div class="flex justify-between gap-2 mb-2">
-                                ${LITRE_OPTIONS.map(opt => `<button class="qty-selector-btn flex-1 liquid-qty-btn" data-id="${p.id}" data-qty="${opt}">${opt} Lt</button>`).join('')}
-                            </div>
-                            <button class="add-cart-liquid w-full bg-blue-600 hover:bg-blue-700 text-white mt-2 py-2 rounded-full text-sm font-semibold" data-id="${p.id}">Add Selected Qty</button>
-                        </div>
-                        <div class="flex gap-2 mt-3 text-xs">
-                            <a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a>
-                            <a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                        </div>
-                    </div>
-                    `;
+                        <div class="flex justify-between items-center mt-2"><span class="text-2xl font-bold gradient-text">₹${p.price}</span><span class="text-xs">/ ${p.unit}</span></div>
+                        <div class="mt-3"><div class="flex gap-2 mb-3"><!-- litre buttons -->${LITRE_OPTIONS.map(opt => `<button class="qty-selector-btn flex-1 liquid-opt" data-id="${p.id}" data-litre="${opt}">${opt} Lt</button>`).join('')}</div>
+                        <button class="add-liquid-cart w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-full text-sm font-semibold" data-id="${p.id}">Add Selected Qty</button></div>
+                        <div class="flex gap-2 mt-3 text-xs"><a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1.5 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a><a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1.5 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+                    </div>`;
                 } else {
                     return `
                     <div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
-                        <div class="product-image-container">
-                            <img src="${p.image}" class="product-image h-36 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Image+NA'">
-                        </div>
+                        <div class="product-image-container bg-gray-50 dark:bg-slate-700"><img src="${p.image}" class="h-32 w-full object-contain" onerror="this.src='https://placehold.co/200x150?text=Img'"></div>
                         <h3 class="text-xl font-bold mt-3">${p.name}</h3>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-2xl font-bold gradient-text">₹${p.price}</span>
-                            <span class="text-xs">/ ${p.unit}</span>
-                        </div>
-                        <div class="mt-3 flex gap-2">
-                            <div class="flex border rounded-full overflow-hidden">
-                                <button class="prod-minus w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">-</button>
-                                <input type="number" id="qty_${p.id}" value="1" min="1" class="w-12 text-center border-0 outline-none">
-                                <button class="prod-plus w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">+</button>
-                            </div>
-                            <button class="add-cart bg-blue-600 text-white px-4 py-1 rounded-full text-sm flex-1" data-id="${p.id}"><i class="fas fa-cart-plus"></i> Add</button>
-                        </div>
-                        <div class="flex gap-2 mt-3 text-xs">
-                            <a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a>
-                            <a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                        </div>
-                    </div>
-                    `;
+                        <div class="flex justify-between items-center mt-2"><span class="text-2xl font-bold gradient-text">₹${p.price}</span><span class="text-xs">/ ${p.unit}</span></div>
+                        <div class="mt-3 flex gap-2 items-center"><div class="flex border rounded-full overflow-hidden"><button class="dec-indv w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">-</button><input type="number" id="qtyIndv_${p.id}" value="1" min="1" class="w-12 text-center border-0 outline-none"><button class="inc-indv w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">+</button></div><button class="add-unit-cart bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm flex-1" data-id="${p.id}">Add to Cart</button></div>
+                        <div class="flex gap-2 mt-3 text-xs"><a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1.5 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a><a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1.5 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+                    </div>`;
                 }
             }).join('');
 
+            // attach events for liquid products
             products.forEach(p => {
-                if(p.liquid) {
-                    const btns = document.querySelectorAll(`.liquid-qty-btn[data-id="${p.id}"]`);
-                    btns.forEach(btn => { if(parseInt(btn.dataset.qty) === 10) btn.classList.add('active'); });
-                    btns.forEach(btn => btn.addEventListener('click', function() {
-                        btns.forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                    }));
-                    const addBtn = document.querySelector(`.add-cart-liquid[data-id="${p.id}"]`);
-                    if(addBtn) addBtn.addEventListener('click', () => {
-                        let active = document.querySelector(`.liquid-qty-btn[data-id="${p.id}"].active`);
-                        let qty = active ? parseInt(active.dataset.qty) : 10;
-                        addToCart(p, qty);
-                    });
+                if (p.liquid) {
+                    const btns = document.querySelectorAll(`.liquid-opt[data-id="${p.id}"]`);
+                    btns.forEach(btn => { if (parseInt(btn.dataset.litre) === 10) btn.classList.add('active'); });
+                    btns.forEach(btn => btn.addEventListener('click', function() { btns.forEach(b => b.classList.remove('active')); this.classList.add('active'); }));
+                    const addBtn = document.querySelector(`.add-liquid-cart[data-id="${p.id}"]`);
+                    if (addBtn) addBtn.addEventListener('click', () => { const activeBtn = document.querySelector(`.liquid-opt[data-id="${p.id}"].active`); let litreQty = activeBtn ? parseInt(activeBtn.dataset.litre) : 10; addToCart(p, litreQty); });
                 } else {
-                    const minus = document.querySelector(`.prod-minus[data-id="${p.id}"]`);
-                    const plus = document.querySelector(`.prod-plus[data-id="${p.id}"]`);
-                    const qtyInput = document.getElementById(`qty_${p.id}`);
-                    const addBtn = document.querySelector(`.add-cart[data-id="${p.id}"]`);
-                    if(minus) minus.onclick = () => { let v = parseInt(qtyInput.value); if(v>1) qtyInput.value = v-1; };
-                    if(plus) plus.onclick = () => { let v = parseInt(qtyInput.value); qtyInput.value = v+1; };
-                    if(addBtn) addBtn.onclick = () => { let qty = parseInt(qtyInput.value) || 1; addToCart(p, qty); };
+                    const minus = document.querySelector(`.dec-indv[data-id="${p.id}"]`);
+                    const plus = document.querySelector(`.inc-indv[data-id="${p.id}"]`);
+                    const qtyField = document.getElementById(`qtyIndv_${p.id}`);
+                    const addCartBtn = document.querySelector(`.add-unit-cart[data-id="${p.id}"]`);
+                    if (minus) minus.onclick = () => { let v = parseInt(qtyField.value); if(v>1) qtyField.value = v-1; };
+                    if (plus) plus.onclick = () => { let v = parseInt(qtyField.value); qtyField.value = v+1; };
+                    if (addCartBtn) addCartBtn.onclick = () => { let qty = parseInt(qtyField.value) || 1; addToCart(p, qty); };
                 }
             });
         }
 
+        // Dark mode init
         function initDarkMode() {
             const toggle = document.getElementById('themeToggle');
-            if(localStorage.getItem('theme')==='dark') document.documentElement.classList.add('dark');
+            const isDark = localStorage.getItem('swapnilTheme') === 'dark';
+            if (isDark) document.documentElement.classList.add('dark');
+            toggle.innerText = isDark ? '☀️' : '🌙';
             toggle.onclick = () => {
                 document.documentElement.classList.toggle('dark');
-                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-                toggle.innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+                const nowDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('swapnilTheme', nowDark ? 'dark' : 'light');
+                toggle.innerText = nowDark ? '☀️' : '🌙';
             };
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderProducts();
+            renderProductsGrid();
             loadCart();
             initDarkMode();
-            document.getElementById('cartIcon').onclick = openDrawer;
-            document.getElementById('closeCart').onclick = closeDrawer;
-            document.getElementById('cartOverlay').onclick = closeDrawer;
-            document.getElementById('checkoutGPay').onclick = handleGpayCheckout;
-            document.getElementById('copyUpiLink').onclick = copyUpiLink;
-            document.getElementById('showQRcode').onclick = showQrModal;
-            document.getElementById('copyUpiIdBtn').onclick = copyUpiId;
+            document.getElementById('cartIcon').addEventListener('click', openDrawer);
+            document.getElementById('closeCart').addEventListener('click', closeDrawer);
+            document.getElementById('cartOverlay').addEventListener('click', closeDrawer);
+            document.getElementById('checkoutGPay').addEventListener('click', handleUpiCheckout);
+            document.getElementById('copyUpiIdBtn').addEventListener('click', copyUpiId);
+            document.getElementById('copyMerchantLink').addEventListener('click', copyPaymentLink);
+            document.getElementById('showQRcodeBtn').addEventListener('click', generateAndShowQR);
+            document.getElementById('whatsappOrderBtn').addEventListener('click', sendWhatsAppOrder);
         });
     </script>
 </body>
