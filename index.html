@@ -461,45 +461,93 @@ function handleGpayClick(e) {
     openPaymentModal(amount, note);
 }
 
+// function openPaymentModal(amount, note) {
+//     const upiId = 'boism-9352470085@boi';
+//     const payee = 'Swapnil Chemicals';
+//     const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payee)}&am=${encodeURIComponent(amount)}&cu=INR&tn=${encodeURIComponent(note)}`;
+//     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUrl)}`;
+
+//     const modal = document.getElementById('paymentModal');
+//     const amountEl = document.getElementById('paymentAmount');
+//     const upiEl = document.getElementById('paymentUpiId');
+//     const noteEl = document.getElementById('paymentNote');
+//     const qrEl = document.getElementById('paymentQr');
+//     const copyBtn = document.getElementById('copyUpiBtn');
+//     const whatsappBtn = document.getElementById('paymentDoneBtn');
+
+//     if (!modal || !amountEl || !upiEl || !noteEl || !qrEl || !copyBtn || !whatsappBtn) return;
+
+//     amountEl.textContent = `₹${amount}`;
+//     upiEl.textContent = upiId;
+//     noteEl.textContent = note;
+//     qrEl.src = qrUrl;
+//     qrEl.alt = `Pay ₹${amount} to ${payee}`;
+
+//     copyBtn.onclick = async function () {
+//         try {
+//             await navigator.clipboard.writeText(upiId);
+//             copyBtn.textContent = 'UPI ID Copied';
+//             setTimeout(() => copyBtn.textContent = 'Copy UPI ID', 1500);
+//         } catch (err) {
+//             alert(`UPI ID: ${upiId}`);
+//         }
+//     };
+
+//     whatsappBtn.onclick = function () {
+//         const msg = `Hi Swapnil Chemicals, I have completed payment of ₹${amount}. Order note: ${note}`;
+//         window.open(`https://wa.me/919352470085?text=${encodeURIComponent(msg)}`, '_blank');
+//     };
+
+//     modal.classList.remove('hidden');
+// }
+
+
+
+// custom 25-04-26
 function openPaymentModal(amount, note) {
     const upiId = 'boism-9352470085@boi';
     const payee = 'Swapnil Chemicals';
     const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payee)}&am=${encodeURIComponent(amount)}&cu=INR&tn=${encodeURIComponent(note)}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUrl)}`;
 
+    // ✅ DIRECT UPI APP OPEN (Android ke liye GPay intent, baaki ke liye UPI)
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    if (isAndroid) {
+        const gpayIntent = upiUrl.replace('upi://pay', 'intent://pay') +
+            '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
+        window.location.href = gpayIntent;
+        setTimeout(() => { window.location.href = upiUrl; }, 1500);
+    } else {
+        window.location.href = upiUrl;
+    }
+
+    // Modal bhi dikhao (QR backup ke liye)
     const modal = document.getElementById('paymentModal');
-    const amountEl = document.getElementById('paymentAmount');
-    const upiEl = document.getElementById('paymentUpiId');
-    const noteEl = document.getElementById('paymentNote');
-    const qrEl = document.getElementById('paymentQr');
-    const copyBtn = document.getElementById('copyUpiBtn');
-    const whatsappBtn = document.getElementById('paymentDoneBtn');
+    if (!modal) return;
+    document.getElementById('paymentAmount').textContent = `₹${amount}`;
+    document.getElementById('paymentUpiId').textContent = upiId;
+    document.getElementById('paymentNote').textContent = note;
+    document.getElementById('paymentQr').src = qrUrl;
 
-    if (!modal || !amountEl || !upiEl || !noteEl || !qrEl || !copyBtn || !whatsappBtn) return;
-
-    amountEl.textContent = `₹${amount}`;
-    upiEl.textContent = upiId;
-    noteEl.textContent = note;
-    qrEl.src = qrUrl;
-    qrEl.alt = `Pay ₹${amount} to ${payee}`;
-
-    copyBtn.onclick = async function () {
+    document.getElementById('copyUpiBtn').onclick = async function () {
         try {
             await navigator.clipboard.writeText(upiId);
-            copyBtn.textContent = 'UPI ID Copied';
-            setTimeout(() => copyBtn.textContent = 'Copy UPI ID', 1500);
-        } catch (err) {
-            alert(`UPI ID: ${upiId}`);
-        }
+            this.textContent = 'UPI ID Copied ✓';
+            setTimeout(() => this.textContent = 'Copy UPI ID', 1500);
+        } catch { alert(`UPI ID: ${upiId}`); }
     };
 
-    whatsappBtn.onclick = function () {
-        const msg = `Hi Swapnil Chemicals, I have completed payment of ₹${amount}. Order note: ${note}`;
+    document.getElementById('paymentDoneBtn').onclick = function () {
+        const msg = `Hi Swapnil Chemicals, I have completed payment of ₹${amount}. Order: ${note}`;
         window.open(`https://wa.me/919352470085?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
     modal.classList.remove('hidden');
 }
+
+
+
+
 
 function closePaymentModal() {
     const modal = document.getElementById('paymentModal');
@@ -1444,5 +1492,29 @@ function closePaymentModal() {
             document.body.classList.add('loaded');
         });
     </script>
+
+
+
+
+<!-- custom 25-04-26 -->
+ <div id="paymentModal" class="hidden" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:white;border-radius:1.5rem;padding:2rem;max-width:360px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.3);text-align:center;">
+    <h3 style="font-size:1.25rem;font-weight:700;color:#1e293b;margin-bottom:0.5rem;">Complete Payment</h3>
+    <p style="font-size:2rem;font-weight:800;color:#1d4ed8;margin:0.5rem 0;" id="paymentAmount">₹0</p>
+    <p style="font-size:0.8rem;color:#64748b;margin-bottom:1rem;" id="paymentNote"></p>
+    <div style="background:#f8fafc;border-radius:1rem;padding:1rem;margin-bottom:1rem;">
+      <img id="paymentQr" src="" alt="UPI QR" style="width:180px;height:180px;margin:0 auto;display:block;border-radius:8px;" />
+      <p style="font-size:0.75rem;color:#64748b;margin-top:0.5rem;">📷 Scan with any UPI app</p>
+    </div>
+    <p style="font-size:0.85rem;color:#374151;font-weight:600;margin-bottom:0.25rem;">UPI ID</p>
+    <p style="font-family:monospace;font-size:0.9rem;color:#1d4ed8;margin-bottom:0.75rem;" id="paymentUpiId"></p>
+    <button id="copyUpiBtn" style="width:100%;padding:10px;border:2px solid #3b82f6;border-radius:0.75rem;background:white;color:#1d4ed8;font-weight:600;cursor:pointer;margin-bottom:0.5rem;">Copy UPI ID</button>
+    <button id="paymentDoneBtn" style="width:100%;padding:10px;border:none;border-radius:0.75rem;background:linear-gradient(135deg,#25d366,#128c7e);color:white;font-weight:700;cursor:pointer;margin-bottom:0.5rem;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fab fa-whatsapp"></i> Payment Done? Notify Us</button>
+    <button onclick="closePaymentModal()" style="width:100%;padding:8px;border:none;background:none;color:#94a3b8;font-size:0.8rem;cursor:pointer;">Close</button>
+  </div>
+</div>
+
+
+
 </body>
 </html>
