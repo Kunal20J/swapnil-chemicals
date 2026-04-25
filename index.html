@@ -3,17 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Swapnil Chemicals | Cart + UPI Payment (Fixed)</title>
+    <title>Swapnil Chemicals | Cart + UPI Payment</title>
     <link rel="icon" type="image/jpeg" href="SC Logo.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { colors: { primary: "#0f172a" }, fontFamily: { sans: ["Inter"] } } }
-        };
-    </script>
     <style>
         body { font-family: 'Inter', sans-serif; background: #f8fafc; }
         .dark body { background: #0f172a; color: #e2e8f0; }
@@ -32,6 +26,8 @@
         .qty-selector-btn { border: 1px solid #cbd5e1; border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 500; cursor: pointer; background: white; }
         .dark .qty-selector-btn { background: #334155; border-color: #475569; color: #f1f5f9; }
         .qty-selector-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+        .upi-info { background: #e0f2fe; border-left: 4px solid #0284c7; }
+        .dark .upi-info { background: #0f172a; border-left-color: #38bdf8; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -61,7 +57,7 @@
     <!-- Hero -->
     <section class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 text-white py-20 text-center">
         <h2 class="text-4xl md:text-5xl font-bold">Premium <span class="text-blue-300">Automobile</span> Cleaning</h2>
-        <p class="mt-4 max-w-xl mx-auto">Add products → Pay via UPI (Google Pay / PhonePe / Paytm).</p>
+        <p class="mt-4 max-w-xl mx-auto">Add products → Pay securely via UPI (Google Pay, PhonePe, Paytm).</p>
         <a href="#products" class="inline-block mt-6 bg-white text-blue-800 px-6 py-2 rounded-full font-semibold">Shop Now</a>
     </section>
 
@@ -86,24 +82,23 @@
                 <span>Total</span>
                 <span id="cartTotalAmount">₹0</span>
             </div>
-            <!-- Editable UPI ID - CRITICAL: CHANGE THIS TO YOUR CORRECT UPI ID -->
-            <div class="bg-yellow-50 dark:bg-slate-800 p-3 rounded-lg text-sm mb-3 border border-yellow-300">
-                <label class="text-xs font-bold block mb-1">UPI ID (edit if payment fails):</label>
-                <input type="text" id="upiIdInput" value="boism-9352470085@boi" class="font-mono text-center bg-white dark:bg-slate-700 rounded px-2 py-1 w-full border">
-                <p class="text-xs text-gray-500 mt-1">⚠️ If you see "money will be refunded", this UPI ID is invalid. Please enter the correct one (e.g., 9352470085@boi).</p>
-                <button id="copyUpiIdBtn" class="mt-1 text-blue-600 text-xs underline">Copy UPI ID</button>
+            <!-- UPI ID display (hardcoded) -->
+            <div class="upi-info p-3 rounded-lg text-sm mb-3">
+                <p class="font-bold text-blue-800 dark:text-blue-300">🔐 UPI ID for payment:</p>
+                <p class="font-mono text-lg font-bold text-center my-1">boism-9352470085@boi</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">If payment fails, please verify this UPI ID with your bank. Ensure it is active and linked to a bank account.</p>
+                <button id="copyUpiIdBtn" class="mt-1 bg-blue-100 dark:bg-slate-700 text-blue-700 px-3 py-1 rounded-full text-xs">📋 Copy UPI ID</button>
             </div>
-            <!-- Payment buttons -->
             <button id="checkoutGPay" class="gpay-btn w-full py-3 rounded-xl text-white font-bold flex items-center justify-center gap-2">
                 <img src="https://www.gstatic.com/instantbuy/svg/dark_gpay.svg" alt="GPay" class="h-5 brightness-0 invert">
-                Pay ₹<span id="gpayAmount">0</span> with UPI App
+                Pay ₹<span id="gpayAmount">0</span> via UPI App
             </button>
             <div class="flex justify-between gap-2 mt-3">
                 <button id="copyUpiLink" class="bg-gray-200 dark:bg-slate-700 py-2 px-3 rounded-lg text-sm flex-1">📋 Copy UPI Link</button>
                 <button id="showQRcode" class="bg-gray-200 dark:bg-slate-700 py-2 px-3 rounded-lg text-sm flex-1">📱 Show QR Code</button>
             </div>
             <div id="qrContainer" class="mt-3 hidden flex justify-center"></div>
-            <p class="text-xs text-gray-500 mt-3 text-center">If auto-pay fails → copy UPI ID & pay manually, or scan QR.</p>
+            <p class="text-xs text-gray-500 mt-3 text-center">If auto-redirect fails, copy the UPI ID or scan QR to pay manually.</p>
         </div>
     </div>
 
@@ -113,9 +108,9 @@
     </footer>
 
     <script>
-        // ---------- PRODUCT DATA (Dashboard Polish price = ₹1 for testing) ----------
+        // ---------- PRODUCT DATA ----------
         const products = [
-            { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 1, unit: "Litre", liquid: true },
+            { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 1, unit: "Litre", liquid: true },   // ₹1 for testing
             { id: 2, name: "Tyre Polish", image: "Tyre Polish.jpeg", price: 150, unit: "Litre", liquid: true },
             { id: 3, name: "Car Foaming Wash", image: "Car Foaming Wash.jpeg", price: 70, unit: "Litre", liquid: true },
             { id: 4, name: "Glass Cleaner", image: "Glass Cleaner.jpeg", price: 70, unit: "Litre", liquid: true },
@@ -128,6 +123,10 @@
 
         const LITRE_OPTIONS = [10, 35, 50];
         let cart = [];
+
+        // HARDCODED UPI ID (as requested)
+        const UPI_VPA = "boism-9352470085@boi";
+        const PAYEE_NAME = "Swapnil Chemicals";
 
         function saveCart() { localStorage.setItem('autoCart', JSON.stringify(cart)); updateBadge(); renderCartDrawer(); }
         function loadCart() { const stored = localStorage.getItem('autoCart'); cart = stored ? JSON.parse(stored) : []; updateBadge(); renderCartDrawer(); }
@@ -146,32 +145,23 @@
         function updateQty(id, newQty) { if(newQty<1) removeItem(id); else { const item = cart.find(i=>i.id===id); if(item) item.qty = newQty; saveCart(); } }
         function getTotal() { return cart.reduce((s,i)=>s + (i.price * i.qty), 0); }
 
-        // Get current UPI ID from input field
-        function getUpiVpa() { return document.getElementById('upiIdInput').value.trim(); }
-
         function getUpiLinkForCart() {
             const total = getTotal();
             if(total === 0) return null;
             const itemsText = cart.map(i=>`${i.name} x${i.qty}`).join(', ').slice(0, 90);
             const note = encodeURIComponent(`Swapnil Order: ${itemsText}`);
-            const vpa = getUpiVpa();
-            if(!vpa) return null;
-            // Ensure amount is integer without decimals
             const amount = Math.floor(total);
-            return `upi://pay?pa=${vpa}&pn=${encodeURIComponent("Swapnil Chemicals")}&am=${amount}&cu=INR&tn=${note}`;
+            return `upi://pay?pa=${UPI_VPA}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${note}`;
         }
 
-        // Improved payment handler using window.open (works better)
         function handleGpayCheckout() {
             const total = getTotal();
             if(total === 0) { alert("Cart is empty."); return; }
             const upiLink = getUpiLinkForCart();
-            if(!upiLink) { alert("Invalid UPI ID"); return; }
+            if(!upiLink) { alert("Invalid UPI configuration"); return; }
             
-            // Try to open with window.open (more reliable than location.href)
             const win = window.open(upiLink, '_blank');
             if(!win || win.closed) {
-                // Fallback: copy to clipboard
                 navigator.clipboard.writeText(upiLink);
                 alert("Unable to open UPI app automatically. The payment link has been copied. Please open Google Pay and paste it in the search/scan area.");
             } else {
@@ -181,15 +171,14 @@
 
         function copyUpiLink() {
             const link = getUpiLinkForCart();
-            if(!link) { alert("Cart empty or invalid UPI"); return; }
+            if(!link) { alert("Cart is empty"); return; }
             navigator.clipboard.writeText(link);
             showToast("UPI link copied! Open any UPI app and paste.");
         }
 
         function copyUpiId() {
-            const vpa = getUpiVpa();
-            navigator.clipboard.writeText(vpa);
-            showToast("UPI ID copied: " + vpa);
+            navigator.clipboard.writeText(UPI_VPA);
+            showToast("UPI ID copied: " + UPI_VPA);
         }
 
         function showQrModal() {
@@ -212,7 +201,6 @@
             }
         }
 
-        // Render Cart Drawer
         function renderCartDrawer() {
             const container = document.getElementById('cartItems');
             const totalSpan = document.getElementById('cartTotalAmount');
@@ -247,7 +235,6 @@
             const total = getTotal();
             totalSpan.innerText = `₹${total}`;
             if(gpayAmountSpan) gpayAmountSpan.innerText = total;
-            // reattach events
             document.querySelectorAll('.dec-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty-1); }));
             document.querySelectorAll('.inc-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const item = cart.find(i=>i.id===id); if(item) updateQty(id, item.qty+1); }));
             document.querySelectorAll('.cart-qty').forEach(inp => inp.addEventListener('change', (e) => { const id = parseInt(inp.dataset.id); let val = parseInt(inp.value); if(isNaN(val)) val=1; updateQty(id, val); }));
@@ -262,7 +249,6 @@
             t.innerText = msg; t.style.opacity = '1'; setTimeout(()=>t.style.opacity='0',2000);
         }
 
-        // Render Products with fixed litre buttons
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             if(!grid) return;
@@ -318,7 +304,6 @@
                 }
             }).join('');
 
-            // Liquid event handlers
             products.forEach(p => {
                 if(p.liquid) {
                     const btns = document.querySelectorAll(`.liquid-qty-btn[data-id="${p.id}"]`);
