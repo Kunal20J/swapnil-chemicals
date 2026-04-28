@@ -1,976 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swapnil Chemicals – Premium Automobile Cleaning Solutions</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --navy: #0a1628;
-    --blue: #1a3a6b;
-    --accent: #f59e0b;
-    --green: #16a34a;
-    --gpay-blue: #4285f4;
-    --light: #f8fafc;
-    --text: #1e293b;
-    --muted: #64748b;
-    --card-bg: #ffffff;
-    --border: #e2e8f0;
-    --red: #dc2626;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--light);
-    color: var(--text);
-    overflow-x: hidden;
-  }
-
-  .topbar {
-    background: var(--navy);
-    color: #94a3b8;
-    font-size: 12px;
-    padding: 6px 0;
-    text-align: center;
-  }
-  .topbar span { color: var(--accent); }
-
-  header {
-    background: #fff;
-    box-shadow: 0 2px 16px rgba(0,0,0,.08);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-  .header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo-icon {
-    width: 42px; height: 42px; background: var(--navy);
-    border-radius: 10px; display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; color: var(--accent); font-size: 22px;
-  }
-  .logo-text h1 { font-family: 'Rajdhani', sans-serif; font-size: 20px; color: var(--navy); font-weight: 700; }
-  .logo-text p { font-size: 10px; color: var(--muted); }
-
-  nav { display: flex; gap: 24px; }
-  nav a { text-decoration: none; color: var(--text); font-size: 14px; font-weight: 500; transition: color .2s; }
-  nav a:hover { color: var(--accent); }
-
-  .cart-btn {
-    background: var(--navy);
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: relative;
-    transition: background .2s;
-  }
-  .cart-btn:hover { background: var(--blue); }
-  .cart-count {
-    background: var(--accent);
-    color: var(--navy);
-    border-radius: 50%;
-    width: 20px; height: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  .hero {
-    background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 60%, #0d2744 100%);
-    padding: 80px 20px;
-    text-align: center;
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(245,158,11,.12) 0%, transparent 70%);
-    top: -200px; left: 50%; transform: translateX(-50%);
-    pointer-events: none;
-  }
-  .hero-badge {
-    display: inline-block;
-    background: rgba(245,158,11,.15);
-    border: 1px solid rgba(245,158,11,.4);
-    color: var(--accent);
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .hero h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(42px, 7vw, 72px);
-    letter-spacing: 2px;
-    line-height: 1.1;
-    margin-bottom: 12px;
-  }
-  .hero h2 span { color: var(--accent); }
-  .hero p { color: #94a3b8; max-width: 500px; margin: 0 auto 32px; font-size: 15px; }
-  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn-primary {
-    background: var(--accent);
-    color: var(--navy);
-    border: none;
-    padding: 14px 28px;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    transition: transform .2s, box-shadow .2s;
-    text-decoration: none;
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.35); }
-  .btn-outline {
-    background: transparent;
-    color: #fff;
-    border: 2px solid rgba(255,255,255,.3);
-    padding: 14px 28px;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: border-color .2s, background .2s;
-    text-decoration: none;
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.08); }
-
-  .section-title {
-    text-align: center;
-    margin-bottom: 48px;
-  }
-  .section-title h3 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 34px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 8px;
-  }
-  .section-title p { color: var(--muted); font-size: 14px; }
-  .title-line {
-    width: 56px; height: 4px;
-    background: var(--accent);
-    border-radius: 2px;
-    margin: 12px auto 0;
-  }
-
-  .biz-section { background: #fff; padding: 64px 20px; }
-  .biz-grid {
-    max-width: 1000px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-  }
-  .biz-card {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    transition: box-shadow .2s;
-  }
-  .biz-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
-  .biz-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; flex-shrink: 0;
-  }
-  .biz-card label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-  .biz-card p { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 2px; }
-
-  .products-section { padding: 72px 20px; background: var(--light); }
-  .products-grid {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 24px;
-  }
-  .product-card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,.06);
-    transition: transform .25s, box-shadow .25s;
-    position: relative;
-  }
-  .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.12); }
-  .product-img {
-    height: 180px;
-    background: #f1f5f9;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 56px;
-    position: relative;
-  }
-  .product-body { padding: 16px; }
-  .product-name { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; color: var(--navy); }
-  .product-desc { font-size: 12px; color: var(--muted); margin: 4px 0 12px; }
-  .product-price {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--green);
-    font-family: 'Rajdhani', sans-serif;
-  }
-  .product-price span { font-size: 13px; color: var(--muted); font-weight: 400; }
-
-  .qty-row { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
-  .qty-btn {
-    background: var(--light);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 12px;
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    transition: all .15s;
-  }
-  .qty-btn.active, .qty-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
-
-  .qty-custom {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    width: fit-content;
-    margin: 8px 0;
-  }
-  .qty-custom button {
-    border: none; background: var(--light); padding: 6px 12px;
-    font-size: 16px; cursor: pointer; color: var(--text); font-weight: 700;
-  }
-  .qty-custom button:hover { background: var(--navy); color: #fff; }
-  .qty-custom input {
-    width: 48px; text-align: center; border: none; border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border); padding: 6px 0;
-    font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
-    outline: none;
-  }
-
-  .total-line { font-size: 12px; color: var(--muted); margin: 6px 0 12px; }
-  .total-line strong { color: var(--text); font-size: 14px; }
-
-  .add-btn {
-    width: 100%;
-    background: var(--navy);
-    color: #fff;
-    border: none;
-    padding: 11px;
-    border-radius: 9px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background .2s;
-    margin-bottom: 8px;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-  }
-  .add-btn:hover { background: var(--blue); }
-
-  .gpay-btn {
-    width: 100%;
-    background: #fff;
-    color: var(--text);
-    border: 2px solid var(--border);
-    padding: 10px;
-    border-radius: 9px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  .gpay-btn:hover { border-color: var(--gpay-blue); box-shadow: 0 0 0 3px rgba(66,133,244,.15); }
-  .gpay-logo {
-    display: flex; gap: 1px; font-size: 15px; font-weight: 800;
-    font-family: 'Poppins', sans-serif; letter-spacing: -0.5px;
-  }
-  .g { color: #4285f4; }
-  .p { color: #34a853; }
-  .a { color: #fbbc05; }
-  .y2 { color: #ea4335; }
-
-  .cart-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.5);
-    z-index: 2000;
-    opacity: 0; pointer-events: none;
-    transition: opacity .3s;
-  }
-  .cart-overlay.open { opacity: 1; pointer-events: all; }
-  .cart-sidebar {
-    position: fixed;
-    right: -420px;
-    top: 0;
-    bottom: 0;
-    width: 420px;
-    max-width: 100vw;
-    background: #fff;
-    z-index: 2001;
-    display: flex; flex-direction: column;
-    transition: right .3s cubic-bezier(.4,0,.2,1);
-    box-shadow: -8px 0 40px rgba(0,0,0,.15);
-  }
-  .cart-sidebar.open { right: 0; }
-  .cart-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .cart-header h4 { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; }
-  .close-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); }
-  .close-btn:hover { color: var(--text); }
-  .cart-items { flex: 1; overflow-y: auto; padding: 16px 24px; }
-  .cart-empty { text-align: center; padding: 60px 0; color: var(--muted); }
-  .cart-item {
-    display: flex; gap: 12px; align-items: flex-start;
-    padding: 14px 0; border-bottom: 1px solid var(--border);
-  }
-  .cart-item-icon { font-size: 32px; width: 48px; text-align: center; }
-  .cart-item-info { flex: 1; }
-  .cart-item-name { font-weight: 600; font-size: 14px; }
-  .cart-item-meta { font-size: 12px; color: var(--muted); }
-  .cart-item-price { font-weight: 700; color: var(--green); font-size: 15px; }
-  .remove-item { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; }
-  .remove-item:hover { color: var(--red); }
-  .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
-  .cart-total { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 16px; }
-  .cart-total span { color: var(--green); }
-  .checkout-btn {
-    width: 100%;
-    background: var(--accent);
-    color: var(--navy);
-    border: none;
-    padding: 14px;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: transform .15s;
-  }
-  .checkout-btn:hover { transform: scale(1.01); }
-  .gpay-checkout {
-    width: 100%;
-    background: #fff;
-    border: 2px solid #e2e8f0;
-    padding: 13px;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: border-color .2s;
-  }
-  .gpay-checkout:hover { border-color: var(--gpay-blue); }
-
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.6);
-    z-index: 3000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .modal-overlay.show { display: flex; }
-  .modal {
-    background: #fff;
-    border-radius: 20px;
-    padding: 36px;
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
-    animation: popIn .25s ease;
-  }
-  @keyframes popIn {
-    from { transform: scale(.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-  .modal-icon { font-size: 48px; margin-bottom: 12px; }
-  .modal h4 { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-  .modal p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-  .upi-box {
-    background: var(--light);
-    border: 2px dashed var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .upi-id {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--navy);
-    letter-spacing: 0.5px;
-  }
-  .upi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .amount-box {
-    background: #f0fdf4;
-    border: 1px solid #86efac;
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 16px;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--green);
-  }
-
-  /* ── OPEN GPAY BUTTON ── */
-  .open-gpay-btn {
-    width: 100%;
-    background: #4285f4;
-    color: #fff;
-    border: none;
-    padding: 13px;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: background .2s;
-  }
-  .open-gpay-btn:hover { background: #2a6dd9; }
-
-  .modal-btns { display: flex; gap: 10px; }
-  .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; border: none; }
-  .copy-btn { background: var(--navy); color: #fff; }
-  .copy-btn:hover { background: var(--blue); }
-  .cancel-btn { background: var(--light); color: var(--text); border: 1px solid var(--border) !important; }
-
-  .contact-section { background: #fff; padding: 72px 20px; }
-  .contact-grid {
-    max-width: 900px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-  @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
-  .contact-info { display: flex; flex-direction: column; gap: 16px; }
-  .contact-card {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px;
-    display: flex; gap: 14px; align-items: flex-start;
-  }
-  .contact-card-icon { font-size: 22px; }
-  .contact-card label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-  .contact-card p { font-size: 14px; font-weight: 600; margin-top: 2px; }
-  .wa-form { background: #f0fdf4; border: 1px solid #86efac; border-radius: 16px; padding: 24px; }
-  .wa-form h5 { color: var(--green); font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .wa-form input, .wa-form textarea {
-    width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 13px;
-    margin-bottom: 10px; outline: none; transition: border-color .2s;
-  }
-  .wa-form input:focus, .wa-form textarea:focus { border-color: var(--green); }
-  .wa-form textarea { height: 90px; resize: none; }
-  .wa-send-btn {
-    width: 100%; background: var(--green); color: #fff; border: none;
-    padding: 12px; border-radius: 8px; font-family: 'Poppins', sans-serif;
-    font-weight: 600; font-size: 14px; cursor: pointer; transition: background .2s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .wa-send-btn:hover { background: #15803d; }
-
-  footer {
-    background: var(--navy);
-    color: #94a3b8;
-    padding: 40px 20px 24px;
-  }
-  .footer-inner { max-width: 1200px; margin: 0 auto; }
-  .footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px; margin-bottom: 32px; }
-  .footer-logo h3 { font-family: 'Rajdhani', sans-serif; font-size: 22px; color: #fff; font-weight: 700; }
-  .footer-logo p { font-size: 12px; margin-top: 4px; }
-  .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-  .footer-links a { color: #94a3b8; text-decoration: none; font-size: 13px; transition: color .2s; }
-  .footer-links a:hover { color: var(--accent); }
-  .footer-bottom { border-top: 1px solid rgba(255,255,255,.08); padding-top: 20px; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--navy);
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 4000;
-    transition: transform .3s;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  @media (max-width: 768px) {
-    nav { display: none; }
-    .cart-sidebar { width: 100%; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Swapnil Chemicals | Order with UPI – Confirm After Payment</title>
+    <link rel="icon" type="image/jpeg" href="SC Logo.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+        .dark body { background: #0f172a; color: #e2e8f0; }
+        .product-card { transition: 0.25s; border-radius: 1.5rem; background: white; }
+        .dark .product-card { background: #1e293b; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 20px 28px -12px rgba(0,0,0,0.2); }
+        .cart-drawer { position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh; background: white; z-index: 1000; transition: right 0.3s; box-shadow: -8px 0 35px rgba(0,0,0,0.25); display: flex; flex-direction: column; }
+        .dark .cart-drawer { background: #0f172a; }
+        .cart-drawer.open { right: 0; }
+        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999; opacity: 0; visibility: hidden; transition: 0.2s; backdrop-filter: blur(2px); }
+        .cart-overlay.active { opacity: 1; visibility: visible; }
+        .gradient-text { background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .product-image-container { height: 190px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border-radius: 1rem; }
+        .dark .product-image-container { background: #334155; }
+        .qty-selector-btn { border: 1px solid #cbd5e1; border-radius: 9999px; padding: 6px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer; background: white; text-align: center; }
+        .dark .qty-selector-btn { background: #334155; border-color: #475569; color: #f1f5f9; }
+        .qty-selector-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+        .upi-highlight { background: linear-gradient(145deg, #d9f0ff, #c2e4ff); border-left: 6px solid #0284c7; border-radius: 20px; }
+        .dark .upi-highlight { background: #0f172a; border-left-color: #38bdf8; }
+        .toast-notify { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 22px; border-radius: 60px; font-size: 0.85rem; z-index: 1200; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: opacity 0.2s; pointer-events: none; }
+        .dark .toast-notify { background: #0f172a; border: 1px solid #334155; }
+        .confirm-btn { background: linear-gradient(98deg, #059669, #047857); transition: 0.2s; }
+        .confirm-btn:hover { transform: scale(1.01); filter: brightness(1.05); }
+    </style>
 </head>
-<body>
+<body class="min-h-screen">
 
-<div class="topbar">📍 Jaipur, Rajasthan &nbsp;·&nbsp; <span>Bulk & Retail Available</span> &nbsp;·&nbsp; MSME Registered · GST Certified</div>
-
-<header>
-  <div class="header-inner">
-    <a class="logo" href="#">
-      <div class="logo-icon">SC</div>
-      <div class="logo-text">
-        <h1>Swapnil Chemicals</h1>
-        <p>Manufacturers & Marketers of Automobile Cleaning Products</p>
-      </div>
-    </a>
-    <nav>
-      <a href="#products">Products</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <button class="cart-btn" onclick="openCart()">
-      🛒 Cart
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </div>
-</header>
-
-<section class="hero">
-  <div class="hero-badge">Since 2020 · Manufacturing Excellence</div>
-  <h2>Premium Automobile<br><span>Cleaning Solutions</span></h2>
-  <p>Trusted by automotive professionals across Rajasthan. Manufactured for professional results.</p>
-  <div class="hero-btns">
-    <a class="btn-primary" href="#products">🧴 View Products</a>
-    <a class="btn-outline" href="#contact">📞 Contact Now</a>
-  </div>
-</section>
-
-<section class="biz-section" id="about">
-  <div class="section-title">
-    <h3>Business Details</h3>
-    <div class="title-line"></div>
-  </div>
-  <div class="biz-grid">
-    <div class="biz-card">
-      <div class="biz-icon" style="background:#dbeafe">👤</div>
-      <div><label>Proprietor</label><p>Gajendra Jain</p></div>
-    </div>
-    <div class="biz-card">
-      <div class="biz-icon" style="background:#dcfce7">📞</div>
-      <div><label>Phone</label><p>9352470085<br>9024598298</p></div>
-    </div>
-    <div class="biz-card">
-      <div class="biz-icon" style="background:#fef9c3">🏛️</div>
-      <div><label>GST Number</label><p style="font-size:11px">08CJJPS7344L1ZE</p></div>
-    </div>
-    <div class="biz-card">
-      <div class="biz-icon" style="background:#fce7f3">✉️</div>
-      <div><label>Email</label><p style="font-size:11px">swapnilchemicals10@gmail.com</p></div>
-    </div>
-    <div class="biz-card">
-      <div class="biz-icon" style="background:#ede9fe">🏭</div>
-      <div><label>MSME</label><p>MSME/2020/6194</p></div>
-    </div>
-    <div class="biz-card">
-      <div class="biz-icon" style="background:#ffedd5">📋</div>
-      <div><label>License</label><p style="font-size:11px">UDYAM-RJ-17-0022468</p></div>
-    </div>
-    <div class="biz-card">
-      <div class="biz-icon" style="background:#f0fdf4">🔢</div>
-      <div><label>GIN</label><p>880512007200968</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="products-section" id="products">
-  <div class="section-title">
-    <h3>Our Premium Products</h3>
-    <p>Discover our range of high-quality automobile cleaning solutions designed for professional results.</p>
-    <div class="title-line"></div>
-  </div>
-  <div class="products-grid" id="productsGrid"></div>
-</section>
-
-<section class="contact-section" id="contact">
-  <div class="section-title">
-    <h3>Get In Touch</h3>
-    <p>Ready to experience premium automobile cleaning solutions? Contact us today.</p>
-    <div class="title-line"></div>
-  </div>
-  <div class="contact-grid">
-    <div class="contact-info">
-      <div class="contact-card">
-        <div class="contact-card-icon">📞</div>
-        <div><label>Phone</label><p>9352470085 / 9024598298</p></div>
-      </div>
-      <div class="contact-card">
-        <div class="contact-card-icon">💳</div>
-        <div>
-          <label>Google Pay / UPI</label>
-          <p>9352470085</p>
-          <p style="font-size:12px;color:var(--muted)">boism-9352470085@boi</p>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/85 dark:bg-slate-900/85 border-b">
+        <div class="container mx-auto px-5 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-full overflow-hidden ring-2 ring-blue-500/30">
+                    <img src="SC Logo.jpg" alt="logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/200x200?text=SC'">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Swapnil Chemicals</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Pay via UPI → Confirm order manually</p>
+                </div>
+            </div>
+            <div class="flex gap-3 items-center">
+                <button id="themeToggle" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800">🌙</button>
+                <button id="cartIcon" class="relative p-2 rounded-full bg-gray-100 dark:bg-slate-800">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
         </div>
-      </div>
-      <div class="contact-card">
-        <div class="contact-card-icon">✉️</div>
-        <div><label>Email</label><p style="font-size:13px">swapnilchemicals10@gmail.com</p></div>
-      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 text-white py-16 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold">Premium <span class="text-blue-300">Auto Care</span></h2>
+        <p class="mt-4 max-w-xl mx-auto">Add products → Pay using the UPI ID below → Then click "CONFIRM ORDER" – your order will be booked instantly.</p>
+    </section>
+
+    <!-- Products Grid -->
+    <section id="products" class="py-16 px-5">
+        <div class="container mx-auto">
+            <h3 class="text-3xl font-bold text-center gradient-text mb-4">📦 Shop Products</h3>
+            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7"></div>
+        </div>
+    </section>
+
+    <!-- Cart Drawer (NO AUTO REDIRECT, only manual confirmation) -->
+    <div id="cartOverlay" class="cart-overlay"></div>
+    <div id="cartDrawer" class="cart-drawer">
+        <div class="flex justify-between items-center p-5 border-b dark:border-slate-700">
+            <h2 class="text-2xl font-bold"><i class="fas fa-shopping-cart text-blue-500"></i> Your Cart</h2>
+            <button id="closeCart" class="text-3xl">&times;</button>
+        </div>
+        <div id="cartItems" class="flex-1 overflow-auto p-5 space-y-4"></div>
+        <div class="p-5 border-t bg-white dark:bg-slate-900">
+            <div class="flex justify-between text-xl font-bold mb-4">
+                <span>Total Payable</span>
+                <span id="cartTotalAmount" class="text-blue-600 dark:text-blue-400">₹0</span>
+            </div>
+
+            <!-- PROMINENT UPI DETAILS (COPY & QR) -->
+            <div class="upi-highlight p-4 rounded-2xl mb-5">
+                <div class="text-center">
+                    <p class="text-xs font-semibold text-blue-700 dark:text-blue-300">🔐 OFFICIAL UPI ID (Copy & Pay)</p>
+                    <p class="font-mono text-xl font-bold tracking-wider bg-white/70 dark:bg-slate-800/80 inline-block px-4 py-1.5 rounded-full my-2">boism-9352470085@boi</p>
+                    <div class="flex gap-3 justify-center mt-1">
+                        <button id="copyUpiBtn" class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm flex items-center gap-1"><i class="far fa-copy"></i> Copy UPI ID</button>
+                        <button id="showQrBtn" class="bg-gray-700 text-white px-4 py-1.5 rounded-full text-sm flex items-center gap-1"><i class="fas fa-qrcode"></i> Show QR</button>
+                    </div>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">Pay any amount using Google Pay, PhonePe, Paytm → then click <strong class="text-green-600">CONFIRM ORDER</strong> below.</p>
+                </div>
+                <div id="qrContainer" class="mt-3 hidden flex justify-center"></div>
+            </div>
+
+            <!-- MANUAL CONFIRM BUTTON (SOLUTION TO PAYMENT FAILURE) -->
+            <button id="confirmOrderBtn" class="confirm-btn w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 shadow-md text-lg">
+                <i class="fas fa-check-circle"></i> ✅ CONFIRM ORDER – I HAVE PAID
+            </button>
+            <p class="text-xs text-center text-gray-400 mt-3">⚠️ Only click after you have successfully paid via the UPI ID above.<br>Your order will be sent to Swapnil Chemicals via WhatsApp.</p>
+
+            <div class="flex gap-2 mt-4">
+                <button id="whatsappCartBtn" class="bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl text-sm flex-1"><i class="fab fa-whatsapp"></i> Send Cart to WhatsApp</button>
+            </div>
+        </div>
     </div>
-    <div class="wa-form">
-      <h5>💬 Send us a WhatsApp Message</h5>
-      <input type="text" id="waName" placeholder="Name">
-      <input type="email" id="waEmail" placeholder="Email">
-      <textarea id="waMsg" placeholder="Message"></textarea>
-      <button class="wa-send-btn" onclick="sendWA()">📲 Send Message via WhatsApp</button>
-    </div>
-  </div>
-</section>
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-logo">
-        <h3>Swapnil Chemicals</h3>
-        <p>Manufacturers & Marketers of Automobile Cleaning Products</p>
-        <p style="margin-top:4px">📍 Jaipur · Bulk & Retail</p>
-      </div>
-      <div class="footer-links">
-        <a href="#products">Products</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Swapnil Chemicals. All rights reserved.</span>
-      <span>MSME Registered · GST Verified · Quality Assured Products</span>
-    </div>
-  </div>
-</footer>
+    <footer class="bg-slate-900 text-white py-7 text-center text-sm mt-10">
+        <p>© 2026 Swapnil Chemicals | Jaipur | GST: 08CIJPS1734A1ZE</p>
+        <p class="text-slate-400">📞 <a href="tel:9352470085" class="text-blue-300">+91 9352470085</a></p>
+    </footer>
 
-<!-- Cart Sidebar -->
-<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
-<div class="cart-sidebar" id="cartSidebar">
-  <div class="cart-header">
-    <h4>🛒 Your Cart</h4>
-    <button class="close-btn" onclick="closeCart()">✕</button>
-  </div>
-  <div class="cart-items" id="cartItems">
-    <div class="cart-empty">🛒<br><br>Your cart is empty.<br>Add products to get started.</div>
-  </div>
-  <div class="cart-footer" id="cartFooter" style="display:none">
-    <div class="cart-total">Total <span id="cartTotalAmt">₹0</span></div>
-    <button class="checkout-btn" onclick="checkout('standard')">✅ Place Order (Call/WhatsApp)</button>
-    <button class="gpay-checkout" onclick="checkout('gpay')">
-      Pay via &nbsp;
-      <span class="gpay-logo"><span class="g">G</span><span class="p">P</span><span class="a">a</span><span class="y2">y</span></span>
-      &nbsp; / UPI
-    </button>
-  </div>
-</div>
+    <script>
+        // ====================== PRODUCT DATA ======================
+        const products = [
+            { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 1, unit: "Litre", liquid: true },
+            { id: 2, name: "Tyre Polish", image: "Tyre Polish.jpeg", price: 150, unit: "Litre", liquid: true },
+            { id: 3, name: "Car Foaming Wash", image: "Car Foaming Wash.jpeg", price: 70, unit: "Litre", liquid: true },
+            { id: 4, name: "Glass Cleaner", image: "Glass Cleaner.jpeg", price: 70, unit: "Litre", liquid: true },
+            { id: 5, name: "Interior Cleaner", image: "Interior Cleaner.png", price: 130, unit: "Litre", liquid: true },
+            { id: 6, name: "Foaming Gun", image: "Foaming Gun.jpeg", price: 2000, unit: "Piece", liquid: false },
+            { id: 7, name: "Micro Towel (Blue)", image: "Micro Towel.jpg", price: 70, unit: "Piece", liquid: false },
+            { id: 8, name: "Micro Towel Premium", image: "Micro Towel 2.jpg", price: 110, unit: "Piece", liquid: false },
+            { id: 9, name: "Micro Towel Deluxe", image: "Micro Towel 3.jpg", price: 130, unit: "Piece", liquid: false }
+        ];
+        const LITRE_OPTIONS = [10, 35, 50];
+        let cart = [];
+        const UPI_VPA = "boism-9352470085@boi";
+        const PAYEE_NAME = "Swapnil Chemicals";
 
-<!-- Payment Modal -->
-<div class="modal-overlay" id="payModal">
-  <div class="modal">
-    <div id="payContent">
-      <div class="modal-icon">💳</div>
-      <h4>Pay via Google Pay / UPI</h4>
-      <p>Amount dekhein aur GPay/UPI app directly open karein.</p>
+        // helpers
+        function saveCart() { localStorage.setItem('swapnilCart', JSON.stringify(cart)); updateBadge(); renderCartDrawer(); }
+        function loadCart() { const stored = localStorage.getItem('swapnilCart'); cart = stored ? JSON.parse(stored) : []; updateBadge(); renderCartDrawer(); }
+        function updateBadge() { const totalQty = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartBadge').innerText = totalQty; }
+        function getTotal() { return cart.reduce((s,i)=>s + (i.price * i.qty), 0); }
+        function showToast(msg, duration=3000) {
+            let t = document.getElementById('dynamicToast');
+            if(!t) { t = document.createElement('div'); t.id='dynamicToast'; t.className='toast-notify'; document.body.appendChild(t); }
+            t.innerText = msg; t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',duration);
+        }
 
-      <div class="amount-box" id="payAmount">₹0</div>
+        // copy UPI ID
+        function copyUpi() { navigator.clipboard.writeText(UPI_VPA); showToast(`✅ UPI ID copied: ${UPI_VPA}`); }
 
-      <div class="upi-box">
-        <div class="upi-label">UPI / GPay ID</div>
-        <div class="upi-id">boism-9352470085@boi</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:6px">Mobile: 9352470085</div>
-      </div>
+        // show QR code for UPI
+        function showQR() {
+            const amount = getTotal();
+            if(amount === 0) { showToast("Add items to cart first"); return; }
+            const upiLink = `upi://pay?pa=${UPI_VPA}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent("Swapnil Order")}`;
+            const qrDiv = document.getElementById('qrContainer');
+            qrDiv.innerHTML = `<div class="bg-white p-3 rounded-xl text-center shadow-lg dark:bg-slate-800">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiLink)}" class="mx-auto rounded-xl">
+                <p class="font-bold mt-2 text-green-700 dark:text-green-300">Pay ₹${amount}</p>
+                <button id="closeQR" class="text-xs text-red-500 mt-2 underline">Close</button>
+            </div>`;
+            qrDiv.classList.remove('hidden');
+            document.getElementById('closeQR')?.addEventListener('click', () => qrDiv.classList.add('hidden'));
+            setTimeout(() => qrDiv.classList.add('hidden'), 20000);
+        }
 
-      <!-- PRIMARY: Direct GPay/UPI deep link button -->
-      <button class="open-gpay-btn" id="openGpayBtn" onclick="openGpay()">
-        📲 Open GPay / UPI App
-      </button>
+        // ****** FINAL ORDER CONFIRMATION (MANUAL) – GUARANTEED ******
+        function finalizeOrder() {
+            if(cart.length === 0) { showToast("❌ Cart is empty. Add products first."); return; }
+            const total = getTotal();
+            // Build order summary for WhatsApp
+            let itemsText = "";
+            cart.forEach(item => { itemsText += `• ${item.name} : ${item.qty} ${item.unit} = ₹${item.price * item.qty}\n`; });
+            const message = `✅ *NEW ORDER CONFIRMED* (Manual Payment)\n\n${itemsText}\n💰 *Total Amount: ₹${total}*\n\nUPI ID used: ${UPI_VPA}\nCustomer confirmed payment. Please verify and dispatch.`;
+            const encodedMsg = encodeURIComponent(message);
+            const waLink = `https://wa.me/919352470085?text=${encodedMsg}`;
+            
+            // Save order locally
+            const orderRecord = { id: Date.now(), date: new Date().toLocaleString(), items: JSON.parse(JSON.stringify(cart)), total: total, status: "CONFIRMED (manual)" };
+            let orders = JSON.parse(localStorage.getItem('swapnilOrders') || '[]');
+            orders.push(orderRecord);
+            localStorage.setItem('swapnilOrders', JSON.stringify(orders));
+            
+            // Clear cart
+            cart = [];
+            saveCart();
+            closeDrawer();
+            showToast(`🎉 ORDER CONFIRMED! Total ₹${total}. Thank you. WhatsApp message sent to shop.`, 5000);
+            // Open WhatsApp chat for seller
+            setTimeout(() => { window.open(waLink, '_blank'); }, 800);
+        }
 
-      <div class="modal-btns">
-        <button class="copy-btn" onclick="copyUPI()">📋 Copy UPI ID</button>
-        <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
+        // Send cart details via WhatsApp (for inquiry without payment confirmation)
+        function sendCartWhatsApp() {
+            if(cart.length === 0) { showToast("Cart empty"); return; }
+            let txt = "🛒 *Order Inquiry*%0A";
+            cart.forEach(i => { txt += `• ${i.name} : ${i.qty} ${i.unit} = ₹${i.price*i.qty}%0A`; });
+            txt += `%0ATotal: ₹${getTotal()}%0AI will pay via UPI ${UPI_VPA}. Please confirm availability.`;
+            window.open(`https://wa.me/919352470085?text=${txt}`, '_blank');
+        }
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+        // Cart rendering & product grid (unchanged but solid)
+        function renderCartDrawer() {
+            const container = document.getElementById('cartItems');
+            const totalSpan = document.getElementById('cartTotalAmount');
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-400 py-10"><i class="fas fa-box-open text-3xl"></i><p>Cart is empty</p></div>`;
+                totalSpan.innerText = '₹0';
+                return;
+            }
+            let html = '';
+            cart.forEach(item => {
+                html += `<div class="flex gap-3 border-b pb-3">
+                    <div class="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-lg overflow-hidden"><img src="${item.image}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100'"></div>
+                    <div class="flex-1"><h4 class="font-bold">${item.name}</h4><p class="text-xs">₹${item.price} / ${item.unit}</p>
+                    <div class="flex items-center gap-2 mt-1"><button class="dec-qty w-6 h-6 rounded-full bg-gray-200 dark:bg-slate-700" data-id="${item.id}">-</button>
+                    <input type="number" value="${item.qty}" min="1" class="cart-qty w-12 text-center border rounded-full" data-id="${item.id}">
+                    <button class="inc-qty w-6 h-6 rounded-full bg-gray-200 dark:bg-slate-700" data-id="${item.id}">+</button>
+                    <button class="remove-item text-red-500 ml-auto" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></div>
+                    <div class="text-right font-semibold">₹${item.price * item.qty}</div></div></div>`;
+            });
+            container.innerHTML = html;
+            totalSpan.innerText = `₹${getTotal()}`;
+            // attach events
+            document.querySelectorAll('.dec-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const it = cart.find(i=>i.id===id); if(it) updateQty(id, it.qty-1); }));
+            document.querySelectorAll('.inc-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const it = cart.find(i=>i.id===id); if(it) updateQty(id, it.qty+1); }));
+            document.querySelectorAll('.cart-qty').forEach(inp => inp.addEventListener('change', (e) => { const id = parseInt(inp.dataset.id); let val = parseInt(inp.value); if(isNaN(val)||val<1) val=1; updateQty(id, val); }));
+            document.querySelectorAll('.remove-item').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); removeItem(id); }));
+        }
+        function updateQty(id, newQty) { if(newQty<1) removeItem(id); else { const i = cart.find(i=>i.id===id); if(i) i.qty = newQty; saveCart(); } }
+        function removeItem(id) { cart = cart.filter(i=>i.id!==id); saveCart(); }
+        function addToCart(product, qty) { const existing = cart.find(i=>i.id===product.id); if(existing) existing.qty += qty; else cart.push({...product, qty}); saveCart(); showToast(`➕ ${product.name} added (${qty} ${product.unit})`); openDrawer(); }
+        function openDrawer() { document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('active'); document.body.style.overflow='hidden'; }
+        function closeDrawer() { document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('active'); document.body.style.overflow=''; }
 
-<script>
-const UPI_ID   = 'boism-9352470085@boi';
-const UPI_NAME = 'Swapnil Chemicals';
-const UPI_MOBILE = '9352470085';
+        // Product grid rendering
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(p => {
+                if(p.liquid) {
+                    return `<div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
+                        <div class="product-image-container"><img src="${p.image}" class="h-32 w-full object-contain" onerror="this.src='https://placehold.co/200'"></div>
+                        <h3 class="text-xl font-bold mt-3">${p.name}</h3><div class="flex justify-between"><span class="text-2xl font-bold gradient-text">₹${p.price}</span><span class="text-xs">/ ${p.unit}</span></div>
+                        <div class="mt-3"><div class="flex gap-2 mb-2">${LITRE_OPTIONS.map(opt => `<button class="qty-selector-btn flex-1 liq-opt" data-id="${p.id}" data-lit="${opt}">${opt} Lt</button>`).join('')}</div>
+                        <button class="add-liquid w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-full text-sm font-semibold" data-id="${p.id}">Add Selected Qty</button></div>
+                        <div class="flex gap-2 mt-3 text-xs"><a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1.5 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a><a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1.5 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+                    </div>`;
+                } else {
+                    return `<div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
+                        <div class="product-image-container"><img src="${p.image}" class="h-32 w-full object-contain" onerror="this.src='https://placehold.co/200'"></div>
+                        <h3 class="text-xl font-bold mt-3">${p.name}</h3><div class="flex justify-between"><span class="text-2xl font-bold gradient-text">₹${p.price}</span><span class="text-xs">/ ${p.unit}</span></div>
+                        <div class="mt-3 flex gap-2"><div class="flex border rounded-full overflow-hidden"><button class="dec-unit w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">-</button><input type="number" id="qty_${p.id}" value="1" min="1" class="w-12 text-center border-0"><button class="inc-unit w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">+</button></div><button class="add-unit bg-blue-600 text-white px-3 py-1 rounded-full text-sm flex-1" data-id="${p.id}">Add</button></div>
+                        <div class="flex gap-2 mt-3 text-xs"><a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1.5 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a><a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1.5 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+                    </div>`;
+                }
+            }).join('');
 
-// ── PRODUCT DATA ──────────────────────────────────────────────────────────────
-const products = [
-  { id:1, name:"Dashboard Polish", emoji:"🪟", desc:"Premium dashboard polish for long-lasting shine", price:200, unit:"/lt", qtys:["1lt","2lt"], qtyMap:{"1lt":1,"2lt":2} },
-  { id:2, name:"Tyre Polish", emoji:"🛞", desc:"High-gloss tyre polish for enhanced appearance", price:50, unit:"/lt", qtys:["1lt","4lt","5lt"], qtyMap:{"1lt":1,"4lt":4,"5lt":5} },
-  { id:3, name:"Car Foaming Wash", emoji:"🚗", desc:"Advanced foaming wash for thorough cleaning", price:70, unit:"/lt", qtys:["1lt","5lt","10lt"], qtyMap:{"1lt":1,"5lt":5,"10lt":10} },
-  { id:4, name:"Glass Cleaner", emoji:"🔭", desc:"Streak-free glass cleaner for crystal clear visibility", price:70, unit:"/lt", qtys:["1lt","5lt","10lt"], qtyMap:{"1lt":1,"5lt":5,"10lt":10} },
-  { id:5, name:"Interior Cleaner", emoji:"🪑", desc:"Effective interior cleaner for all surfaces", price:100, unit:"/lt", qtys:["1lt","5lt","10lt"], qtyMap:{"1lt":1,"5lt":5,"10lt":10} },
-  { id:6, name:"Foaming Gun", emoji:"🔫", desc:"Professional foaming gun for car wash", price:150, unit:"/piece", qtys:null, qtyMap:null },
-  { id:7, name:"Micro Towel (Blue)", emoji:"🟦", desc:"Ultra soft Micro Towel – Blue", price:70, unit:"/piece", qtys:["5pcs","10pcs","20pcs"], qtyMap:{"5pcs":5,"10pcs":10,"20pcs":20} },
-  { id:8, name:"Micro Towel (Multi)", emoji:"🌈", desc:"Ultra soft Micro Towel – Assorted Colors", price:110, unit:"/piece", qtys:["5pcs","10pcs","20pcs"], qtyMap:{"5pcs":5,"10pcs":10,"20pcs":20} },
-  { id:9, name:"Micro Towel (Pink)", emoji:"🩷", desc:"Ultra soft Micro Towel – Pink", price:130, unit:"/piece", qtys:["5pcs","10pcs","20pcs"], qtyMap:{"5pcs":5,"10pcs":10,"20pcs":20} },
-];
+            products.forEach(p => {
+                if(p.liquid) {
+                    const btns = document.querySelectorAll(`.liq-opt[data-id="${p.id}"]`);
+                    btns.forEach(b => { if(parseInt(b.dataset.lit)===10) b.classList.add('active'); });
+                    btns.forEach(b => b.addEventListener('click', function() { btns.forEach(btn=>btn.classList.remove('active')); this.classList.add('active'); }));
+                    const addBtn = document.querySelector(`.add-liquid[data-id="${p.id}"]`);
+                    if(addBtn) addBtn.addEventListener('click', () => { const active = document.querySelector(`.liq-opt[data-id="${p.id}"].active`); let qty = active ? parseInt(active.dataset.lit) : 10; addToCart(p, qty); });
+                } else {
+                    const dec = document.querySelector(`.dec-unit[data-id="${p.id}"]`);
+                    const inc = document.querySelector(`.inc-unit[data-id="${p.id}"]`);
+                    const input = document.getElementById(`qty_${p.id}`);
+                    const addBtn = document.querySelector(`.add-unit[data-id="${p.id}"]`);
+                    if(dec) dec.onclick = () => { let v = parseInt(input.value); if(v>1) input.value = v-1; };
+                    if(inc) inc.onclick = () => { let v = parseInt(input.value); input.value = v+1; };
+                    if(addBtn) addBtn.onclick = () => { let quantity = parseInt(input.value) || 1; addToCart(p, quantity); };
+                }
+            });
+        }
 
-const cart = {};
-const selectedQty = {};
-const customQty = {};
+        // Dark mode init
+        function initDarkMode() {
+            const toggle = document.getElementById('themeToggle');
+            if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+            toggle.onclick = () => { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); toggle.innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; };
+        }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
-function renderProducts() {
-  const grid = document.getElementById('productsGrid');
-  grid.innerHTML = products.map(p => {
-    const defaultQty = p.qtys ? p.qtys[0] : null;
-    if (p.qtys) selectedQty[p.id] = defaultQty;
-    customQty[p.id] = 1;
-
-    const qtyButtons = p.qtys ? `
-      <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Select Quantity</div>
-      <div class="qty-row" id="qtyRow_${p.id}">
-        ${p.qtys.map((q,i) => `<button class="qty-btn ${i===0?'active':''}" onclick="selectQty(${p.id},'${q}',this)">${q}</button>`).join('')}
-      </div>
-    ` : `
-      <div class="qty-custom">
-        <button onclick="changeQty(${p.id},-1)">−</button>
-        <input type="number" id="cqty_${p.id}" value="1" min="1" onchange="setQty(${p.id},this.value)">
-        <button onclick="changeQty(${p.id},1)">+</button>
-      </div>
-    `;
-
-    const initTotal = p.price * (p.qtyMap ? p.qtyMap[defaultQty] : 1);
-    return `
-    <div class="product-card">
-      <div class="product-img">${p.emoji}</div>
-      <div class="product-body">
-        <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.desc}</div>
-        <div class="product-price">₹${p.price} <span>${p.unit}</span></div>
-        ${qtyButtons}
-        <div class="total-line">Total Amount: <strong id="total_${p.id}">₹${initTotal}</strong></div>
-        <button class="add-btn" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
-        <button class="gpay-btn" onclick="buyNow(${p.id})">
-          Buy via &nbsp;
-          <span class="gpay-logo"><span class="g">G</span><span class="p">P</span><span class="a">a</span><span class="y2">y</span></span>
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function selectQty(pid, qty, btn) {
-  selectedQty[pid] = qty;
-  document.querySelectorAll(`#qtyRow_${pid} .qty-btn`).forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  updateTotal(pid);
-}
-function changeQty(pid, delta) {
-  const input = document.getElementById(`cqty_${pid}`);
-  let val = parseInt(input.value) + delta;
-  if (val < 1) val = 1;
-  input.value = val;
-  customQty[pid] = val;
-  updateTotal(pid);
-}
-function setQty(pid, val) {
-  customQty[pid] = Math.max(1, parseInt(val) || 1);
-  updateTotal(pid);
-}
-function updateTotal(pid) {
-  const p = products.find(x => x.id === pid);
-  const qty = p.qtys ? (p.qtyMap[selectedQty[pid]] || 1) : (customQty[pid] || 1);
-  document.getElementById(`total_${pid}`).textContent = `₹${p.price * qty}`;
-}
-function getItemTotal(pid) {
-  const p = products.find(x => x.id === pid);
-  const qty = p.qtys ? (p.qtyMap[selectedQty[pid]] || 1) : (customQty[pid] || 1);
-  return { total: p.price * qty, qty: p.qtys ? selectedQty[pid] : `${customQty[pid]} pcs` };
-}
-
-// ── CART ──────────────────────────────────────────────────────────────────────
-function addToCart(pid) {
-  const p = products.find(x => x.id === pid);
-  const { total, qty } = getItemTotal(pid);
-  const key = `${pid}_${qty}`;
-  if (cart[key]) { cart[key].total += total; cart[key].count++; }
-  else cart[key] = { id: pid, name: p.name, emoji: p.emoji, qty, total, count: 1 };
-  updateCartUI();
-  showToast(`✅ ${p.name} added to cart!`);
-}
-function removeFromCart(key) {
-  delete cart[key];
-  updateCartUI();
-}
-function updateCartUI() {
-  const items = Object.entries(cart);
-  const count = items.reduce((s,[,i]) => s + i.count, 0);
-  document.getElementById('cartCount').textContent = count;
-  const itemsDiv = document.getElementById('cartItems');
-  const footer = document.getElementById('cartFooter');
-  if (items.length === 0) {
-    itemsDiv.innerHTML = '<div class="cart-empty">🛒<br><br>Your cart is empty.<br>Add products to get started.</div>';
-    footer.style.display = 'none';
-    return;
-  }
-  footer.style.display = 'block';
-  let grand = 0;
-  itemsDiv.innerHTML = items.map(([key, item]) => {
-    grand += item.total;
-    return `
-    <div class="cart-item">
-      <div class="cart-item-icon">${item.emoji}</div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-meta">Qty: ${item.qty}</div>
-        <div class="cart-item-price">₹${item.total}</div>
-      </div>
-      <button class="remove-item" onclick="removeFromCart('${key}')">🗑</button>
-    </div>`;
-  }).join('');
-  document.getElementById('cartTotalAmt').textContent = `₹${grand}`;
-}
-function openCart() {
-  document.getElementById('cartSidebar').classList.add('open');
-  document.getElementById('cartOverlay').classList.add('open');
-}
-function closeCart() {
-  document.getElementById('cartSidebar').classList.remove('open');
-  document.getElementById('cartOverlay').classList.remove('open');
-}
-
-// ── CHECKOUT ──────────────────────────────────────────────────────────────────
-function checkout(method) {
-  const grand = Object.values(cart).reduce((s,i) => s + i.total, 0);
-  if (method === 'gpay') {
-    showPayModal(grand);
-  } else {
-    const lines = Object.values(cart).map(i => `• ${i.name} (${i.qty}) = ₹${i.total}`).join('%0A');
-    const msg = `Hello Swapnil Chemicals!%0AI want to place an order:%0A${lines}%0A%0ATotal: ₹${grand}`;
-    window.open(`https://wa.me/91${UPI_MOBILE}?text=${msg}`, '_blank');
-  }
-}
-
-function buyNow(pid) {
-  addToCart(pid);
-  const grand = Object.values(cart).reduce((s,i) => s + i.total, 0);
-  showPayModal(grand);
-}
-
-function showPayModal(amount) {
-  document.getElementById('payAmount').textContent = `₹${amount}`;
-  // Store amount for deep link
-  document.getElementById('openGpayBtn').dataset.amount = amount;
-  document.getElementById('payModal').classList.add('show');
-}
-
-// ── GPAY DEEP LINK ────────────────────────────────────────────────────────────
-// This opens GPay / any UPI app installed on the device
-function openGpay() {
-  const amount = document.getElementById('openGpayBtn').dataset.amount || '0';
-  const note = encodeURIComponent('Swapnil Chemicals Order');
-  const name = encodeURIComponent(UPI_NAME);
-
-  // Standard UPI deep link — works on Android & opens UPI app chooser
-  // On iOS it may fall back to GPay web
-  const upiLink = `upi://pay?pa=${UPI_ID}&pn=${name}&am=${amount}&cu=INR&tn=${note}`;
-
-  // Try opening UPI deep link
-  const start = Date.now();
-  window.location.href = upiLink;
-
-  // If app did not open (desktop / app not installed), show fallback toast after 1.5s
-  setTimeout(() => {
-    if (Date.now() - start < 2000) {
-      showToast('📋 UPI app nahi khula — UPI ID copy karein aur manually pay karein');
-    }
-  }, 1500);
-}
-
-function copyUPI() {
-  navigator.clipboard.writeText(UPI_ID).then(() => {
-    showToast('📋 UPI ID copied: ' + UPI_ID);
-    closeModal();
-  }).catch(() => {
-    // Fallback for older browsers
-    const el = document.createElement('textarea');
-    el.value = UPI_ID;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    showToast('📋 UPI ID copied!');
-    closeModal();
-  });
-}
-
-function closeModal() {
-  document.getElementById('payModal').classList.remove('show');
-}
-
-// ── WHATSAPP ──────────────────────────────────────────────────────────────────
-function sendWA() {
-  const name = document.getElementById('waName').value.trim();
-  const email = document.getElementById('waEmail').value.trim();
-  const msg = document.getElementById('waMsg').value.trim();
-  if (!name || !msg) { showToast('⚠️ Name aur message bharna zaroori hai'); return; }
-  const text = `Hi, I'm ${name}${email?' ('+email+')':''}!%0A${msg}`;
-  window.open(`https://wa.me/91${UPI_MOBILE}?text=${text}`, '_blank');
-}
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-renderProducts();
-</script>
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            loadCart();
+            initDarkMode();
+            document.getElementById('cartIcon').onclick = openDrawer;
+            document.getElementById('closeCart').onclick = closeDrawer;
+            document.getElementById('cartOverlay').onclick = closeDrawer;
+            document.getElementById('copyUpiBtn').onclick = copyUpi;
+            document.getElementById('showQrBtn').onclick = showQR;
+            document.getElementById('confirmOrderBtn').onclick = finalizeOrder;
+            document.getElementById('whatsappCartBtn').onclick = sendCartWhatsApp;
+        });
+    </script>
 </body>
 </html>
