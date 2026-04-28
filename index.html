@@ -216,11 +216,16 @@
             // KEY FIX: We set href on the <a> elements directly.
             // When the user physically taps these <a> links, the browser treats it
             // as a genuine user-initiated navigation → UPI apps open without being blocked.
-            document.getElementById('linkGpay').href    = `tez://upi/pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}`;
-            document.getElementById('linkPhonepe').href = `phonepe://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}`;
-            document.getElementById('linkPaytm').href   = `paytmmp://upi/pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}`;
-            document.getElementById('linkBhim').href    = `bhim://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}`;
-            document.getElementById('linkAnyUpi').href  = base;
+            // document.getElementById('linkGpay').href    = `tez://upi/pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}`;
+            document.getElementById('linkGpay').href = `intent://upi/pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end`;
+            // document.getElementById('linkPhonepe').href = `phonepe://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}`;
+            document.getElementById('linkPhonepe').href = `intent://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}#Intent;scheme=upi;package=com.phonepe.app;end`;
+            // document.getElementById('linkPaytm').href   = `paytmmp://upi/pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}`;
+            document.getElementById('linkPaytm').href   = `intent://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}#Intent;scheme=upi;package=net.one97.paytm;end`;
+            // document.getElementById('linkBhim').href    = `bhim://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}`;
+            document.getElementById('linkBhim').href    = `intent://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}#Intent;scheme=upi;package=in.org.npci.upiapp;end`;
+            // document.getElementById('linkAnyUpi').href  = base;
+            document.getElementById('linkAnyUpi').href  = `upi://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR&tn=${tn}&mc=0000`;
             document.getElementById('modalAmount').innerText = '₹' + amt;
         }
 
@@ -236,7 +241,8 @@
         function showQR(){
             const amt = getTotal();
             if(amt===0){ showToast('Add items first'); return; }
-            const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_VPA)}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amt}&cu=INR&tn=${encodeURIComponent('Swapnil Order')}`;
+            // const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_VPA)}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amt}&cu=INR&tn=${encodeURIComponent('Swapnil Order')}`;
+            const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_VPA)}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amt}&cu=INR&tn=${encodeURIComponent('Swapnil Order')}&mc=0000`;
             const qrDiv   = document.getElementById('qrContainer');
             qrDiv.innerHTML = `<div class="bg-white dark:bg-slate-800 p-3 rounded-xl inline-block shadow-lg">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiLink)}" class="rounded-xl mx-auto">
