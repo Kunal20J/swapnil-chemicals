@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Swapnil Chemicals | Order with UPI – Confirm After Payment</title>
+    <link rel="icon" type="image/jpeg" href="SC Logo.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+        .dark body { background: #0f172a; color: #e2e8f0; }
+        .product-card { transition: 0.25s; border-radius: 1.5rem; background: white; }
+        .dark .product-card { background: #1e293b; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 20px 28px -12px rgba(0,0,0,0.2); }
+        .cart-drawer { position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh; background: white; z-index: 1000; transition: right 0.3s; box-shadow: -8px 0 35px rgba(0,0,0,0.25); display: flex; flex-direction: column; }
+        .dark .cart-drawer { background: #0f172a; }
+        .cart-drawer.open { right: 0; }
+        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999; opacity: 0; visibility: hidden; transition: 0.2s; backdrop-filter: blur(2px); }
+        .cart-overlay.active { opacity: 1; visibility: visible; }
+        .gradient-text { background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .product-image-container { height: 190px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border-radius: 1rem; }
+        .dark .product-image-container { background: #334155; }
+        .qty-selector-btn { border: 1px solid #cbd5e1; border-radius: 9999px; padding: 6px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer; background: white; text-align: center; }
+        .dark .qty-selector-btn { background: #334155; border-color: #475569; color: #f1f5f9; }
+        .qty-selector-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+        .upi-highlight { background: linear-gradient(145deg, #d9f0ff, #c2e4ff); border-left: 6px solid #0284c7; border-radius: 20px; }
+        .dark .upi-highlight { background: #0f172a; border-left-color: #38bdf8; }
+        .toast-notify { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 22px; border-radius: 60px; font-size: 0.85rem; z-index: 1200; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: opacity 0.2s; pointer-events: none; }
+        .dark .toast-notify { background: #0f172a; border: 1px solid #334155; }
+        .confirm-btn { background: linear-gradient(98deg, #059669, #047857); transition: 0.2s; }
+        .confirm-btn:hover { transform: scale(1.01); filter: brightness(1.05); }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/85 dark:bg-slate-900/85 border-b">
+        <div class="container mx-auto px-5 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-full overflow-hidden ring-2 ring-blue-500/30">
+                    <img src="SC Logo.jpg" alt="logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/200x200?text=SC'">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Swapnil Chemicals</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Pay via UPI → Confirm order manually</p>
+                </div>
+            </div>
+            <div class="flex gap-3 items-center">
+                <button id="themeToggle" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800">🌙</button>
+                <button id="cartIcon" class="relative p-2 rounded-full bg-gray-100 dark:bg-slate-800">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 text-white py-16 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold">Premium <span class="text-blue-300">Auto Care</span></h2>
+        <p class="mt-4 max-w-xl mx-auto">Add products → Pay using the UPI ID below → Then click "CONFIRM ORDER" – your order will be booked instantly.</p>
+    </section>
+
+    <!-- Products Grid -->
+    <section id="products" class="py-16 px-5">
+        <div class="container mx-auto">
+            <h3 class="text-3xl font-bold text-center gradient-text mb-4">📦 Shop Products</h3>
+            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7"></div>
+        </div>
+    </section>
+
+    <!-- Cart Drawer (NO AUTO REDIRECT, only manual confirmation) -->
+    <div id="cartOverlay" class="cart-overlay"></div>
+    <div id="cartDrawer" class="cart-drawer">
+        <div class="flex justify-between items-center p-5 border-b dark:border-slate-700">
+            <h2 class="text-2xl font-bold"><i class="fas fa-shopping-cart text-blue-500"></i> Your Cart</h2>
+            <button id="closeCart" class="text-3xl">&times;</button>
+        </div>
+        <div id="cartItems" class="flex-1 overflow-auto p-5 space-y-4"></div>
+        <div class="p-5 border-t bg-white dark:bg-slate-900">
+            <div class="flex justify-between text-xl font-bold mb-4">
+                <span>Total Payable</span>
+                <span id="cartTotalAmount" class="text-blue-600 dark:text-blue-400">₹0</span>
+            </div>
+
+            <!-- PROMINENT UPI DETAILS (COPY & QR) -->
+            <div class="upi-highlight p-4 rounded-2xl mb-5">
+                <div class="text-center">
+                    <p class="text-xs font-semibold text-blue-700 dark:text-blue-300">🔐 OFFICIAL UPI ID (Copy & Pay)</p>
+                    <p class="font-mono text-xl font-bold tracking-wider bg-white/70 dark:bg-slate-800/80 inline-block px-4 py-1.5 rounded-full my-2">boism-9352470085@boi</p>
+                    <div class="flex gap-3 justify-center mt-1">
+                        <button id="copyUpiBtn" class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm flex items-center gap-1"><i class="far fa-copy"></i> Copy UPI ID</button>
+                        <button id="showQrBtn" class="bg-gray-700 text-white px-4 py-1.5 rounded-full text-sm flex items-center gap-1"><i class="fas fa-qrcode"></i> Show QR</button>
+                    </div>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">Pay any amount using Google Pay, PhonePe, Paytm → then click <strong class="text-green-600">CONFIRM ORDER</strong> below.</p>
+                </div>
+                <div id="qrContainer" class="mt-3 hidden flex justify-center"></div>
+            </div>
+
+            <!-- MANUAL CONFIRM BUTTON (SOLUTION TO PAYMENT FAILURE) -->
+            <button id="confirmOrderBtn" class="confirm-btn w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 shadow-md text-lg">
+                <i class="fas fa-check-circle"></i> ✅ CONFIRM ORDER – I HAVE PAID
+            </button>
+            <p class="text-xs text-center text-gray-400 mt-3">⚠️ Only click after you have successfully paid via the UPI ID above.<br>Your order will be sent to Swapnil Chemicals via WhatsApp.</p>
+
+            <div class="flex gap-2 mt-4">
+                <button id="whatsappCartBtn" class="bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl text-sm flex-1"><i class="fab fa-whatsapp"></i> Send Cart to WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-white py-7 text-center text-sm mt-10">
+        <p>© 2026 Swapnil Chemicals | Jaipur | GST: 08CIJPS1734A1ZE</p>
+        <p class="text-slate-400">📞 <a href="tel:9352470085" class="text-blue-300">+91 9352470085</a></p>
+    </footer>
+
+    <script>
+        // ====================== PRODUCT DATA ======================
+        const products = [
+            { id: 1, name: "Dashboard Polish", image: "Dashboard Polish.jpeg", price: 1, unit: "Litre", liquid: true },
+            { id: 2, name: "Tyre Polish", image: "Tyre Polish.jpeg", price: 150, unit: "Litre", liquid: true },
+            { id: 3, name: "Car Foaming Wash", image: "Car Foaming Wash.jpeg", price: 70, unit: "Litre", liquid: true },
+            { id: 4, name: "Glass Cleaner", image: "Glass Cleaner.jpeg", price: 70, unit: "Litre", liquid: true },
+            { id: 5, name: "Interior Cleaner", image: "Interior Cleaner.png", price: 130, unit: "Litre", liquid: true },
+            { id: 6, name: "Foaming Gun", image: "Foaming Gun.jpeg", price: 2000, unit: "Piece", liquid: false },
+            { id: 7, name: "Micro Towel (Blue)", image: "Micro Towel.jpg", price: 70, unit: "Piece", liquid: false },
+            { id: 8, name: "Micro Towel Premium", image: "Micro Towel 2.jpg", price: 110, unit: "Piece", liquid: false },
+            { id: 9, name: "Micro Towel Deluxe", image: "Micro Towel 3.jpg", price: 130, unit: "Piece", liquid: false }
+        ];
+        const LITRE_OPTIONS = [10, 35, 50];
+        let cart = [];
+        const UPI_VPA = "boism-9352470085@boi";
+        const PAYEE_NAME = "Swapnil Chemicals";
+
+        // helpers
+        function saveCart() { localStorage.setItem('swapnilCart', JSON.stringify(cart)); updateBadge(); renderCartDrawer(); }
+        function loadCart() { const stored = localStorage.getItem('swapnilCart'); cart = stored ? JSON.parse(stored) : []; updateBadge(); renderCartDrawer(); }
+        function updateBadge() { const totalQty = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartBadge').innerText = totalQty; }
+        function getTotal() { return cart.reduce((s,i)=>s + (i.price * i.qty), 0); }
+        function showToast(msg, duration=3000) {
+            let t = document.getElementById('dynamicToast');
+            if(!t) { t = document.createElement('div'); t.id='dynamicToast'; t.className='toast-notify'; document.body.appendChild(t); }
+            t.innerText = msg; t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',duration);
+        }
+
+        // copy UPI ID
+        function copyUpi() { navigator.clipboard.writeText(UPI_VPA); showToast(`✅ UPI ID copied: ${UPI_VPA}`); }
+
+        // show QR code for UPI
+        function showQR() {
+            const amount = getTotal();
+            if(amount === 0) { showToast("Add items to cart first"); return; }
+            const upiLink = `upi://pay?pa=${UPI_VPA}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent("Swapnil Order")}`;
+            const qrDiv = document.getElementById('qrContainer');
+            qrDiv.innerHTML = `<div class="bg-white p-3 rounded-xl text-center shadow-lg dark:bg-slate-800">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiLink)}" class="mx-auto rounded-xl">
+                <p class="font-bold mt-2 text-green-700 dark:text-green-300">Pay ₹${amount}</p>
+                <button id="closeQR" class="text-xs text-red-500 mt-2 underline">Close</button>
+            </div>`;
+            qrDiv.classList.remove('hidden');
+            document.getElementById('closeQR')?.addEventListener('click', () => qrDiv.classList.add('hidden'));
+            setTimeout(() => qrDiv.classList.add('hidden'), 20000);
+        }
+
+        // ****** FINAL ORDER CONFIRMATION (MANUAL) – GUARANTEED ******
+        function finalizeOrder() {
+            if(cart.length === 0) { showToast("❌ Cart is empty. Add products first."); return; }
+            const total = getTotal();
+            // Build order summary for WhatsApp
+            let itemsText = "";
+            cart.forEach(item => { itemsText += `• ${item.name} : ${item.qty} ${item.unit} = ₹${item.price * item.qty}\n`; });
+            const message = `✅ *NEW ORDER CONFIRMED* (Manual Payment)\n\n${itemsText}\n💰 *Total Amount: ₹${total}*\n\nUPI ID used: ${UPI_VPA}\nCustomer confirmed payment. Please verify and dispatch.`;
+            const encodedMsg = encodeURIComponent(message);
+            const waLink = `https://wa.me/919352470085?text=${encodedMsg}`;
+            
+            // Save order locally
+            const orderRecord = { id: Date.now(), date: new Date().toLocaleString(), items: JSON.parse(JSON.stringify(cart)), total: total, status: "CONFIRMED (manual)" };
+            let orders = JSON.parse(localStorage.getItem('swapnilOrders') || '[]');
+            orders.push(orderRecord);
+            localStorage.setItem('swapnilOrders', JSON.stringify(orders));
+            
+            // Clear cart
+            cart = [];
+            saveCart();
+            closeDrawer();
+            showToast(`🎉 ORDER CONFIRMED! Total ₹${total}. Thank you. WhatsApp message sent to shop.`, 5000);
+            // Open WhatsApp chat for seller
+            setTimeout(() => { window.open(waLink, '_blank'); }, 800);
+        }
+
+        // Send cart details via WhatsApp (for inquiry without payment confirmation)
+        function sendCartWhatsApp() {
+            if(cart.length === 0) { showToast("Cart empty"); return; }
+            let txt = "🛒 *Order Inquiry*%0A";
+            cart.forEach(i => { txt += `• ${i.name} : ${i.qty} ${i.unit} = ₹${i.price*i.qty}%0A`; });
+            txt += `%0ATotal: ₹${getTotal()}%0AI will pay via UPI ${UPI_VPA}. Please confirm availability.`;
+            window.open(`https://wa.me/919352470085?text=${txt}`, '_blank');
+        }
+
+        // Cart rendering & product grid (unchanged but solid)
+        function renderCartDrawer() {
+            const container = document.getElementById('cartItems');
+            const totalSpan = document.getElementById('cartTotalAmount');
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-400 py-10"><i class="fas fa-box-open text-3xl"></i><p>Cart is empty</p></div>`;
+                totalSpan.innerText = '₹0';
+                return;
+            }
+            let html = '';
+            cart.forEach(item => {
+                html += `<div class="flex gap-3 border-b pb-3">
+                    <div class="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-lg overflow-hidden"><img src="${item.image}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100'"></div>
+                    <div class="flex-1"><h4 class="font-bold">${item.name}</h4><p class="text-xs">₹${item.price} / ${item.unit}</p>
+                    <div class="flex items-center gap-2 mt-1"><button class="dec-qty w-6 h-6 rounded-full bg-gray-200 dark:bg-slate-700" data-id="${item.id}">-</button>
+                    <input type="number" value="${item.qty}" min="1" class="cart-qty w-12 text-center border rounded-full" data-id="${item.id}">
+                    <button class="inc-qty w-6 h-6 rounded-full bg-gray-200 dark:bg-slate-700" data-id="${item.id}">+</button>
+                    <button class="remove-item text-red-500 ml-auto" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></div>
+                    <div class="text-right font-semibold">₹${item.price * item.qty}</div></div></div>`;
+            });
+            container.innerHTML = html;
+            totalSpan.innerText = `₹${getTotal()}`;
+            // attach events
+            document.querySelectorAll('.dec-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const it = cart.find(i=>i.id===id); if(it) updateQty(id, it.qty-1); }));
+            document.querySelectorAll('.inc-qty').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); const it = cart.find(i=>i.id===id); if(it) updateQty(id, it.qty+1); }));
+            document.querySelectorAll('.cart-qty').forEach(inp => inp.addEventListener('change', (e) => { const id = parseInt(inp.dataset.id); let val = parseInt(inp.value); if(isNaN(val)||val<1) val=1; updateQty(id, val); }));
+            document.querySelectorAll('.remove-item').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); removeItem(id); }));
+        }
+        function updateQty(id, newQty) { if(newQty<1) removeItem(id); else { const i = cart.find(i=>i.id===id); if(i) i.qty = newQty; saveCart(); } }
+        function removeItem(id) { cart = cart.filter(i=>i.id!==id); saveCart(); }
+        function addToCart(product, qty) { const existing = cart.find(i=>i.id===product.id); if(existing) existing.qty += qty; else cart.push({...product, qty}); saveCart(); showToast(`➕ ${product.name} added (${qty} ${product.unit})`); openDrawer(); }
+        function openDrawer() { document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('active'); document.body.style.overflow='hidden'; }
+        function closeDrawer() { document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('active'); document.body.style.overflow=''; }
+
+        // Product grid rendering
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(p => {
+                if(p.liquid) {
+                    return `<div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
+                        <div class="product-image-container"><img src="${p.image}" class="h-32 w-full object-contain" onerror="this.src='https://placehold.co/200'"></div>
+                        <h3 class="text-xl font-bold mt-3">${p.name}</h3><div class="flex justify-between"><span class="text-2xl font-bold gradient-text">₹${p.price}</span><span class="text-xs">/ ${p.unit}</span></div>
+                        <div class="mt-3"><div class="flex gap-2 mb-2">${LITRE_OPTIONS.map(opt => `<button class="qty-selector-btn flex-1 liq-opt" data-id="${p.id}" data-lit="${opt}">${opt} Lt</button>`).join('')}</div>
+                        <button class="add-liquid w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-full text-sm font-semibold" data-id="${p.id}">Add Selected Qty</button></div>
+                        <div class="flex gap-2 mt-3 text-xs"><a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1.5 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a><a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1.5 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+                    </div>`;
+                } else {
+                    return `<div class="product-card p-4 shadow-md rounded-2xl bg-white dark:bg-slate-800">
+                        <div class="product-image-container"><img src="${p.image}" class="h-32 w-full object-contain" onerror="this.src='https://placehold.co/200'"></div>
+                        <h3 class="text-xl font-bold mt-3">${p.name}</h3><div class="flex justify-between"><span class="text-2xl font-bold gradient-text">₹${p.price}</span><span class="text-xs">/ ${p.unit}</span></div>
+                        <div class="mt-3 flex gap-2"><div class="flex border rounded-full overflow-hidden"><button class="dec-unit w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">-</button><input type="number" id="qty_${p.id}" value="1" min="1" class="w-12 text-center border-0"><button class="inc-unit w-8 bg-gray-100 dark:bg-slate-700" data-id="${p.id}">+</button></div><button class="add-unit bg-blue-600 text-white px-3 py-1 rounded-full text-sm flex-1" data-id="${p.id}">Add</button></div>
+                        <div class="flex gap-2 mt-3 text-xs"><a href="tel:9352470085" class="bg-gray-100 dark:bg-slate-700 p-1.5 rounded text-center flex-1"><i class="fas fa-phone"></i> Call</a><a href="https://wa.me/919352470085?text=Hi, interested in ${p.name}" target="_blank" class="bg-green-100 dark:bg-green-900 p-1.5 rounded text-center flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+                    </div>`;
+                }
+            }).join('');
+
+            products.forEach(p => {
+                if(p.liquid) {
+                    const btns = document.querySelectorAll(`.liq-opt[data-id="${p.id}"]`);
+                    btns.forEach(b => { if(parseInt(b.dataset.lit)===10) b.classList.add('active'); });
+                    btns.forEach(b => b.addEventListener('click', function() { btns.forEach(btn=>btn.classList.remove('active')); this.classList.add('active'); }));
+                    const addBtn = document.querySelector(`.add-liquid[data-id="${p.id}"]`);
+                    if(addBtn) addBtn.addEventListener('click', () => { const active = document.querySelector(`.liq-opt[data-id="${p.id}"].active`); let qty = active ? parseInt(active.dataset.lit) : 10; addToCart(p, qty); });
+                } else {
+                    const dec = document.querySelector(`.dec-unit[data-id="${p.id}"]`);
+                    const inc = document.querySelector(`.inc-unit[data-id="${p.id}"]`);
+                    const input = document.getElementById(`qty_${p.id}`);
+                    const addBtn = document.querySelector(`.add-unit[data-id="${p.id}"]`);
+                    if(dec) dec.onclick = () => { let v = parseInt(input.value); if(v>1) input.value = v-1; };
+                    if(inc) inc.onclick = () => { let v = parseInt(input.value); input.value = v+1; };
+                    if(addBtn) addBtn.onclick = () => { let quantity = parseInt(input.value) || 1; addToCart(p, quantity); };
+                }
+            });
+        }
+
+        // Dark mode init
+        function initDarkMode() {
+            const toggle = document.getElementById('themeToggle');
+            if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+            toggle.onclick = () => { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); toggle.innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; };
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            loadCart();
+            initDarkMode();
+            document.getElementById('cartIcon').onclick = openDrawer;
+            document.getElementById('closeCart').onclick = closeDrawer;
+            document.getElementById('cartOverlay').onclick = closeDrawer;
+            document.getElementById('copyUpiBtn').onclick = copyUpi;
+            document.getElementById('showQrBtn').onclick = showQR;
+            document.getElementById('confirmOrderBtn').onclick = finalizeOrder;
+            document.getElementById('whatsappCartBtn').onclick = sendCartWhatsApp;
+        });
+    </script>
+</body>
+</html>
