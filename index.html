@@ -280,7 +280,10 @@
         function openPaymentModal(amount, note) {
             const UPI_ID  = 'boism-9352470085@boi';
             const PAYEE   = 'Swapnil Chemicals';
-            const upiUrl  = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(PAYEE)}&am=${encodeURIComponent(amount)}&cu=INR&tn=${encodeURIComponent(note)}`;
+            // FIXED: amount must NOT be encoded - plain decimal required by UPI spec
+            // note must be alphanumeric only, max 50 chars
+            const safeNote = (note || 'Order').replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 50).trim();
+            const upiUrl  = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${amount}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
             const qrUrl   = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUrl)}`;
 
             document.getElementById('pmAmount').textContent  = `₹${amount}`;
@@ -304,11 +307,11 @@
             document.getElementById('pmPayNowBtn').onclick = function () {
                 const isAndroid = /Android/i.test(navigator.userAgent);
                 if (isAndroid) {
-                    /* Try GPay intent first, fall back to generic upi:// */
-                    const intent = upiUrl.replace('upi://pay', 'intent://pay')
-                        + '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
-                    window.location.href = intent;
-                    setTimeout(() => { window.location.href = upiUrl; }, 1500);
+                    // Try GPay package intent first
+                    const gpayIntent = `intent://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${amount}&cu=INR&tn=${encodeURIComponent(safeNote)}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;S.browser_fallback_url=${encodeURIComponent(upiUrl)};end`;
+                    window.location.href = gpayIntent;
+                    // Fallback after 2s if GPay not installed
+                    setTimeout(() => { window.location.href = upiUrl; }, 2000);
                 } else {
                     window.location.href = upiUrl;
                 }
