@@ -278,49 +278,51 @@
         }
 
         function openPaymentModal(amount, note) {
-            const UPI_ID  = 'boism-9352470085@boi';
-            const PAYEE   = 'Swapnil Chemicals';
-            // FIXED: amount must NOT be encoded - plain decimal required by UPI spec
-            // note must be alphanumeric only, max 50 chars
+            const UPI_ID = 'boism-9352470085@boi';
+            const PAYEE  = 'Swapnil Chemicals';
             const safeNote = (note || 'Order').replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 50).trim();
-            const upiUrl  = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${amount}&cu=INR&tn=${encodeURIComponent(safeNote)}`;
-            const qrUrl   = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUrl)}`;
 
-            document.getElementById('pmAmount').textContent  = `₹${amount}`;
-            document.getElementById('pmUpiId').textContent   = UPI_ID;
-            document.getElementById('pmNote').textContent    = note;
-            document.getElementById('pmQr').src              = qrUrl;
-            document.getElementById('pmQr').alt              = `Pay ₹${amount} to ${PAYEE}`;
+            // Correct UPI URL: amount as plain number, no encoding on amount
+            const upiUrl = 'upi://pay?pa=' + UPI_ID
+                + '&pn=' + encodeURIComponent(PAYEE)
+                + '&am=' + amount
+                + '&cu=INR'
+                + '&tn=' + encodeURIComponent(safeNote);
+
+            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(upiUrl);
+
+            document.getElementById('pmAmount').textContent = '\u20b9' + amount;
+            document.getElementById('pmUpiId').textContent  = UPI_ID;
+            document.getElementById('pmNote').textContent   = safeNote;
+            document.getElementById('pmQr').src             = qrUrl;
 
             /* Copy UPI ID */
             document.getElementById('pmCopyBtn').onclick = async function () {
                 try {
                     await navigator.clipboard.writeText(UPI_ID);
-                    this.textContent = '✓ Copied!';
+                    this.textContent = '\u2713 Copied!';
                     setTimeout(() => { this.textContent = 'Copy UPI ID'; }, 1800);
                 } catch (_) {
                     prompt('Copy this UPI ID:', UPI_ID);
                 }
             };
 
-            /* Direct UPI / GPay deep-link */
+            /* Pay Now - use hidden <a> click trick to bypass Chrome UPI block */
             document.getElementById('pmPayNowBtn').onclick = function () {
-                const isAndroid = /Android/i.test(navigator.userAgent);
-                if (isAndroid) {
-                    // Try GPay package intent first
-                    const gpayIntent = `intent://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${amount}&cu=INR&tn=${encodeURIComponent(safeNote)}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;S.browser_fallback_url=${encodeURIComponent(upiUrl)};end`;
-                    window.location.href = gpayIntent;
-                    // Fallback after 2s if GPay not installed
-                    setTimeout(() => { window.location.href = upiUrl; }, 2000);
-                } else {
-                    window.location.href = upiUrl;
-                }
+                const a = document.createElement('a');
+                a.href = upiUrl;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    if (document.body.contains(a)) document.body.removeChild(a);
+                }, 1000);
             };
 
             /* WhatsApp confirmation */
             document.getElementById('pmWhatsappBtn').onclick = function () {
-                const msg = `Hi Swapnil Chemicals,\n\nMaine payment kar di hai ✅\n\nAmount: ₹${amount}\nOrder: ${note}\n\nPlease confirm my order. Thank you!`;
-                window.open(`https://wa.me/919352470085?text=${encodeURIComponent(msg)}`, '_blank');
+                const msg = 'Hi Swapnil Chemicals,\n\nMaine payment kar di hai \u2705\n\nAmount: \u20b9' + amount + '\nOrder: ' + safeNote + '\n\nPlease confirm my order. Thank you!';
+                window.open('https://wa.me/919352470085?text=' + encodeURIComponent(msg), '_blank');
             };
 
             document.getElementById('paymentModal').classList.remove('hidden');
