@@ -699,15 +699,18 @@
         /* Flying cart animation */
         .fly-item {
           position: fixed;
-          width: 50px;
-          height: 50px;
+          /* width: 50px;
+          height: 50px; */
+           width: 100px;
+          height: 100px;
           border-radius: 50%;
           background: linear-gradient(135deg, #f59e0b, #d97706);
           display: flex;
           align-items: center;
           justify-content: center;
           color: white;
-          font-size: 18px;
+          /* font-size: 18px; */
+          font-size: 36px;
           z-index: 9999;
           pointer-events: none;
           transition: none;
@@ -1216,13 +1219,24 @@
     const cardRect = card.getBoundingClientRect();
     const cartRect = cartBtn.getBoundingClientRect();
 
-    const flyEl = document.createElement('div');
-    flyEl.className = 'fly-item';
-    flyEl.innerHTML = '<i class="fas fa-box"></i>';
+    // const flyEl = document.createElement('div');
+    // flyEl.className = 'fly-item';
+    // flyEl.innerHTML = '<i class="fas fa-box"></i>';
 
-    // Start position — product card ke center se
-    flyEl.style.left = (cardRect.left + cardRect.width / 2 - 25) + 'px';
-    flyEl.style.top  = (cardRect.top  + cardRect.height / 2 - 25) + 'px';
+    // // Start position — product card ke center se
+    // flyEl.style.left = (cardRect.left + cardRect.width / 2 - 25) + 'px';
+    // flyEl.style.top  = (cardRect.top  + cardRect.height / 2 - 25) + 'px';
+
+
+
+    // custom 07-05-26
+const flyEl = document.createElement('div');
+flyEl.className = 'fly-item';
+flyEl.innerHTML = '<i class="fas fa-box"></i>';
+
+flyEl.style.left = (cardRect.left + cardRect.width / 2 - 40) + 'px';
+flyEl.style.top  = (cardRect.top  + cardRect.height / 2 - 40) + 'px';
+
 
     document.body.appendChild(flyEl);
 
@@ -1232,7 +1246,8 @@
 
     requestAnimationFrame(() => {
       // flyEl.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-      flyEl.style.transition = 'all 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // custom 07-05-26
+      // flyEl.style.transition = 'all 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // custom 07-05-26
+      flyEl.style.transition = 'all 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
       flyEl.style.left = targetX + 'px';
       flyEl.style.top  = targetY + 'px';
       flyEl.style.transform = 'scale(0.3)';
@@ -1248,7 +1263,7 @@
         setTimeout(() => badge.style.transform = 'scale(1)', 300);
       }
     // }, 800);
-    }, 1400);  // custom 07-05-26
+    }, 2200);  // custom 07-05-26
   }
 
 
