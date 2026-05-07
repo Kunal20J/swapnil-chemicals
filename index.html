@@ -179,6 +179,9 @@
 
       #scrollToTop {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: fixed;  
+        bottom: 1.5rem;
+        right: 1.5rem;
         width: 56px;
         height: 56px;
         border-radius: 50%;
@@ -369,12 +372,16 @@
       /* CART STYLES */
       .cart-icon-btn {
         position: fixed;
-        bottom: 35rem;
+        top: 18px;
+        /* bottom: 35rem; */
+        bottom: auto;     
         /* increased from 2rem */
         right: 1.5rem;
         z-index: 60;
-        width: 56px;
-        height: 56px;
+        /* width: 56px;
+        height: 56px; */
+         width: 46px;
+        height: 46px;
         border-radius: 50%;
         background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
@@ -407,11 +414,15 @@
         align-items: center;
         justify-content: center;
         padding: 0 4px;
+        /* custom 07-05-26 */
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
 
       .cart-panel {
         position: fixed;
-        bottom: 6rem;
+        top: 72px;
+        /* bottom: 6rem; */
+         bottom: auto;
         right: 1.5rem;
         z-index: 70;
         width: 340px;
@@ -677,6 +688,27 @@
         margin-top: 8px;
       }
 
+
+      /* custom 07-05-266 */
+      /* Flying cart animation */
+      .fly-item {
+        position: fixed;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        z-index: 9999;
+        pointer-events: none;
+        transition: none;
+      }
+
+
+
       @media (max-width: 400px) {
         .cart-panel {
           width: calc(100vw - 2rem);
@@ -702,11 +734,19 @@
               <p class="text-sm text-gray-600">Manufacturers & marketers of automobile cleaning products</p>
             </div>
           </div>
-          <div class="flex items-center gap-4">
+          <!-- <div class="flex items-center gap-4">
             <div class="glass-card px-4 py-2 rounded-lg">
               <p class="text-gray-700 font-medium"><i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>Jaipur • Bulk & Retail</p>
             </div>
-          </div>
+          </div> -->
+
+          <!-- custom 07-05-26 -->
+<div class="flex items-center gap-4 mr-8">
+  <div class="glass-card px-4 py-2 rounded-lg">
+    <p class="text-gray-700 font-medium"><i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>Jaipur • Bulk & Retail</p>
+  </div>
+</div>
+
         </div>
       </div>
     </header>
@@ -880,7 +920,8 @@
     </footer>
 
     <!-- FLOATING CART BUTTON & PANEL -->
-    <button class="cart-icon-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart text-xl"></i><span class="cart-badge" id="cartBadge" style="display:none">0</span></button>
+    <!-- <button class="cart-icon-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart text-xl"></i><span class="cart-badge" id="cartBadge" style="display:none">0</span></button> -->
+     <button class="cart-icon-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart text-base"></i></i><span class="cart-badge" id="cartBadge" style="display:none">0</span></button>
     <div class="cart-panel hidden" id="cartPanel">
       <div class="cart-panel-header">
         <div>
@@ -1038,6 +1079,7 @@
       let cart = {};
 
       function addToCart(productId) {
+          flyToCart(productId); // custom 07-05-26
         const product = products.find(p => p.id === productId);
         if (!product) return;
         const card = document.querySelector(`[data-product-id="${productId}"]`);
@@ -1130,11 +1172,60 @@ gpayBtn.innerHTML = `
         cart = {};
         localStorage.removeItem('sc_cart');
         updateCartUI();
+        document.getElementById('cartPanel').classList.add('hidden'); // custom 07-05-26
       }
 
       function toggleCart() {
         document.getElementById('cartPanel').classList.toggle('hidden');
       }
+
+
+
+
+      // custom 07-05-26
+
+      function flyToCart(productId) {
+  const card = document.querySelector(`[data-product-id="${productId}"]`);
+  const cartBtn = document.querySelector('.cart-icon-btn');
+  if (!card || !cartBtn) return;
+
+  const cardRect = card.getBoundingClientRect();
+  const cartRect = cartBtn.getBoundingClientRect();
+
+  const flyEl = document.createElement('div');
+  flyEl.className = 'fly-item';
+  flyEl.innerHTML = '<i class="fas fa-box"></i>';
+
+  // Start position — product card ke center se
+  flyEl.style.left = (cardRect.left + cardRect.width / 2 - 25) + 'px';
+  flyEl.style.top  = (cardRect.top  + cardRect.height / 2 - 25) + 'px';
+
+  document.body.appendChild(flyEl);
+
+  // Cart button ka center
+  const targetX = cartRect.left + cartRect.width / 2 - 25;
+  const targetY = cartRect.top  + cartRect.height / 2 - 25;
+
+  requestAnimationFrame(() => {
+    // flyEl.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    flyEl.style.transition = 'all 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // custom 07-05-26
+    flyEl.style.left = targetX + 'px';
+    flyEl.style.top  = targetY + 'px';
+    flyEl.style.transform = 'scale(0.3)';
+    flyEl.style.opacity = '0';
+  });
+
+  setTimeout(() => {
+    flyEl.remove();
+    // Cart badge bounce
+    const badge = document.querySelector('.cart-badge');
+    if (badge) {
+      badge.style.transform = 'scale(1.8)';
+      setTimeout(() => badge.style.transform = 'scale(1)', 300);
+    }
+  // }, 800);
+   }, 1400);  // custom 07-05-26
+}
 
 
 
@@ -1274,13 +1365,20 @@ function submitCartEnquiry() {
 
         grandTotal += lineTotal;
 
-        msg +=
-`📦 *${product.name}*
-Qty: ${qty} ${label}
-Price: ₹${product.price}
-Total: ₹${lineTotal}
 
-`;
+//         msg +=
+// `📦 *${product.name}*
+// Qty: ${qty} ${label}
+// Price: ₹${product.price}
+// Total: ₹${lineTotal}
+
+// `;
+
+
+// custom 07-05-26
+
+msg += `📦 ${product.name} - Qty: ${qty} ${label}, Price: ₹${product.price} = Total: ₹${lineTotal}%0A`;
+
     });
 
     msg += `%0A📝 Details: ${details}`;
