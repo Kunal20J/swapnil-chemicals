@@ -265,27 +265,6 @@
       }
     }
 
-    /* Scroll-driven reveal for browsers that support it; initScrollAnimations()
-       falls back to an IntersectionObserver everywhere else. */
-    @supports (animation-timeline: view()) {
-      .scroll-reveal {
-        animation: revealOnScroll linear both;
-        animation-timeline: view();
-      }
-
-      @keyframes revealOnScroll {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    }
-
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -2329,14 +2308,6 @@
 
     function initScrollAnimations() {
       const cards = document.querySelectorAll('.product-card, .feature-card');
-
-      // Browsers that support scroll-driven animations get a pure-CSS reveal
-      // (see the @supports block in <style>) - no observer, no per-frame JS.
-      if (window.CSS && CSS.supports('animation-timeline: view()')) {
-        cards.forEach(c => c.classList.add('scroll-reveal'));
-        return;
-      }
-
       const obs = new IntersectionObserver((e) => e.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.style.opacity = '1';
