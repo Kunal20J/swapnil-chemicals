@@ -5,16 +5,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>
-    // Applied before first paint so dark-mode users don't see a flash of the light theme.
-    (function () {
-      try {
-        var stored = localStorage.getItem('sc_theme');
-        var wantsDark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (wantsDark) document.documentElement.classList.add('dark');
-      } catch (e) {}
-    })();
-  </script>
   <title>Swapnil Chemicals | Automobile Cleaning Products Manufacturer, Jaipur</title>
   <link rel="icon" type="image/jpeg" href="SC Logo.jpg" />
   <link rel="apple-touch-icon" href="SC Logo.jpg" />
@@ -22,8 +12,8 @@
   <meta name="description" content="Swapnil Chemicals - Leading manufacturers of automobile cleaning products in Jaipur. Bulk & retail. Dashboard polish, tyre polish, car wash & more." />
   <meta name="keywords" content="automobile cleaning, car cleaning, dashboard polish, tyre polish, car wash, glass cleaner, Jaipur manufacturer" />
   <meta name="robots" content="index, follow" />
-  <meta name="color-scheme" content="light dark" />
-  <meta name="theme-color" content="#1e293b" id="themeColorMeta" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#1e293b" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <!-- Open Graph / social sharing -->
@@ -55,7 +45,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -352,41 +341,6 @@
       }
     }
 
-    /* --- Dark mode ---------------------------------------------------------- */
-
-    .dark body,
-    body.dark {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 35%, #0b1220 65%, #020617 100%);
-      color: #e2e8f0;
-    }
-
-    .dark .glass-card {
-      background: rgba(30, 41, 59, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .dark .product-card {
-      background: rgba(30, 41, 59, 0.9);
-    }
-
-    .dark .feature-card {
-      background: rgba(30, 41, 59, 0.8);
-    }
-
-    .dark .text-gray-800 {
-      color: #e2e8f0;
-    }
-
-    .dark .text-gray-700,
-    .dark .text-gray-600 {
-      color: #cbd5f5;
-    }
-
-    .dark .nav-blur {
-      background: rgba(15, 23, 42, 0.9);
-      border-bottom-color: rgba(51, 65, 85, 0.6);
-    }
-
     /* --- Quantity selectors -------------------------------------------------- */
 
     .qty-btn {
@@ -531,10 +485,6 @@
       transform: scale(0.85);
     }
 
-    .dark .cart-panel {
-      background: #1e293b;
-    }
-
     .cart-panel-header {
       padding: 16px 20px;
       border-bottom: 1px solid #e2e8f0;
@@ -559,10 +509,6 @@
       padding: 10px 0;
       border-bottom: 1px solid #f1f5f9;
       font-size: 13px;
-    }
-
-    .dark .cart-item-row {
-      border-color: #334155;
     }
 
     .cart-item-qty-ctrl {
@@ -591,11 +537,6 @@
       padding: 14px 20px;
       border-top: 1px solid #e2e8f0;
       background: #f8fafc;
-    }
-
-    .dark .cart-panel-footer {
-      background: #0f172a;
-      border-color: #334155;
     }
 
     .cart-empty-msg {
@@ -652,10 +593,6 @@
       overflow-y: auto;
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
       animation: enquiryModalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .dark .enquiry-modal-box {
-      background: #1e293b;
     }
 
     @keyframes enquiryModalIn {
@@ -715,15 +652,6 @@
       border: 1px solid #bae6fd;
     }
 
-    .dark .enquiry-product-preview {
-      background: rgba(59, 130, 246, 0.12);
-      border-color: rgba(59, 130, 246, 0.3);
-    }
-
-    .dark .enquiry-product-preview .text-sky-700 {
-      color: #7dd3fc;
-    }
-
     .enquiry-product-preview img {
       width: 72px;
       height: 72px;
@@ -775,29 +703,12 @@
       background: #fff;
     }
 
-    .dark .enquiry-textarea,
-    .dark .enquiry-input {
-      background: #0f172a;
-      border-color: #334155;
-      color: #e2e8f0;
-    }
-
-    .dark .enquiry-input:focus,
-    .dark .enquiry-textarea:focus {
-      background: #0b1220;
-    }
-
     /* Flags the phone field red the moment its error message is shown - CSS reacts
        to the existing .hidden toggle instead of needing separate JS to color it. */
     .enquiry-field-wrap:has(#phone-error:not(.hidden)) .enquiry-input,
     .enquiry-field-wrap:has(#cart-phone-error:not(.hidden)) .enquiry-input {
       border-color: #ef4444;
       background: #fef2f2;
-    }
-
-    .dark .enquiry-field-wrap:has(#phone-error:not(.hidden)) .enquiry-input,
-    .dark .enquiry-field-wrap:has(#cart-phone-error:not(.hidden)) .enquiry-input {
-      background: rgba(239, 68, 68, 0.15);
     }
 
     .enquiry-submit-btn {
@@ -890,10 +801,6 @@
       transform: scale(0.85);
     }
 
-    .dark .assistant-panel {
-      background: #1e293b;
-    }
-
     .assistant-panel-header {
       padding: 16px 20px;
       display: flex;
@@ -940,11 +847,6 @@
       border-bottom-left-radius: 4px;
     }
 
-    .dark .assistant-msg.bot {
-      background: linear-gradient(135deg, #334155, #3f4f6b);
-      color: #e2e8f0;
-    }
-
     .assistant-msg.user {
       align-self: flex-end;
       background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -977,21 +879,12 @@
       color: #3b82f6;
     }
 
-    .dark .assistant-chip {
-      color: #cbd5f5;
-      border-color: #475569;
-    }
-
     .assistant-input-row {
       display: flex;
       gap: 8px;
       padding: 12px 16px;
       border-top: 1px solid #e2e8f0;
       margin: 0;
-    }
-
-    .dark .assistant-input-row {
-      border-color: #334155;
     }
 
     .assistant-input {
@@ -1002,12 +895,6 @@
       border-radius: 999px;
       font-size: 13px;
       background: #f8fafc;
-    }
-
-    .dark .assistant-input {
-      background: #0f172a;
-      border-color: #334155;
-      color: #e2e8f0;
     }
 
     .assistant-input:focus {
@@ -1104,20 +991,11 @@
       animation: voice-listening-pulse 1s ease-in-out infinite;
     }
 
-    .dark .voice-btn-inline {
-      border-color: #475569;
-      color: #cbd5f5;
-    }
-
     /* --- Cart recommendations ("frequently bought together") ---------------- */
 
     .cart-recommendations {
       border-top: 1px dashed #e2e8f0;
       padding: 10px 16px 4px;
-    }
-
-    .dark .cart-recommendations {
-      border-color: #334155;
     }
 
     .cart-recommendations>p {
@@ -1145,11 +1023,6 @@
       border-radius: 6px;
       border: 1px solid #e2e8f0;
       flex-shrink: 0;
-    }
-
-    .dark .cart-rec-item img {
-      border-color: #334155;
-      background: #0f172a;
     }
 
     .cart-rec-item span {
@@ -1301,9 +1174,6 @@
               <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>Jaipur • Bulk & Retail
             </p>
           </div>
-          <button type="button" class="w-[46px] h-[46px] rounded-full border border-slate-300 bg-white/70 text-slate-700 hover:border-blue-500 hover:text-blue-600 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center dark:bg-slate-800/80 dark:border-slate-600 dark:text-slate-100" onclick="toggleTheme()" id="themeToggleBtn" aria-label="Toggle dark mode" aria-pressed="false">
-            <i class="fas fa-moon" id="themeToggleIcon"></i>
-          </button>
           <button class="cart-icon-btn" onclick="toggleCart()" aria-label="Open cart" aria-expanded="false">
             <i class="fas fa-shopping-cart text-base"></i>
             <span class="cart-badge" id="cartBadge" style="display:none" aria-live="polite">0</span>
@@ -1411,7 +1281,7 @@
       <div class="max-w-xl mx-auto mb-8">
         <div class="relative">
           <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true"></i>
-          <input type="search" id="productSearch" class="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-200 bg-white focus:border-blue-500 focus:outline-none focus:shadow-[0_0_0_4px_rgba(139,92,246,0.15)] transition-shadow text-sm dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder-slate-400" placeholder="Search products (e.g. tyre polish, micro towel)..." aria-label="Search products" />
+          <input type="search" id="productSearch" class="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-200 bg-white focus:border-blue-500 focus:outline-none focus:shadow-[0_0_0_4px_rgba(139,92,246,0.15)] transition-shadow text-sm" placeholder="Search products (e.g. tyre polish, micro towel)..." aria-label="Search products" />
           <button type="button" id="voiceSearchBtn" class="voice-btn" aria-label="Search by voice"><i class="fas fa-microphone"></i></button>
         </div>
         <p class="text-xs text-gray-400 mt-2 px-1">Typo-friendly search — try "tyar polish" or "cloth" and it'll still find the right product.</p>
@@ -1429,46 +1299,46 @@
       </div>
       <div class="max-w-3xl mx-auto space-y-4">
         <details class="group glass-card rounded-2xl p-6">
-          <summary class="font-semibold text-lg text-gray-800 dark:text-slate-100 cursor-pointer list-none flex justify-between items-center gap-4">
+          <summary class="font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center gap-4">
             Do you supply bulk or only retail orders?
             <i class="fas fa-chevron-down text-blue-600 transition-transform group-open:rotate-180" aria-hidden="true"></i>
           </summary>
-          <p class="text-gray-600 dark:text-slate-300 mt-3">Yes — we supply both bulk and retail quantities. For wholesale pricing, call <a href="tel:9352470085" class="text-blue-600">9352470085</a> or <a href="tel:9024598298" class="text-blue-600">9024598298</a>, or use the "Enquiry" button on any product.</p>
+          <p class="text-gray-600 mt-3">Yes — we supply both bulk and retail quantities. For wholesale pricing, call <a href="tel:9352470085" class="text-blue-600">9352470085</a> or <a href="tel:9024598298" class="text-blue-600">9024598298</a>, or use the "Enquiry" button on any product.</p>
         </details>
         <details class="group glass-card rounded-2xl p-6">
-          <summary class="font-semibold text-lg text-gray-800 dark:text-slate-100 cursor-pointer list-none flex justify-between items-center gap-4">
+          <summary class="font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center gap-4">
             What payment methods do you accept?
             <i class="fas fa-chevron-down text-blue-600 transition-transform group-open:rotate-180" aria-hidden="true"></i>
           </summary>
-          <p class="text-gray-600 dark:text-slate-300 mt-3">We accept UPI and Google Pay — scan the QR code or pay to the UPI ID shown in the Contact section. Call us to discuss other payment arrangements.</p>
+          <p class="text-gray-600 mt-3">We accept UPI and Google Pay — scan the QR code or pay to the UPI ID shown in the Contact section. Call us to discuss other payment arrangements.</p>
         </details>
         <details class="group glass-card rounded-2xl p-6">
-          <summary class="font-semibold text-lg text-gray-800 dark:text-slate-100 cursor-pointer list-none flex justify-between items-center gap-4">
+          <summary class="font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center gap-4">
             Is Swapnil Chemicals a registered business?
             <i class="fas fa-chevron-down text-blue-600 transition-transform group-open:rotate-180" aria-hidden="true"></i>
           </summary>
-          <p class="text-gray-600 dark:text-slate-300 mt-3">Yes. We are GST registered (08CIJPS1734A1ZE), MSME certified (MSME/2020/6194), and Udyam registered (UDYAM-RJ-17-0022468).</p>
+          <p class="text-gray-600 mt-3">Yes. We are GST registered (08CIJPS1734A1ZE), MSME certified (MSME/2020/6194), and Udyam registered (UDYAM-RJ-17-0022468).</p>
         </details>
         <details class="group glass-card rounded-2xl p-6">
-          <summary class="font-semibold text-lg text-gray-800 dark:text-slate-100 cursor-pointer list-none flex justify-between items-center gap-4">
+          <summary class="font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center gap-4">
             How do I place an order?
             <i class="fas fa-chevron-down text-blue-600 transition-transform group-open:rotate-180" aria-hidden="true"></i>
           </summary>
-          <p class="text-gray-600 dark:text-slate-300 mt-3">Pick a product, choose a quantity, and tap "Add to Cart" or "Enquiry." Your request is sent directly to us on WhatsApp — no account or login needed.</p>
+          <p class="text-gray-600 mt-3">Pick a product, choose a quantity, and tap "Add to Cart" or "Enquiry." Your request is sent directly to us on WhatsApp — no account or login needed.</p>
         </details>
         <details class="group glass-card rounded-2xl p-6">
-          <summary class="font-semibold text-lg text-gray-800 dark:text-slate-100 cursor-pointer list-none flex justify-between items-center gap-4">
+          <summary class="font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center gap-4">
             Where is Swapnil Chemicals based?
             <i class="fas fa-chevron-down text-blue-600 transition-transform group-open:rotate-180" aria-hidden="true"></i>
           </summary>
-          <p class="text-gray-600 dark:text-slate-300 mt-3">We are based in Jaipur, Rajasthan, and support both bulk and retail customers.</p>
+          <p class="text-gray-600 mt-3">We are based in Jaipur, Rajasthan, and support both bulk and retail customers.</p>
         </details>
         <details class="group glass-card rounded-2xl p-6">
-          <summary class="font-semibold text-lg text-gray-800 dark:text-slate-100 cursor-pointer list-none flex justify-between items-center gap-4">
+          <summary class="font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center gap-4">
             Do you offer custom quantities or packaging?
             <i class="fas fa-chevron-down text-blue-600 transition-transform group-open:rotate-180" aria-hidden="true"></i>
           </summary>
-          <p class="text-gray-600 dark:text-slate-300 mt-3">For requirements outside the listed options, contact us directly by phone or WhatsApp and we'll get back to you.</p>
+          <p class="text-gray-600 mt-3">For requirements outside the listed options, contact us directly by phone or WhatsApp and we'll get back to you.</p>
         </details>
       </div>
     </div>
@@ -1625,7 +1495,6 @@
     const APP = Object.freeze({
       WA_NUMBER: "919352470085",
       CART_STORAGE_KEY: "sc_cart_auto",
-      THEME_STORAGE_KEY: "sc_theme",
       CURRENCY: "INR",
       COUNTRY_CODE: "+91",
       CART_ANIMATION_MS: 2200
@@ -1674,24 +1543,6 @@
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => fn(...args), delay);
       };
-    }
-
-    /* --- Theme ------------------------------------------------------------------- */
-
-    function applyTheme(isDark) {
-      document.documentElement.classList.toggle('dark', isDark);
-      const icon = document.getElementById('themeToggleIcon');
-      const btn = document.getElementById('themeToggleBtn');
-      const meta = document.getElementById('themeColorMeta');
-      if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-      if (btn) btn.setAttribute('aria-pressed', String(isDark));
-      if (meta) meta.setAttribute('content', isDark ? '#1e293b' : '#f8fafc');
-    }
-
-    function toggleTheme() {
-      const isDark = !document.documentElement.classList.contains('dark');
-      localStorage.setItem(APP.THEME_STORAGE_KEY, isDark ? 'dark' : 'light');
-      applyTheme(isDark);
     }
 
     async function copyText(text, btn) {
@@ -2142,7 +1993,7 @@
       } else {
         qtyBtnsHtml = '';
       }
-      return `<div class="product-card rounded-2xl overflow-hidden group" data-product-id="${product.id}"><div class="product-image-container"><img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" decoding="async" onerror="this.style.display='none'; this.nextElementSibling.style.opacity='1';"><div class="product-image-fallback"><i class="fas fa-image text-4xl mb-2"></i><p>Image not available</p></div></div><div class="p-6"><h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600">${product.name}</h3><p class="text-gray-600 mb-4">${product.description}</p><div class="flex justify-between items-center"><div class="text-2xl font-bold gradient-text">${formatCurrency(product.price)}<span class="text-lg text-gray-500 ml-1">/${product.unit}</span></div><div class="flex space-x-2"><button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-sm dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600" onclick="shareProduct(${product.id})" aria-label="Share ${product.name}"><i class="fas fa-share-nodes"></i></button><a href="tel:9352470085" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm" aria-label="Call for ${product.name}"><i class="fas fa-phone"></i></a><button class="enquiry-trigger-btn" onclick="openEnquiryModal(${product.id})"><i class="fas fa-clipboard-list"></i> Enquiry</button></div></div>${qtyBtnsHtml}<button class="add-to-cart-btn" data-add-cart="${product.id}" onclick="addToCart(${product.id})"><i class="fas fa-shopping-cart"></i> Add to Cart</button></div></div>`;
+      return `<div class="product-card rounded-2xl overflow-hidden group" data-product-id="${product.id}"><div class="product-image-container"><img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" decoding="async" onerror="this.style.display='none'; this.nextElementSibling.style.opacity='1';"><div class="product-image-fallback"><i class="fas fa-image text-4xl mb-2"></i><p>Image not available</p></div></div><div class="p-6"><h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600">${product.name}</h3><p class="text-gray-600 mb-4">${product.description}</p><div class="flex justify-between items-center"><div class="text-2xl font-bold gradient-text">${formatCurrency(product.price)}<span class="text-lg text-gray-500 ml-1">/${product.unit}</span></div><div class="flex space-x-2"><button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-sm" onclick="shareProduct(${product.id})" aria-label="Share ${product.name}"><i class="fas fa-share-nodes"></i></button><a href="tel:9352470085" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm" aria-label="Call for ${product.name}"><i class="fas fa-phone"></i></a><button class="enquiry-trigger-btn" onclick="openEnquiryModal(${product.id})"><i class="fas fa-clipboard-list"></i> Enquiry</button></div></div>${qtyBtnsHtml}<button class="add-to-cart-btn" data-add-cart="${product.id}" onclick="addToCart(${product.id})"><i class="fas fa-shopping-cart"></i> Add to Cart</button></div></div>`;
     }
 
     function selectQty(btn) {
@@ -2238,7 +2089,7 @@
 
       container.innerHTML = ranked.length ?
         ranked.map(entry => createProductCard(entry.product)).join('') :
-        `<p class="col-span-full text-center text-gray-500 dark:text-slate-400 py-12">No products match "${escapeHtml(query.trim())}". Try a different search or <a href="#contact" class="text-blue-600 underline">contact us</a> for custom requirements.</p>`;
+        `<p class="col-span-full text-center text-gray-500 py-12">No products match "${escapeHtml(query.trim())}". Try a different search or <a href="#contact" class="text-blue-600 underline">contact us</a> for custom requirements.</p>`;
     }
 
     function initProductSearch() {
@@ -2721,7 +2572,6 @@
       initScrollToTop();
       initSmoothScrolling();
       setTimeout(initScrollAnimations, 100);
-      applyTheme(document.documentElement.classList.contains('dark'));
       const yearEl = document.getElementById('copyrightYear');
       if (yearEl) yearEl.textContent = String(new Date().getFullYear());
       const saved = localStorage.getItem(APP.CART_STORAGE_KEY);
@@ -2729,11 +2579,6 @@
         cart = safeParseJSON(saved, {});
         updateCartUI();
       }
-    });
-
-    const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    systemThemeQuery.addEventListener('change', (e) => {
-      if (!localStorage.getItem(APP.THEME_STORAGE_KEY)) applyTheme(e.matches);
     });
   </script>
 </body>
