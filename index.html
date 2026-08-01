@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Automobile new code 31-07-26 -->
+<!-- Automobile new code 01-08-26 -->
 <html lang="en">
 
 <head>
@@ -16,7 +16,6 @@
   <meta name="theme-color" content="#1e293b" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-  <!-- Open Graph / social sharing -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Swapnil Chemicals" />
   <meta property="og:title" content="Swapnil Chemicals | Automobile Cleaning Products Manufacturer, Jaipur" />
@@ -28,14 +27,6 @@
   <meta name="twitter:description" content="Manufacturers of premium automobile cleaning products in Jaipur - dashboard polish, tyre polish, car wash, glass cleaner & more." />
   <meta name="twitter:image" content="SC Logo.jpg" />
 
-  <!--
-    X-Content-Type-Options / X-Frame-Options / Permissions-Policy are HTTP response headers, not
-    meta tags - browsers silently ignore them here, so the previous versions of these tags gave a
-    false sense of protection. Set the real headers at the server/hosting layer (.htaccess, Nginx,
-    or the hosting panel) instead. Content-Security-Policy is the one security directive a
-    <meta http-equiv> tag can actually enforce, so it is set below, scoped to the external hosts
-    this page actually loads from.
-  -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://www.gstatic.com https://api.qrserver.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'self';" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -60,23 +51,8 @@
       },
     };
   </script>
-  <!--
-    cdn.tailwindcss.com ships the full JIT engine to the browser - convenient for a prototype, but
-    Tailwind itself logs a "should not be used in production" warning for it (extra page weight,
-    no purge/minify, a build step running on every visitor's device). For a production deploy,
-    compile Tailwind via the CLI/PostCSS into a static stylesheet and replace this script tag
-    with a stylesheet link to the compiled file.
-  -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* ==========================================================================
-       Swapnil Chemicals — stylesheet
-       One brand system throughout: navy (#1e293b/#1e40af/#334155) for large
-       surfaces (header line, hero, footer, panel headers) and blue (#3b82f6/
-       #1d4ed8) for interactive accents/text. Functional CTA colors (amber for
-       cart, orange for enquiry, WhatsApp/GPay green) stay as-is — they're
-       intentional recognition cues, not decoration.
-       ========================================================================== */
 
     :root {
       --radius-md: 12px;
@@ -84,8 +60,6 @@
       --brand-accent: #3b82f6;
       --brand-accent-dark: #1d4ed8;
     }
-
-    /* --- Base / reset --------------------------------------------------- */
 
     *,
     *::before,
@@ -126,8 +100,6 @@
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 35%, #eff6ff 65%, #f8fafc 100%);
     }
 
-    /* --- Hero ------------------------------------------------------------ */
-
     .hero-gradient {
       background: linear-gradient(135deg, #1e293b 0%, #1e40af 50%, #334155 100%);
       position: relative;
@@ -159,8 +131,6 @@
         opacity: 0.55;
       }
     }
-
-    /* --- Cards ------------------------------------------------------------ */
 
     .glass-card {
       background: rgba(255, 255, 255, 0.95);
@@ -255,8 +225,6 @@
       box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
     }
 
-    /* --- Text & dividers --------------------------------------------------- */
-
     .gradient-text {
       background: linear-gradient(135deg, var(--brand-accent-dark), var(--brand-accent));
       -webkit-background-clip: text;
@@ -269,8 +237,6 @@
       height: 1px;
       margin: 2rem 0;
     }
-
-    /* --- Buttons ------------------------------------------------------------ */
 
     .btn-primary {
       background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -294,8 +260,6 @@
       box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
     }
 
-    /* --- Scroll to top -------------------------------------------------- */
-
     #scrollToTop {
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: fixed;
@@ -315,8 +279,6 @@
       transform: translateY(-2px);
       box-shadow: 0 12px 28px rgba(37, 99, 235, 0.4);
     }
-
-    /* --- Navigation ------------------------------------------------------- */
 
     .nav-blur {
       backdrop-filter: blur(20px);
@@ -340,8 +302,6 @@
         opacity: 0;
       }
     }
-
-    /* --- Quantity selectors -------------------------------------------------- */
 
     .qty-btn {
       border: 2px solid #cbd5e1;
@@ -367,8 +327,6 @@
       color: #fff;
       box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
     }
-
-    /* --- Cart & enquiry CTAs -------------------------------------------------- */
 
     .add-to-cart-btn {
       width: 100%;
@@ -419,8 +377,6 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4);
     }
-
-    /* --- Cart icon & panel -------------------------------------------------- */
 
     .cart-icon-btn {
       position: relative;
@@ -566,8 +522,6 @@
       transform: translateY(-1px);
     }
 
-    /* --- Enquiry modal -------------------------------------------------- */
-
     #enquiryModal {
       display: none;
       position: fixed;
@@ -703,8 +657,6 @@
       background: #fff;
     }
 
-    /* Flags the phone field red the moment its error message is shown - CSS reacts
-       to the existing .hidden toggle instead of needing separate JS to color it. */
     .enquiry-field-wrap:has(#phone-error:not(.hidden)) .enquiry-input,
     .enquiry-field-wrap:has(#cart-phone-error:not(.hidden)) .enquiry-input {
       border-color: #ef4444;
@@ -742,8 +694,6 @@
       pointer-events: none;
       transition: none;
     }
-
-    /* --- AI Assistant widget -------------------------------------------------- */
 
     .ai-assistant-btn {
       position: fixed;
@@ -921,8 +871,6 @@
       transform: scale(1.05);
     }
 
-    /* --- Voice input -------------------------------------------------------- */
-
     @keyframes voice-listening-pulse {
 
       0%,
@@ -991,8 +939,6 @@
       animation: voice-listening-pulse 1s ease-in-out infinite;
     }
 
-    /* --- Cart recommendations ("frequently bought together") ---------------- */
-
     .cart-recommendations {
       border-top: 1px dashed #e2e8f0;
       padding: 10px 16px 4px;
@@ -1048,8 +994,6 @@
     .cart-rec-add-btn:hover {
       transform: scale(1.08);
     }
-
-    /* --- Responsive ---------------------------------------------------------- */
 
     @media (max-width: 480px) {
       .cart-panel {
@@ -1284,7 +1228,6 @@
           <input type="search" id="productSearch" class="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-200 bg-white focus:border-blue-500 focus:outline-none focus:shadow-[0_0_0_4px_rgba(139,92,246,0.15)] transition-shadow text-sm" placeholder="Search products (e.g. tyre polish, micro towel)..." aria-label="Search products" />
           <button type="button" id="voiceSearchBtn" class="voice-btn" aria-label="Search by voice"><i class="fas fa-microphone"></i></button>
         </div>
-        <p class="text-xs text-gray-400 mt-2 px-1">Typo-friendly search — try "tyar polish" or "cloth" and it'll still find the right product.</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productsGrid"></div>
     </div>
@@ -1317,7 +1260,7 @@
             Is Swapnil Chemicals a registered business?
             <i class="fas fa-chevron-down text-blue-600 transition-transform group-open:rotate-180" aria-hidden="true"></i>
           </summary>
-          <p class="text-gray-600 mt-3">Yes. We are GST registered (08CIJPS1734A1ZE), MSME certified (MSME/2020/6194), and Udyam registered (UDYAM-RJ-17-0022468).</p>
+          <p class="text-gray-600 mt-3">Yes. We are GST registered (08CIJPS1734A1ZE), MSME certified (MSME/2020/6194), Udyam registered (UDYAM-RJ-17-0022468), and hold other applicable business registrations and certifications.</p>
         </details>
         <details class="group glass-card rounded-2xl p-6">
           <summary class="font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center gap-4">
@@ -1490,8 +1433,6 @@
   <script>
     "use strict";
 
-    /* --- Config & small utilities -------------------------------------------------- */
-
     const APP = Object.freeze({
       WA_NUMBER: "919352470085",
       CART_STORAGE_KEY: "sc_cart_auto",
@@ -1580,8 +1521,6 @@
       }
       safeOpenNewTab(buildWhatsAppUrl(`${shareText}\n${shareUrl}`));
     }
-
-    /* --- Product catalog ----------------------------------------------------------- */
 
     const products = [{
         id: 1,
@@ -1684,8 +1623,6 @@
     const LT_OPTIONS = [10, 35, 50];
     let cart = {};
 
-    /* --- Cart ------------------------------------------------------------------ */
-
     function addToCart(productId) {
       flyToCart(productId);
       const product = products.find(p => p.id === productId);
@@ -1709,11 +1646,6 @@
       }, APP.CART_ANIMATION_MS);
       showAddedFeedback(productId);
     }
-
-    /* --- "Frequently bought together" recommendations --------------------------
-       Rule-based, not machine-learned: each product lists 1-2 realistic companion
-       items (e.g. a polish pairs with a wiping towel). For a fixed 9-item catalog
-       that's more transparent and easier to correct than a scoring model would be. */
 
     function getCartRecommendations() {
       const inCartIds = new Set(Object.values(cart).map(item => item.product.id));
@@ -1979,8 +1911,6 @@
       }
     }
 
-    /* --- Product rendering & search --------------------------------------------- */
-
     function createProductCard(product) {
       const hasLt = product.hasLtOptions;
       const qtyOpts = product.qtyOptions || LT_OPTIONS;
@@ -1993,7 +1923,7 @@
       } else {
         qtyBtnsHtml = '';
       }
-      return `<div class="product-card rounded-2xl overflow-hidden group" data-product-id="${product.id}"><div class="product-image-container"><img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" decoding="async" onerror="this.style.display='none'; this.nextElementSibling.style.opacity='1';"><div class="product-image-fallback"><i class="fas fa-image text-4xl mb-2"></i><p>Image not available</p></div></div><div class="p-6"><h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600">${product.name}</h3><p class="text-gray-600 mb-4">${product.description}</p><div class="flex justify-between items-center"><div class="text-2xl font-bold gradient-text">${formatCurrency(product.price)}<span class="text-lg text-gray-500 ml-1">/${product.unit}</span></div><div class="flex space-x-2"><button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-sm" onclick="shareProduct(${product.id})" aria-label="Share ${product.name}"><i class="fas fa-share-nodes"></i></button><a href="tel:9352470085" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm" aria-label="Call for ${product.name}"><i class="fas fa-phone"></i></a><button class="enquiry-trigger-btn" onclick="openEnquiryModal(${product.id})"><i class="fas fa-clipboard-list"></i> Enquiry</button></div></div>${qtyBtnsHtml}<button class="add-to-cart-btn" data-add-cart="${product.id}" onclick="addToCart(${product.id})"><i class="fas fa-shopping-cart"></i> Add to Cart</button></div></div>`;
+      return `<div class="product-card rounded-2xl overflow-hidden group" data-product-id="${product.id}"><div class="product-image-container"><img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" decoding="async" onerror="this.style.display='none'; this.nextElementSibling.style.opacity='1';"><div class="product-image-fallback"><i class="fas fa-image text-4xl mb-2"></i><p>Image not available</p></div></div><div class="p-6"><h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600">${product.name}</h3><p class="text-gray-600 mb-4">${product.description}</p><div class="flex justify-between items-center"><div class="text-2xl font-bold gradient-text">${formatCurrency(product.price)}<span class="text-lg text-gray-500 ml-1">/${product.unit}</span></div><div class="flex space-x-2"><a href="tel:9352470085" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm" aria-label="Call for ${product.name}"><i class="fas fa-phone"></i></a><button class="enquiry-trigger-btn" onclick="openEnquiryModal(${product.id})"><i class="fas fa-clipboard-list"></i> Enquiry</button></div></div>${qtyBtnsHtml}<button class="add-to-cart-btn" data-add-cart="${product.id}" onclick="addToCart(${product.id})"><i class="fas fa-shopping-cart"></i> Add to Cart</button></div></div>`;
     }
 
     function selectQty(btn) {
@@ -2011,12 +1941,6 @@
       const container = document.getElementById('productsGrid');
       if (container) container.innerHTML = products.map(p => createProductCard(p)).join('');
     }
-
-    /* --- Typo-tolerant, synonym-aware search --------------------------------
-       Plain substring matching missed misspellings ("tyar" for "tyre") and
-       informal phrasing ("cloth" for "towel") that this shop's customers
-       actually type. Levenshtein distance plus a small synonym list catches
-       both without pulling in a search library for a 9-item catalog. */
 
     const SEARCH_SYNONYMS = {
       cloth: "towel",
@@ -2098,12 +2022,6 @@
       input.addEventListener('input', debounce(() => filterProducts(input.value), 150));
     }
 
-    /* --- Voice input (Web Speech API) -----------------------------------------
-       Runs entirely in the browser via the built-in SpeechRecognition API - no
-       server, no API key, no per-request cost. Support varies by browser
-       (notably absent in Firefox and some in-app WebViews), so the mic button
-       is removed outright when unsupported rather than left as dead UI. */
-
     function isSpeechRecognitionSupported() {
       return Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
     }
@@ -2184,8 +2102,6 @@
         }
       });
     }
-
-    /* --- Enquiry modal ----------------------------------------------------------- */
 
     let currentEnquiryProduct = null;
     let lastFocusedBeforeEnquiry = null;
@@ -2319,8 +2235,6 @@
     }
 
     document.addEventListener('click', (e) => {
-      // The enquiry modal can open on top of the cart/assistant panels (e.g. "Pay via GPay"
-      // from the cart) - clicks inside it are not "outside" clicks for those panels.
       if (enquiryModal && enquiryModal.classList.contains('show') && enquiryModal.contains(e.target)) return;
 
       const cartPanel = document.getElementById('cartPanel');
@@ -2355,8 +2269,6 @@
         trapEnquiryFocus(e);
       }
     });
-
-    /* --- AI Assistant (rule-based, fully client-side — no external API/keys involved) --- */
 
     const ASSISTANT_QUICK_REPLIES = [
       { label: "Our Products", query: "What products do you sell?" },
@@ -2418,9 +2330,6 @@
     }
 
     function uniqueProductList() {
-      // Dedupe on name+price+unit rather than name alone: several SKUs (the three
-      // Micro Towel grades) intentionally share a display name but are distinct
-      // products, and a name-only key was silently dropping two of them.
       return [...new Map(products.map(p => [`${p.name}|${p.price}|${p.unit}`, p])).values()];
     }
 
@@ -2522,8 +2431,6 @@
       });
     }
 
-    /* --- Scroll effects & smooth scrolling --------------------------------------- */
-
     function initScrollToTop() {
       const btn = document.getElementById('scrollToTop');
       if (!btn) return;
@@ -2561,8 +2468,6 @@
         obs.observe(c);
       });
     }
-
-    /* --- Init ---------------------------------------------------------------------- */
 
     document.addEventListener('DOMContentLoaded', () => {
       renderProducts();
