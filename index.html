@@ -1852,7 +1852,7 @@
 
   <div id="addedCartModal">
     <div class="added-cart-box" role="dialog" aria-modal="true" aria-label="Added to cart" tabindex="-1">
-      <button class="added-cart-close-btn" onclick="closeAddedCartModal()" aria-label="Close">✕</button>
+      <button class="added-cart-close-btn" onclick="closeAddedCartModal(event)" aria-label="Close">✕</button>
       <p class="added-cart-product-name" id="addedCartProductName"></p>
       <p class="added-cart-msg">has been added to your cart</p>
       <div class="added-cart-body">
@@ -1869,7 +1869,7 @@
       <p class="added-cart-line">There are <a href="#" onclick="viewCartFromAddedModal(event)" id="addedCartItemsCount">0 items</a> in your cart.</p>
       <p class="added-cart-subtotal">Cart Subtotal: <b id="addedCartSubtotal">₹0</b></p>
       <div class="added-cart-actions">
-        <button class="added-cart-continue-btn" onclick="closeAddedCartModal()">Continue</button>
+        <button class="added-cart-continue-btn" onclick="closeAddedCartModal(event)">Continue</button>
         <button class="added-cart-viewcart-btn" onclick="viewCartFromAddedModal(event)">View Cart</button>
       </div>
     </div>
@@ -2271,7 +2271,8 @@
       document.body.style.overflow = 'hidden';
     }
 
-    function closeAddedCartModal() {
+    function closeAddedCartModal(e) {
+      if (e) e.stopPropagation();
       const modal = document.getElementById('addedCartModal');
       if (modal) modal.classList.remove('show');
       document.body.style.overflow = '';
@@ -2293,8 +2294,11 @@
     }
 
     function viewCartFromAddedModal(e) {
-      if (e) e.preventDefault();
-      closeAddedCartModal();
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      closeAddedCartModal(e);
       const panel = document.getElementById('cartPanel');
       if (panel && panel.classList.contains('hidden')) toggleCart();
     }
@@ -2713,7 +2717,7 @@
     const addedCartModal = document.getElementById('addedCartModal');
     if (addedCartModal) {
       addedCartModal.addEventListener('click', (e) => {
-        if (e.target === addedCartModal) closeAddedCartModal();
+        if (e.target === addedCartModal) closeAddedCartModal(e);
       });
     }
 
