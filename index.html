@@ -1,6 +1,5 @@
 <!doctype html>
-<!-- When we open the cart and click the red cross the product delete but the popup should not to be close. And the product should show that it fly and then add to cart and then the popup of add to cart comes -->
-<!-- Automobile new code 01-08-26 -->
+<!-- Automobile new code 18-08-26 -->
 <html lang="en">
 
 <head>
@@ -2078,15 +2077,67 @@
         if (activeBtn) selectedQty = parseInt(activeBtn.dataset.lt, 10);
       }
       const key = `${productId}_${selectedQty}`;
-      if (cart[key]) cart[key].qty += 1;
-      else cart[key] = {
-        product,
-        qty: 1,
-        selectedQty
+
+      const commitToCart = () => {
+        if (cart[key]) cart[key].qty += 1;
+        else cart[key] = {
+          product,
+          qty: 1,
+          selectedQty
+        };
+        localStorage.setItem(APP.CART_STORAGE_KEY, JSON.stringify(cart));
+        updateCartUI();
+        openAddedCartModal(key);
       };
-      localStorage.setItem(APP.CART_STORAGE_KEY, JSON.stringify(cart));
-      updateCartUI();
-      openAddedCartModal(key);
+
+      const sourceImg = card ? card.querySelector('.product-image') : null;
+      const cartBtn = document.querySelector('.cart-icon-btn');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!sourceImg || !cartBtn || reduceMotion) {
+        commitToCart();
+        return;
+      }
+      flyToCart(sourceImg, cartBtn, commitToCart);
+    }
+
+    function flyToCart(sourceImg, cartBtn, onDone) {
+      const srcRect = sourceImg.getBoundingClientRect();
+      const destRect = cartBtn.getBoundingClientRect();
+      if (srcRect.width === 0 || srcRect.height === 0) {
+        onDone();
+        return;
+      }
+
+      const flyer = sourceImg.cloneNode(true);
+      flyer.removeAttribute('id');
+      flyer.style.cssText = `position:fixed;z-index:9999;margin:0;pointer-events:none;
+        left:${srcRect.left}px;top:${srcRect.top}px;width:${srcRect.width}px;height:${srcRect.height}px;
+        opacity:1;transform:translate(0,0) scale(1);transform-origin:top left;
+        transition:transform .55s cubic-bezier(0.34,0,0.64,1),opacity .55s ease;will-change:transform,opacity;`;
+      document.body.appendChild(flyer);
+
+      const destX = destRect.left + destRect.width / 2 - (srcRect.left + srcRect.width / 2);
+      const destY = destRect.top + destRect.height / 2 - (srcRect.top + srcRect.height / 2);
+
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        flyer.remove();
+        onDone();
+      };
+      flyer.addEventListener('transitionend', finish, {
+        once: true
+      });
+      setTimeout(finish, 650);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          flyer.style.transform = `translate(${destX}px, ${destY}px) scale(0.12)`;
+          flyer.style.opacity = '0.3';
+        });
+      });
     }
 
     function getCartRecommendations() {
@@ -2103,7 +2154,8 @@
         .filter(Boolean);
     }
 
-    function quickAddRelated(productId) {
+    function quickAddRelated(productId, e) {
+      if (e) e.stopPropagation();
       const product = products.find(p => p.id === productId);
       if (!product) return;
       const defaultQty = (product.qtyOptions || (product.hasLtOptions ? LT_OPTIONS : []))[0] || 1;
@@ -2128,7 +2180,7 @@
         <div class="cart-rec-item">
           <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async">
           <span>${p.name}</span>
-          <button type="button" class="cart-rec-add-btn" onclick="quickAddRelated(${p.id})" aria-label="Add ${p.name} to cart">+</button>
+          <button type="button" class="cart-rec-add-btn" onclick="quickAddRelated(${p.id},event)" aria-label="Add ${p.name} to cart">+</button>
         </div>
       `).join('');
     }
@@ -2178,7 +2230,7 @@
 
         itemsHTML += `<div class="cart-item-row"><div style="flex:1"><p style="font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${product.name}</p>
          <p style="font-size:11px;color:#64748b;">${totalQty}${qLabel} × ${formatCurrency(product.price)}/${qLabel.trim()} </p>
-          </div><div class="cart-item-qty-ctrl"><button class="cart-qty-btn" onclick="changeCartQty('${key}',-1)">−</button><span style="min-width:40px;text-align:center;font-size:12px;">${totalQty}${qLabel}</span><button class="cart-qty-btn" onclick="changeCartQty('${key}',1)">+</button></div><div style="display:flex;align-items:center;gap:8px;"><span style="font-weight:700;color:#1d4ed8;">${formatCurrency(lineTotal)}</span><button onclick="removeFromCart('${key}')" style="background:#fee2e2;border-radius:50%;width:20px;height:20px;color:#ef4444;">✕</button></div></div>`;
+          </div><div class="cart-item-qty-ctrl"><button class="cart-qty-btn" onclick="changeCartQty('${key}',-1,event)">−</button><span style="min-width:40px;text-align:center;font-size:12px;">${totalQty}${qLabel}</span><button class="cart-qty-btn" onclick="changeCartQty('${key}',1,event)">+</button></div><div style="display:flex;align-items:center;gap:8px;"><span style="font-weight:700;color:#1d4ed8;">${formatCurrency(lineTotal)}</span><button onclick="removeFromCart('${key}',event)" style="background:#fee2e2;border-radius:50%;width:20px;height:20px;color:#ef4444;">✕</button></div></div>`;
       });
 
       list.innerHTML = itemsHTML;
@@ -2198,7 +2250,8 @@
       renderCartRecommendations();
     }
 
-    function changeCartQty(key, delta) {
+    function changeCartQty(key, delta, e) {
+      if (e) e.stopPropagation();
       if (!cart[key]) return;
       const newQty = cart[key].qty + delta;
       if (newQty < 1) return;
@@ -2207,7 +2260,8 @@
       updateCartUI();
     }
 
-    function removeFromCart(key) {
+    function removeFromCart(key, e) {
+      if (e) e.stopPropagation();
       delete cart[key];
       localStorage.setItem(APP.CART_STORAGE_KEY, JSON.stringify(cart));
       updateCartUI();
